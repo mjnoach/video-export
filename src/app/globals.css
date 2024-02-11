@@ -89,4 +89,7 @@
       )
       rgb(var(--background-start-rgb));
   }
+  main {
+    @apply flex grow flex-col items-center;
+  }
 }

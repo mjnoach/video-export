@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
 import { Background } from '@/components/background'
+import { Nav } from '@/components/nav'
 import { ThemeProvider } from '@/components/theme-provider'
 
 import './globals.css'
@@ -27,8 +28,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <div className="flex min-h-screen w-full flex-col">
+            <Nav />
+            {children}
+          </div>
           <Background />
-          {children}
         </ThemeProvider>
       </body>
     </html>
