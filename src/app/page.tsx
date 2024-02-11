@@ -1,4 +1,4 @@
-import { VideoLinkForm } from '@/components/VideoLinkForm'
+import { VideoLinkForm } from '@/components/video-link-form'
 
 export default function Home() {
   return (

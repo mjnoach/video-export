@@ -1,17 +1,27 @@
-'use client'
+import { VideoEditor } from '@/components/video-editor'
 
-import { useSearchParams } from 'next/navigation'
+import fs from 'fs'
+import ytdl from 'ytdl-core'
 
 export default function Edit() {
-  const searchParams = useSearchParams()
-  const videoUrl = searchParams.get('videoUrl')
+  // const searchParams = useSearchParams()
+  // const videoUrl = searchParams.get('videoUrl')
+  const videoUrl = 'http://www.youtube.com/watch?v=aqz-KE-bpKQ'
+
+  const stream = ytdl(videoUrl).pipe(fs.createWriteStream('video.mp4'))
+  // console.log('🚀 ~ stream:', stream)
 
   return (
     <main>
       {/* <SidePanel /> */}
       <div className="noise flex h-full flex-1 items-center justify-center px-6 lg:px-0">
         <div className="flex w-full flex-col items-stretch justify-center gap-6">
-          <Window title={'Title'} />
+          <Window title={'Title'}>
+            {/* Content */}
+            <VideoEditor
+            // videoFile={stream}
+            />
+          </Window>
           <Actions />
         </div>
       </div>
@@ -25,12 +35,13 @@ const SidePanel = () => (
 
 type WindowProps = React.HtmlHTMLAttributes<HTMLElement> & {
   title: string
+  children: React.ReactNode
 }
 
 const Window = (props: WindowProps) => (
   <div className="relative isolate">
     <div className="relative mx-auto w-[48rem] rounded-lg border border-zinc-800 bg-black/80 shadow-2xl">
-      <div className="relative flex items-center justify-center px-2 py-4">
+      <div className="relative flex select-none items-center justify-center px-2 py-4">
         <div className="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-gray-400 ring-gray-800">
           <div className="relative">
             <DotIcon />
@@ -41,7 +52,7 @@ const Window = (props: WindowProps) => (
         </div>
         <WindowControls />
       </div>
-      <div className="relative aspect-video p-4">Content</div>
+      <div className="relative aspect-video p-4">{props.children}</div>
     </div>
   </div>
 )
@@ -82,9 +93,9 @@ const WindowControls = () => (
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className="lucide lucide-minus h-4 w-4"
     >
       <path d="M5 12h14"></path>
@@ -104,9 +115,9 @@ const WindowControls = () => (
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className="lucide lucide-x h-4 w-4"
     >
       <path d="M18 6 6 18"></path>
