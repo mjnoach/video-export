@@ -79,7 +79,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply flex min-h-screen w-full flex-col bg-background text-foreground;
 
     color: rgb(var(--foreground-rgb));
     background: linear-gradient(
@@ -90,6 +90,6 @@
       rgb(var(--background-start-rgb));
   }
   main {
-    @apply flex grow flex-col items-center;
+    @apply flex grow flex-col items-center py-24;
   }
 }

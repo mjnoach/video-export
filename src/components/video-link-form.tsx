@@ -84,25 +84,6 @@ export function VideoLinkForm() {
               )}
             </div>
           </div>
-
-          {/* <div className="mb-6">
-            <label
-              htmlFor="success"
-              className="mb-2 block text-sm font-medium text-green-700 dark:text-green-500"
-            >
-              Your name
-            </label>
-            <input
-              type="text"
-              id="success"
-              className="block w-full rounded-lg border border-green-500 bg-green-50 p-2.5 text-sm text-green-900 placeholder-green-700 focus:border-green-500 focus:ring-green-500 dark:border-green-500 dark:bg-gray-700 dark:text-green-400 dark:placeholder-green-500"
-              placeholder="Success input"
-            />
-            <p className="mt-2 text-sm text-green-600 dark:text-green-500">
-              <span className="font-medium">Well done!</span> Some success
-              message.
-            </p>
-          </div> */}
         </form>
       </div>
     </div>

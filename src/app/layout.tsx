@@ -28,7 +28,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex min-h-screen w-full flex-col">
+          <div className="flex grow flex-col-reverse lg:flex-col">
             <Nav />
             {children}
           </div>

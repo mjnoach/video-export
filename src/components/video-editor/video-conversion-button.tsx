@@ -1,9 +1,10 @@
 import { sliderValueToVideoTime } from '@/lib/utils'
 
-import { fetchFile } from '@ffmpeg/ffmpeg'
-import { Button } from 'antd'
+import { Button } from '../ui/button'
 
-type VideoConversionButtonProps = React.HtmlHTMLAttributes<HTMLElement> & {
+import { fetchFile } from '@ffmpeg/ffmpeg'
+
+type VideoConversionButtonProps = DefaultProps & {
   videoPlayerState: any
   sliderValues: number[]
   videoFile: any

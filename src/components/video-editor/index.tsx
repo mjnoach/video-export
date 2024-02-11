@@ -6,12 +6,13 @@ import Image from 'next/image'
 
 import { sliderValueToVideoTime } from '@/lib/utils'
 
+import { Slider } from '../ui/slider'
 import { VideoConversionButton } from './video-conversion-button'
 import { VideoPlayer } from './video-player'
 import { VideoUpload } from './video-upload'
 
+import loading from '@/../public/loading.gif'
 import { createFFmpeg } from '@ffmpeg/ffmpeg'
-import { Slider, Spin } from 'antd'
 
 const ffmpeg = createFFmpeg({ log: true })
 
@@ -24,18 +25,15 @@ type VideoPlayerStateType = {
   currentTime: number
 }
 
-type VideoFileType = File
-
 type VideoEditorProps = {
   videoFile?: any
 }
 
 export function VideoEditor(props: VideoEditorProps) {
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false)
-  const [videoFile, setVideoFile] = useState<VideoFileType | null>(
+  const [videoFile, setVideoFile] = useState<MediaType | null>(
     props.videoFile ?? null
   )
-  console.log('🚀 ~ VideoEditor ~ videoFile:', videoFile)
   const [videoPlayerState, setVideoPlayerState] = useState<
     VideoPlayerStateType | undefined
   >()
@@ -43,6 +41,8 @@ export function VideoEditor(props: VideoEditorProps) {
   const [gifUrl, setGifUrl] = useState<string | undefined>()
   const [sliderValues, setSliderValues] = useState([0, 100])
   const [processing, setProcessing] = useState(false)
+
+  const isLoading = !ffmpegLoaded || processing
 
   useEffect(() => {
     // loading ffmpeg on startup
@@ -82,6 +82,7 @@ export function VideoEditor(props: VideoEditorProps) {
   }, [videoPlayerState, sliderValues, videoPlayer])
 
   useEffect(() => {
+    console.log('🚀 ~ VideoEditor ~ videoFile:', videoFile)
     // when the current videoFile is removed,
     // restoring the default state
     if (!videoFile) {
@@ -93,15 +94,19 @@ export function VideoEditor(props: VideoEditorProps) {
   }, [videoFile])
 
   return (
-    <div>
-      <Spin
-        spinning={processing || !ffmpegLoaded}
-        tip={!ffmpegLoaded ? 'Waiting for FFmpeg to load...' : 'Processing...'}
-      >
-        <div>
-          {videoFile ? (
+    <div className="flex h-full flex-col">
+      <div className="flex grow flex-col justify-between">
+        <div className="flex aspect-video grow flex-col items-center justify-center bg-gray-950">
+          {/* <LoadingCard /> */}
+          {isLoading && (
+            <Image src={loading} alt="loading" className="h-16 w-16" />
+          )}
+          {videoFile || !isLoading ? (
             <VideoPlayer
-              src={URL.createObjectURL(videoFile)}
+              media={videoFile}
+              src={videoFile ? URL.createObjectURL(videoFile) : ''}
+              // src="/video.mp4"
+              // src={'http://www.youtube.com/watch?v=aqz-KE-bpKQ'}
               onPlayerChange={(videoPlayer) => {
                 setVideoPlayer(videoPlayer)
               }}
@@ -110,74 +115,84 @@ export function VideoEditor(props: VideoEditorProps) {
               }}
             />
           ) : (
-            <>
-              <h1>Upload a video</h1>
-              <div>
-                <VideoUpload
-                  disabled={!!videoFile}
-                  onChange={(videoFile) => {
-                    setVideoFile(videoFile)
-                  }}
-                  onRemove={() => {
-                    setVideoFile(null)
-                  }}
-                />
-              </div>
-            </>
+            // / !isLoading &&
+            <VideoUpload
+              disabled={!!videoFile}
+              setVideoFile={(videoFile) => {
+                setVideoFile(videoFile)
+              }}
+            />
           )}
         </div>
 
-        <div>
-          <h3>Cut Video</h3>
+        <div className="mt-10 flex flex-col items-start gap-10">
           <Slider
-            className="dark:invert"
+            max={100}
+            step={1}
             disabled={!videoPlayerState}
             value={sliderValues}
-            range={true}
-            onChange={(values) => {
+            onValueChange={(values) => {
               setSliderValues(values)
             }}
-            tooltip={{
-              formatter: null,
-            }}
           />
-        </div>
-
-        <div className={'dark:invert'}>
-          <VideoConversionButton
-            onConversionStart={() => {
-              setProcessing(true)
-            }}
-            onConversionEnd={() => {
-              setProcessing(false)
-            }}
-            ffmpeg={ffmpeg}
-            videoPlayerState={videoPlayerState}
-            sliderValues={sliderValues}
-            videoFile={videoFile}
-            onGifCreated={(girUrl) => {
-              setGifUrl(girUrl)
-            }}
-          />
-        </div>
-        {gifUrl && (
-          <div className={'gif-div'}>
-            <h3>Resulting GIF</h3>
-            <Image
-              src={gifUrl}
-              className={'gif'}
-              alt={'GIF file generated in the client side'}
-            />
-            <a
-              href={gifUrl}
-              download={'test.gif'}
-              className={'ant-btn ant-btn-default'}
-            >
-              Download
-            </a>
+          <div className="flex flex-col gap-8">
+            <div className={'dark:invert'}>
+              <VideoConversionButton
+                onConversionStart={() => {
+                  setProcessing(true)
+                }}
+                onConversionEnd={() => {
+                  setProcessing(false)
+                }}
+                ffmpeg={ffmpeg}
+                videoPlayerState={videoPlayerState}
+                sliderValues={sliderValues}
+                videoFile={videoFile}
+                onGifCreated={(girUrl) => {
+                  setGifUrl(girUrl)
+                }}
+              />
+            </div>
+            {gifUrl && (
+              <div>
+                <h3>Resulting GIF</h3>
+                <Image
+                  src={gifUrl}
+                  className={'gif'}
+                  alt={'GIF file generated in the client side'}
+                />
+                <a
+                  href={gifUrl}
+                  download={'test.gif'}
+                  className={'ant-btn ant-btn-default'}
+                >
+                  Download
+                </a>
+              </div>
+            )}
           </div>
-        )}
-      </Spin>
+        </div>
+      </div>
     </div>
   )
 }
+
+const LoadingCard = () => (
+  <div className="flex h-full flex-col">
+    <div className="mx-auto w-full max-w-sm rounded-md border border-blue-300 p-4 shadow">
+      <div className="flex animate-pulse space-x-4">
+        <div className="h-10 w-10 rounded-full bg-slate-700"></div>
+        <div className="flex-1 space-y-6 py-1">
+          <div className="h-2 rounded bg-slate-700"></div>
+          <div className="space-y-3">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-2 h-2 rounded bg-slate-700"></div>
+              <div className="col-span-1 h-2 rounded bg-slate-700"></div>
+            </div>
+            <div className="h-2 rounded bg-slate-700"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)
