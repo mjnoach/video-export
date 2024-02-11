@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
+import { Background } from '@/components/background'
 import { ThemeProvider } from '@/components/theme-provider'
 
 import './globals.css'
@@ -26,6 +27,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Background />
           {children}
         </ThemeProvider>
       </body>

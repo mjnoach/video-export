@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+
 import { cn } from '@/lib/utils'
 
 import { useForm } from 'react-hook-form'
@@ -18,9 +20,11 @@ export function VideoLinkForm() {
     handleSubmit,
     setFocus,
   } = useForm<FormData>()
+  const router = useRouter()
 
   const onSubmit = (data: FormData) => {
     console.log('🚀 ~ VideoLinkForm ~ data:', data)
+    router.push(`/edit?videoUrl=${data.videoUrl}`)
   }
 
   return (
