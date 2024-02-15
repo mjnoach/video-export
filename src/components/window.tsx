@@ -18,7 +18,7 @@ export const Window = (props: WindowProps) => (
         </div>
         <WindowControls className="right-0 mr-6" />
       </div>
-      <div className="//aspect-video relative p-4">{props.children}</div>
+      <div className="relative p-4">{props.children}</div>
     </div>
   </div>
 )

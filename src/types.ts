@@ -1,3 +1,6 @@
 type DefaultProps = React.HTMLAttributes<HTMLElement>
 
-type MediaType = Blob | File | MediaSource
+type Video = {
+  path?: string
+  obj?: Blob | MediaSource
+}

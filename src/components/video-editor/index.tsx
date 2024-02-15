@@ -13,31 +13,19 @@ import { VideoUpload } from './video-upload'
 
 import loading from '@/../public/loading.gif'
 import { createFFmpeg } from '@ffmpeg/ffmpeg'
+import { PlayerReference, PlayerState } from 'video-react'
 
 const ffmpeg = createFFmpeg({ log: true })
 
-type VideoPlayerType = {
-  seek: (time: number) => void
-}
-
-type VideoPlayerStateType = {
-  duration: number
-  currentTime: number
-}
-
 type VideoEditorProps = {
-  videoFile?: any
+  video?: any
 }
 
 export function VideoEditor(props: VideoEditorProps) {
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false)
-  const [videoFile, setVideoFile] = useState<MediaType | null>(
-    props.videoFile ?? null
-  )
-  const [videoPlayerState, setVideoPlayerState] = useState<
-    VideoPlayerStateType | undefined
-  >()
-  const [videoPlayer, setVideoPlayer] = useState<VideoPlayerType | undefined>()
+  const [video, setVideo] = useState<Video | null>(props.video ?? null)
+  const [videoPlayerState, setVideoPlayerState] = useState<PlayerState | null>()
+  const [videoPlayer, setVideoPlayer] = useState<PlayerReference | null>()
   const [gifUrl, setGifUrl] = useState<string | undefined>()
   const [sliderValues, setSliderValues] = useState([0, 100])
   const [processing, setProcessing] = useState(false)
@@ -60,7 +48,7 @@ export function VideoEditor(props: VideoEditorProps) {
     if (min !== undefined && videoPlayerState && videoPlayer) {
       videoPlayer.seek(sliderValueToVideoTime(videoPlayerState.duration, min))
     }
-  }, [sliderValues, videoPlayer, videoPlayerState])
+  }, [sliderValues])
 
   useEffect(() => {
     if (videoPlayer && videoPlayerState) {
@@ -79,47 +67,42 @@ export function VideoEditor(props: VideoEditorProps) {
         videoPlayer.seek(minTime)
       }
     }
-  }, [videoPlayerState, sliderValues, videoPlayer])
+  }, [videoPlayerState])
 
   useEffect(() => {
-    console.log('🚀 ~ VideoEditor ~ videoFile:', videoFile)
-    // when the current videoFile is removed,
+    console.log('🚀 ~ VideoEditor ~ video:', video)
+    // when the current video is removed,
     // restoring the default state
-    if (!videoFile) {
-      setVideoPlayerState(undefined)
+    if (!video) {
+      setVideoPlayerState(null)
       setSliderValues([0, 100])
-      setVideoPlayerState(undefined)
+      setVideoPlayerState(null)
       setGifUrl(undefined)
     }
-  }, [videoFile])
+  }, [video])
 
   return (
     <div className="flex h-full flex-col">
       <div className="flex grow flex-col justify-between">
         <div className="flex aspect-video grow flex-col items-center justify-center bg-gray-950">
           {/* <LoadingCard /> */}
-          {isLoading && (
+          {isLoading ? (
             <Image src={loading} alt="loading" className="h-16 w-16" />
-          )}
-          {videoFile || !isLoading ? (
-            <VideoPlayer
-              media={videoFile}
-              src={videoFile ? URL.createObjectURL(videoFile) : ''}
-              // src="/video.mp4"
-              // src={'http://www.youtube.com/watch?v=aqz-KE-bpKQ'}
-              onPlayerChange={(videoPlayer) => {
-                setVideoPlayer(videoPlayer)
-              }}
-              onChange={(videoPlayerState) => {
-                setVideoPlayerState(videoPlayerState)
+          ) : !video ? (
+            <VideoUpload
+              disabled={!!video}
+              setVideo={(video: Video) => {
+                setVideo(video)
               }}
             />
           ) : (
-            // / !isLoading &&
-            <VideoUpload
-              disabled={!!videoFile}
-              setVideoFile={(videoFile) => {
-                setVideoFile(videoFile)
+            <VideoPlayer
+              video={video}
+              onPlayerChange={(videoPlayer: PlayerReference) => {
+                setVideoPlayer(videoPlayer)
+              }}
+              onStateChange={(videoPlayerState) => {
+                setVideoPlayerState(videoPlayerState)
               }}
             />
           )}
@@ -147,7 +130,7 @@ export function VideoEditor(props: VideoEditorProps) {
                 ffmpeg={ffmpeg}
                 videoPlayerState={videoPlayerState}
                 sliderValues={sliderValues}
-                videoFile={videoFile}
+                video={video}
                 onGifCreated={(girUrl) => {
                   setGifUrl(girUrl)
                 }}

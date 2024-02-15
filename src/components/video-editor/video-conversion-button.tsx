@@ -7,7 +7,7 @@ import { fetchFile } from '@ffmpeg/ffmpeg'
 type VideoConversionButtonProps = DefaultProps & {
   videoPlayerState: any
   sliderValues: number[]
-  videoFile: any
+  video: any
   ffmpeg: any
   onConversionStart?: (processing: boolean) => void
   onConversionEnd?: (processing: boolean) => void
@@ -17,7 +17,7 @@ type VideoConversionButtonProps = DefaultProps & {
 export function VideoConversionButton({
   videoPlayerState,
   sliderValues,
-  videoFile,
+  video,
   ffmpeg,
   onConversionStart = () => {},
   onConversionEnd = () => {},
@@ -31,7 +31,7 @@ export function VideoConversionButton({
     const outputFileName = 'output.gif'
 
     // writing the video file to memory
-    ffmpeg.FS('writeFile', inputFileName, await fetchFile(videoFile))
+    ffmpeg.FS('writeFile', inputFileName, await fetchFile(video))
 
     const [min, max] = sliderValues
     const minTime = sliderValueToVideoTime(videoPlayerState.duration, min)

@@ -10,21 +10,9 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const data = await request.json()
 
-  // * FETCH DIRECTLY
-
-  // const res = await fetch(data.videoUrl, {
-  //   headers: {
-  //     'Content-Type': 'video/mp4',
-  //     'Content-Disposition': `attachment; filename="video.mp4"`,
-  //   },
-  // })
-
-  // const video = await res.blob()
-  // console.log('🚀 ~ POST ~ video:', video)
-
   // * USE YOUTUBE-DL
 
-  const fileName = `${data.videoName}.mp4` ?? 'video.mp4'
+  const fileName = data.videoName ? `${data.videoName}.mp4` : 'video.mp4'
   const filePath = `public/${fileName}`
   // Check if the file already exists
   fs.access(filePath, fs.constants.F_OK, (err) => {
@@ -40,9 +28,19 @@ export async function POST(request: Request) {
     }
   })
 
-  return Response.json({ fileName })
+  return Response.json({ filePath: fileName })
 
-  // return Response.json({ message: 'POST Hello World' })
+  // * FETCH DIRECTLY
+
+  // const res = await fetch(data.videoUrl, {
+  //   headers: {
+  //     'Content-Type': 'video/mp4',
+  //     'Content-Disposition': `attachment; filename="video.mp4"`,
+  //   },
+  // })
+
+  // const video = await res.blob()
+  // console.log('🚀 ~ POST ~ video:', video)
 
   // "Content-Range": "bytes " + start + "-" + end + "/" + total,
   // "Accept-Ranges": "bytes",

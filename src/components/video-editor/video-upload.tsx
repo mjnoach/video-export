@@ -8,13 +8,10 @@ import { Loader2 } from 'lucide-react'
 
 type VideoUploadProps = DefaultProps & {
   disabled: boolean
-  setVideoFile: (videoFile: any) => void
+  setVideo: (video: Video) => void
 }
 
-export function VideoUpload({
-  disabled,
-  setVideoFile = (videoFile: any) => {},
-}: VideoUploadProps) {
+export function VideoUpload({ disabled, setVideo }: VideoUploadProps) {
   const [isLoading, setLoading] = useState(false)
 
   const searchParams = useSearchParams()
@@ -48,7 +45,7 @@ export function VideoUpload({
 
     const data = await res.json()
     console.log('🚀 ~ handleLoad ~ data:', data)
-    // setVideoFile(data.filePath)
+    setVideo({ path: data.filePath })
 
     // const videoBlob = await res.blob()
     // const videoStream = await videoBlob.stream()
@@ -62,31 +59,25 @@ export function VideoUpload({
     //   )
     //   videoSourceBuffer.appendBuffer(videoData)
     // })
-    // setVideoFile(mediaSource)
+    // setVideo(mediaSource)
 
     setLoading(false)
   }
 
+  function handleUpload(e: any) {
+    const file = e.target.files[0] as File
+    console.log('🚀 ~ file:', file)
+    console.log('🚀 ~ file.name:', file.name)
+
+    // const blobUrl = URL.createObjectURL(file)
+    // console.log('🚀 ~ blobUrl:', blobUrl)
+
+    setVideo({ obj: file })
+  }
+
   return (
     <div className="w-full space-y-10">
-      <Upload
-        disabled={disabled}
-        beforeUpload={() => {
-          return false
-        }}
-        accept="video/*"
-        onChange={(e) => {
-          const file = e.target.files[0] as File
-          console.log('🚀 ~ file:', file)
-          console.log('🚀 ~ file.name:', file.name)
-
-          // const blobUrl = URL.createObjectURL(file)
-          // console.log('🚀 ~ blobUrl:', blobUrl)
-
-          setVideoFile(file)
-        }}
-        showUploadList={false}
-      />
+      <Upload accept="video/*" onChange={handleUpload} />
       <Button
         className="mx-auto flex"
         onClick={handleLoad}
@@ -101,11 +92,8 @@ export function VideoUpload({
 }
 
 type UploadProps = DefaultProps & {
-  disabled?: boolean
-  beforeUpload?: () => boolean
   accept?: string
   onChange: (info: any) => void
-  showUploadList?: boolean
 }
 
 const Upload = (props: UploadProps) => {
@@ -126,7 +114,7 @@ const Upload = (props: UploadProps) => {
           >
             <path
               stroke="currentColor"
-              stroke-linecap="round"
+              strokeLinecap="round"
               stroke-linejoin="round"
               stroke-width="2"
               d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
