@@ -5,8 +5,8 @@ import { Button } from '../ui/button'
 import { fetchFile } from '@ffmpeg/ffmpeg'
 
 type VideoConversionButtonProps = DefaultProps & {
-  videoPlayerState: any
-  sliderValues: number[]
+  videoPlayerState?: any
+  sliderValues?: number[]
   video: any
   ffmpeg: any
   onConversionStart?: (processing: boolean) => void
@@ -16,7 +16,7 @@ type VideoConversionButtonProps = DefaultProps & {
 
 export function VideoConversionButton({
   videoPlayerState,
-  sliderValues,
+  sliderValues = [0, 100],
   video,
   ffmpeg,
   onConversionStart = () => {},
