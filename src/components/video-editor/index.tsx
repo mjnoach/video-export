@@ -36,7 +36,6 @@ export function VideoEditor(props: VideoEditorProps) {
   }, [])
 
   useEffect(() => {
-    console.log('🚀 ~ VideoEditor ~ video:', video)
     if (!video) resetState()
   }, [video])
 

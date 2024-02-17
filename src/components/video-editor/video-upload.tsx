@@ -44,7 +44,7 @@ export function VideoUpload({ disabled, setVideo }: VideoUploadProps) {
     )
 
     const data = await res.json()
-    console.log('🚀 ~ handleLoad ~ data:', data)
+    // console.log('🚀 ~ handleLoad ~ data:', data)
     setVideo({ path: data.filePath })
 
     // const videoBlob = await res.blob()
@@ -66,8 +66,8 @@ export function VideoUpload({ disabled, setVideo }: VideoUploadProps) {
 
   function handleUpload(e: any) {
     const file = e.target.files[0] as File
-    console.log('🚀 ~ file:', file)
-    console.log('🚀 ~ file.name:', file.name)
+    // console.log('🚀 ~ file:', file)
+    // console.log('🚀 ~ file.name:', file.name)
 
     // const blobUrl = URL.createObjectURL(file)
     // console.log('🚀 ~ blobUrl:', blobUrl)

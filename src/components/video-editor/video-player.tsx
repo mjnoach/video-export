@@ -1,8 +1,9 @@
-import { createRef, useEffect, useState } from 'react'
+import { createRef, useContext, useEffect, useState } from 'react'
 
-import { getReadableTimestamp } from '@/lib/utils'
+import { cn, getReadableTimestamp } from '@/lib/utils'
 
-import { Slider } from '../ui/slider'
+import { EditorContext } from '../context/editor'
+import { Slider, Sliders } from '../ui/slider'
 
 import { Pause, Play, Undo2 } from 'lucide-react'
 import ReactPlayer from 'react-player'
@@ -17,61 +18,80 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
 
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
   const duration = player?.getDuration() ?? 0
-  const [sliderValues, setSliderValues] = useState([0, 0, 0])
-  const markerTime = sliderValues[1]
-  console.log('🚀 ~ VideoPlayer ~ markerTime:', markerTime)
   const [isPlaying, setIsPlaying] = useState(false)
   const togglePlaying = () => setIsPlaying(!isPlaying)
   const src = video.obj ? URL.createObjectURL(video.obj) : video.path
+  const [sliderValues, setSliderValues] = useState([0, 0, 0])
 
-  const controlsBounds = {
-    min: sliderValues[0],
-    max: sliderValues[2],
-  }
+  const getSlider = (index: keyof typeof Sliders) =>
+    sliderValues[Sliders[index]]
+
+  const setSlider = (index: Sliders, value: number) =>
+    setSliderValues((prev) => {
+      const sliders = [...prev]
+      sliders[index] = value
+      return sliders
+    })
+
+  const { actions, setActions } = useContext(EditorContext)
+
+  useEffect(() => {
+    if (sliderValues[Sliders.Marker] > sliderValues[Sliders.End]) {
+      setIsPlaying(false)
+    }
+
+    setActions({
+      previewVideo: () => {
+        setSlider(Sliders.Marker, getSlider('Start'))
+        player?.seekTo(getSlider('Start'))
+        setIsPlaying(true)
+      },
+      exportVideo: () => {
+        console.log('exporting video')
+      },
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player, sliderValues])
 
   useEffect(() => {
     setSliderValues([0, duration / 2, duration])
   }, [duration])
 
-  function determineActiveThumbId(values: number[]) {
-    const activeThumb = values.findIndex((v, i) => v !== sliderValues[i])
-    return activeThumb
+  function determineActiveSlider(values: number[]) {
+    const activeSlider = values.findIndex((v, i) => v !== sliderValues[i])
+    return activeSlider
   }
 
   function handleSliderChange(values: number[]) {
     setSliderValues(values)
-    const thumbId = determineActiveThumbId(values)
-    player?.seekTo(values[thumbId])
+    const sliderId = determineActiveSlider(values)
+    if (isPlaying && sliderId !== Sliders.Marker) return
+    player?.seekTo(values[sliderId])
   }
 
   function handleSkipTo(value: number) {
     player?.seekTo(value)
-    setSliderValues([sliderValues[0], value, sliderValues[2]])
+    setSlider(Sliders.Marker, value)
   }
 
   function handlePlay() {
-    // if (!player) return
-    // const currentmarkerTime = player.getCurrentTime()
-    // if (markerTime !== currentmarkerTime)
-    player?.seekTo(markerTime)
+    player?.seekTo(getSlider('Marker'))
   }
 
   function handleProgress({ playedSeconds }: { playedSeconds: number }) {
-    if (playedSeconds !== 0 && markerTime !== playedSeconds)
-      setSliderValues([controlsBounds.min, playedSeconds, controlsBounds.max])
-  }
-
-  function handleSeek(value: number) {
-    // console.log('🚀 ~ VideoPlayer ~ e:', e)
-    setSliderValues([controlsBounds.min, value, controlsBounds.max])
+    if (isPlaying) setSlider(Sliders.Marker, playedSeconds)
   }
 
   return (
     <div className="flex flex-col items-center gap-8">
-      <div className="overflow-clip rounded-md border-2 border-brand">
+      <div
+        className={cn(
+          'aspect-video overflow-clip rounded-md',
+          player !== null ? 'border-2 border-brand' : ''
+        )}
+      >
         <ReactPlayer
-          // onSeek={handleSeek}
-          // onProgress={handleProgress}
+          onProgress={handleProgress}
           onPlay={handlePlay}
           ref={playerRef}
           onReady={(player) => setPlayer(player)}
@@ -88,8 +108,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
             <Controls
               player={player}
               handleSkipTo={handleSkipTo}
-              markerTime={markerTime}
-              controlsBounds={controlsBounds}
+              getSlider={getSlider}
               togglePlaying={togglePlaying}
               isPlaying={isPlaying}
             />
@@ -113,11 +132,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
 type ControlsProps = {
   player: ReactPlayer
   handleSkipTo: (value: number) => void
-  markerTime: number
-  controlsBounds: {
-    min: number
-    max: number
-  }
+  getSlider: (index: keyof typeof Sliders) => number
   togglePlaying: () => void
   isPlaying: boolean
 }
@@ -125,34 +140,35 @@ type ControlsProps = {
 const Controls = ({
   player,
   handleSkipTo,
-  markerTime,
-  controlsBounds,
+  getSlider,
   togglePlaying,
   isPlaying,
 }: ControlsProps) => {
   return (
-    <div className="flex flex-col items-center gap-4 ">
-      <div className="flex gap-4">
+    <div className="flex select-none flex-col items-center gap-4">
+      <div className="flex">
         <SkipBackwards
           player={player}
-          markerTime={markerTime}
-          controlsBounds={controlsBounds}
+          getSlider={getSlider}
           handleSkipTo={handleSkipTo}
         />
-        {isPlaying ? (
-          <Pause className="h-8 w-8 cursor-pointer" onClick={togglePlaying} />
-        ) : (
-          <Play className="h-8 w-8 cursor-pointer" onClick={togglePlaying} />
-        )}
+        <div className="hover-panel cursor-pointer p-2" onClick={togglePlaying}>
+          {isPlaying ? (
+            <Pause className="h-8 w-8" />
+          ) : (
+            <Play className="h-8 w-8" />
+          )}
+        </div>
         <SkipForward
           player={player}
-          markerTime={markerTime}
-          controlsBounds={controlsBounds}
+          getSlider={getSlider}
           handleSkipTo={handleSkipTo}
         />
       </div>
       {/* <p className="-mt-2 text-xs text-gray-500 dark:text-gray-400">spacebar</p> */}
-      <div className="text-brand">{getReadableTimestamp(markerTime)}</div>
+      <div className="text-brand">
+        {getReadableTimestamp(getSlider('Marker'))}
+      </div>
     </div>
   )
 }
@@ -162,40 +178,39 @@ const SKIP = 5
 type SkipProps = {
   player: ReactPlayer
   handleSkipTo: (value: number) => void
-  markerTime: number
-  controlsBounds: {
-    min: number
-    max: number
-  }
+  getSlider: (index: keyof typeof Sliders) => number
 }
 
-const SkipBackwards = ({
-  handleSkipTo,
-  markerTime,
-  controlsBounds: { min },
-}: SkipProps) => {
-  const value = Math.max(min, Math.max(markerTime - SKIP, 0))
+const SkipBackwards = ({ handleSkipTo, getSlider }: SkipProps) => {
+  const value = Math.max(
+    getSlider('Start'),
+    Math.max(getSlider('Marker') - SKIP, 0)
+  )
 
   return (
-    <div onClick={() => handleSkipTo(value)} className="relative">
-      <div className="absolute -top-2 right-0 text-xs">{SKIP}</div>
-      <Undo2 className="h-8 w-8 cursor-pointer" />
+    <div
+      onClick={() => handleSkipTo(value)}
+      className="hover-panel relative cursor-pointer p-2"
+    >
+      <div className="absolute right-2 top-1 text-xs">{SKIP}</div>
+      <Undo2 className="h-8 w-8" />
     </div>
   )
 }
 
-const SkipForward = ({
-  player,
-  handleSkipTo,
-  markerTime,
-  controlsBounds: { max },
-}: SkipProps) => {
-  const value = Math.min(max, Math.min(markerTime + SKIP, player.getDuration()))
+const SkipForward = ({ player, handleSkipTo, getSlider }: SkipProps) => {
+  const value = Math.min(
+    getSlider('End'),
+    Math.min(getSlider('Marker') + SKIP, player.getDuration())
+  )
 
   return (
-    <div onClick={() => handleSkipTo(value)} className="relative">
-      <div className="left-0-0 absolute -top-2 text-xs">{SKIP}</div>
-      <Undo2 className="h-8 w-8 scale-x-[-1] cursor-pointer" />
+    <div
+      onClick={() => handleSkipTo(value)}
+      className="hover-panel relative cursor-pointer p-2"
+    >
+      <div className="absolute left-2 top-1 text-xs">{SKIP}</div>
+      <Undo2 className="h-8 w-8 scale-x-[-1]" />
     </div>
   )
 }

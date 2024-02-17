@@ -6,6 +6,12 @@ import { cn, getReadableTimestamp } from '@/lib/utils'
 
 import * as SliderPrimitive from '@radix-ui/react-slider'
 
+export enum Sliders {
+  Start,
+  Marker,
+  End,
+}
+
 const Slider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> & {
@@ -23,9 +29,9 @@ const Slider = React.forwardRef<
     <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
       <SliderPrimitive.Range className="absolute h-full bg-primary" />
     </SliderPrimitive.Track>
-    <Thumb value={sliderValues[0]} />
+    <Thumb value={sliderValues[Sliders.Start]} />
     <Marker />
-    <Thumb value={sliderValues[2]} />
+    <Thumb value={sliderValues[Sliders.End]} />
   </SliderPrimitive.Root>
 ))
 Slider.displayName = SliderPrimitive.Root.displayName
@@ -35,9 +41,9 @@ export { Slider }
 const Thumb = ({ value }: { value: number }) => {
   return (
     <SliderPrimitive.Thumb className="relative">
-      <div className="absolute bottom-full flex -translate-x-1/2 cursor-grab flex-col items-center">
+      <div className="absolute bottom-full z-20 flex -translate-x-1/2 cursor-grab flex-col items-center">
         <div>{getReadableTimestamp(value)}</div>
-        {'|'}
+        <div className="text-3xl">{'|'}</div>
       </div>
     </SliderPrimitive.Thumb>
   )
@@ -48,29 +54,28 @@ const Marker = () => {
     <SliderPrimitive.Thumb className="relative">
       <div className="absolute bottom-full flex -translate-x-1/2 cursor-grab flex-col items-center text-brand">
         <MarkerIcon />
-        {'|'}
+        <div className="">{'|'}</div>
       </div>
     </SliderPrimitive.Thumb>
   )
 }
 
 const MarkerIcon = () => (
-  <>
-    <div className="relative inset-y-1 h-1 w-2/3 bg-gray-950" />
-    <svg
-      className="w-5 fill-brand"
-      viewBox="-64 0 512 512"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <g id="SVGRepo_bgCarrier" stroke-width="0" />
-      <g
-        id="SVGRepo_tracerCarrier"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <g id="SVGRepo_iconCarrier">
-        <path d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0z" />
-      </g>
-    </svg>
-  </>
+  <svg
+    className="relative inset-y-1 w-4 fill-brand"
+    viewBox="0 0 384 379"
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+  >
+    <path
+      id="Path"
+      d="M172.268 368.67 C26.97 158.031 0 136.413 0 59 0 -47.039 85.961 -133 192 -133 298.039 -133 384 -47.039 384 59 384 136.413 357.03 158.031 211.732 368.67 202.197 382.444 181.802 382.443 172.268 368.67 Z"
+      fill-opacity="1"
+      stroke="none"
+    />
+    <defs>
+      <image id="image" width="384px" height="379px" />
+    </defs>
+    <use id="Layer" x="0px" y="0px" width="384px" height="379px" />
+  </svg>
 )
