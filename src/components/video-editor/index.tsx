@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import Image from 'next/image'
 
-import { VideoPlayer } from './video-player'
+import { VideoPlayer } from '../video-player'
 import { VideoUpload } from './video-upload'
 
 import loading from '@/../public/loading.gif'
@@ -19,9 +19,8 @@ type VideoEditorProps = {
 export function VideoEditor(props: VideoEditorProps) {
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false)
   const [video, setVideo] = useState<Video | null>(props.video ?? null)
-  const [processing, setProcessing] = useState(false)
 
-  const isLoading = !ffmpegLoaded || processing
+  const isLoading = !ffmpegLoaded
 
   function resetState() {
     setVideo(null)
@@ -54,7 +53,7 @@ export function VideoEditor(props: VideoEditorProps) {
               }}
             />
           ) : (
-            <VideoPlayer video={video} />
+            <VideoPlayer video={video} ffmpeg={ffmpeg} />
           )}
         </div>
       </div>
