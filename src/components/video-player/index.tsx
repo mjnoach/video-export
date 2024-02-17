@@ -1,19 +1,16 @@
 import { createRef, useContext, useEffect, useState } from 'react'
 
-import Image from 'next/image'
-
 import { cn } from '@/lib/utils'
 
 import { EditorContext } from '../context/editor'
+import { Loading } from '../loading'
 import { Slider, Sliders } from '../ui/slider'
 import { Controls } from './controls'
 
-import loading from '@/../public/loading.gif'
 import { FFmpeg, fetchFile } from '@ffmpeg/ffmpeg'
 import ReactPlayer from 'react-player'
 
 type VideoPlayerProps = DefaultProps & {
-  // string | Blob | Buffer | File
   video: Video
   ffmpeg: FFmpeg
 }
@@ -29,23 +26,9 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
     video.obj ? URL.createObjectURL(video.obj) : video.path
   ) as string
   const [sliderValues, setSliderValues] = useState([0, 0, 0])
-  const [processing, setProcessing] = useState(false)
 
-  const hasReachedEnd = () => getSlider('Marker') >= getSlider('End')
-
-  const togglePlaying = () =>
-    hasReachedEnd() ? null : setIsPlaying(!isPlaying)
-
-  const getSlider = (key: keyof typeof Sliders) => sliderValues[Sliders[key]]
-
-  const setSlider = (key: keyof typeof Sliders, value: number) =>
-    setSliderValues((prev) => {
-      const sliders = [...prev]
-      sliders[Sliders[key]] = value
-      return sliders
-    })
-
-  const { actions, setActions } = useContext(EditorContext)
+  const { actions, setActions, disabled, setDisabled, storeVideo } =
+    useContext(EditorContext)
 
   useEffect(() => {
     if (hasReachedEnd()) {
@@ -62,7 +45,8 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
       exportVideo: async () => {
         console.log('🚀 ~ exportVideo: ~ exportVideo:')
 
-        setProcessing(true)
+        setIsPlaying(false)
+        setDisabled(true)
 
         const inputFileName = 'inputFileName.mp4'
         const outputFileName = 'output.mp4'
@@ -87,7 +71,11 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
 
         console.log('🚀 ~ exportVideo: ~ dataUrl:', dataUrl)
 
-        setProcessing(false)
+        await storeVideo({
+          url: dataUrl,
+        })
+
+        setDisabled(false)
       },
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -96,6 +84,22 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
   useEffect(() => {
     setSliderValues([0, duration / 2, duration])
   }, [duration])
+
+  const hasReachedEnd = () => getSlider('Marker') >= getSlider('End')
+
+  const togglePlaying = () => {
+    if (hasReachedEnd()) setSlider('Marker', getSlider('Start'))
+    setIsPlaying(!isPlaying)
+  }
+
+  const getSlider = (key: keyof typeof Sliders) => sliderValues[Sliders[key]]
+
+  const setSlider = (key: keyof typeof Sliders, value: number) =>
+    setSliderValues((prev) => {
+      const sliders = [...prev]
+      sliders[Sliders[key]] = value
+      return sliders
+    })
 
   function determineActiveSlider(values: number[]) {
     const activeSlider = values.findIndex((v, i) => v !== sliderValues[i])
@@ -123,18 +127,19 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
   }
 
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className="flex flex-col items-center gap-4">
       <div
         onClick={togglePlaying}
         className={cn(
+          disabled ? 'pointer-events-none' : '',
           'relative aspect-video overflow-clip rounded-md',
           player !== null ? 'border-2 border-brand' : ''
         )}
       >
-        {processing && (
-          <div className="absolute flex h-full w-full items-center justify-center backdrop-blur-sm">
-            <Image src={loading} alt="loading" className="h-16 w-16" />
-          </div>
+        {disabled && (
+          <Loading>
+            <h1 className="text-xl">Processing video export...</h1>
+          </Loading>
         )}
         <ReactPlayer
           onProgress={handleProgress}
@@ -148,10 +153,11 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
           playing={isPlaying}
         />
       </div>
-      <div className="flex w-full flex-col items-center gap-16">
+      <div className="flex w-full flex-col items-center gap-10">
         {player && (
           <>
             <Controls
+              disabled={disabled}
               player={player}
               handleSkipTo={handleSkipTo}
               getSlider={getSlider}
@@ -162,7 +168,7 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
               ref={sliderRef}
               max={duration}
               step={1}
-              disabled={!player}
+              disabled={disabled}
               value={sliderValues}
               sliderValues={sliderValues}
               minStepsBetweenThumbs={1}

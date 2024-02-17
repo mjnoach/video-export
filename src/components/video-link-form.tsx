@@ -31,7 +31,7 @@ export function VideoLinkForm() {
     <div className="flex flex-col">
       <div
         onClick={() => setFocus('videoUrl')}
-        className="group/form hover-panel flex flex-col gap-6"
+        className="group/form hover-blur-panel flex flex-col gap-6"
       >
         <div>
           <h2 className={`mb-3 text-2xl font-semibold`}>

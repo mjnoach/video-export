@@ -17,7 +17,12 @@ export const Nav = () => {
       )}
     >
       <Link href="/">
-        <Image src={logo} alt="Logo" className="max-w-16" priority />
+        <Image
+          src={logo}
+          alt="Logo"
+          className="max-w-12 select-none"
+          priority
+        />
       </Link>
     </div>
   )

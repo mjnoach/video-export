@@ -1,4 +1,4 @@
-import { getReadableTimestamp } from '@/lib/utils'
+import { cn, getReadableTimestamp } from '@/lib/utils'
 
 import { Sliders } from '../ui/slider'
 
@@ -6,6 +6,7 @@ import { Pause, Play, Undo2 } from 'lucide-react'
 import ReactPlayer from 'react-player'
 
 type ControlsProps = {
+  disabled: boolean
   player: ReactPlayer
   handleSkipTo: (value: number) => void
   getSlider: (index: keyof typeof Sliders) => number
@@ -14,6 +15,7 @@ type ControlsProps = {
 }
 
 export const Controls = ({
+  disabled,
   player,
   handleSkipTo,
   getSlider,
@@ -21,28 +23,34 @@ export const Controls = ({
   isPlaying,
 }: ControlsProps) => {
   return (
-    <div className="flex select-none flex-col items-center gap-4">
+    <div className="flex select-none flex-col items-center gap-2">
       <div className="flex">
         <SkipBackwards
+          disabled={disabled}
           player={player}
           getSlider={getSlider}
           handleSkipTo={handleSkipTo}
         />
-        <div className="hover-panel cursor-pointer p-2" onClick={togglePlaying}>
+        <button
+          disabled={disabled}
+          className="hover-blur-panel p-2"
+          onClick={togglePlaying}
+        >
           {isPlaying ? (
             <Pause className="h-8 w-8" />
           ) : (
             <Play className="h-8 w-8" />
           )}
-        </div>
+        </button>
         <SkipForward
+          disabled={disabled}
           player={player}
           getSlider={getSlider}
           handleSkipTo={handleSkipTo}
         />
       </div>
       {/* <p className="-mt-2 text-xs text-gray-500 dark:text-gray-400">spacebar</p> */}
-      <div className="text-brand">
+      <div className={cn('text-brand', disabled ? 'opacity-20' : '')}>
         {getReadableTimestamp(getSlider('Marker'))}
       </div>
     </div>
@@ -52,41 +60,49 @@ export const Controls = ({
 const SKIP = 5
 
 type SkipProps = {
+  disabled: boolean
   player: ReactPlayer
   handleSkipTo: (value: number) => void
   getSlider: (index: keyof typeof Sliders) => number
 }
 
-const SkipBackwards = ({ handleSkipTo, getSlider }: SkipProps) => {
+const SkipBackwards = ({ disabled, handleSkipTo, getSlider }: SkipProps) => {
   const value = Math.max(
     getSlider('Start'),
     Math.max(getSlider('Marker') - SKIP, 0)
   )
 
   return (
-    <div
+    <button
+      disabled={disabled}
       onClick={() => handleSkipTo(value)}
-      className="hover-panel relative cursor-pointer p-2"
+      className="hover-blur-panel relative p-2"
     >
       <div className="absolute right-2 top-1 text-xs">{SKIP}</div>
       <Undo2 className="h-8 w-8" />
-    </div>
+    </button>
   )
 }
 
-export const SkipForward = ({ player, handleSkipTo, getSlider }: SkipProps) => {
+export const SkipForward = ({
+  disabled,
+  player,
+  handleSkipTo,
+  getSlider,
+}: SkipProps) => {
   const value = Math.min(
     getSlider('End'),
     Math.min(getSlider('Marker') + SKIP, player.getDuration())
   )
 
   return (
-    <div
+    <button
+      disabled={disabled}
       onClick={() => handleSkipTo(value)}
-      className="hover-panel relative cursor-pointer p-2"
+      className="hover-blur-panel relative p-2"
     >
       <div className="absolute left-2 top-1 text-xs">{SKIP}</div>
       <Undo2 className="h-8 w-8 scale-x-[-1]" />
-    </div>
+    </button>
   )
 }

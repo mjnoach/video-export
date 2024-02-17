@@ -90,9 +90,13 @@
       rgb(var(--background-start-rgb));
   }
   main {
-    @apply flex grow flex-col items-center py-24;
+    @apply flex grow flex-col items-center py-12;
   }
-  .hover-panel {
-    @apply rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30;
+
+  .hover-blur-panel {
+    @apply cursor-pointer rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 disabled:cursor-default disabled:opacity-20 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30;
+  }
+  .drawer-item {
+    @apply flex aspect-video w-32 cursor-pointer select-none items-end rounded-lg border p-2 transition;
   }
 }

@@ -21,6 +21,7 @@ const Slider = React.forwardRef<
   <SliderPrimitive.Root
     ref={ref}
     className={cn(
+      props.disabled ? 'cursor-default opacity-20' : '',
       'relative flex w-full touch-none select-none items-center',
       className
     )}
@@ -41,10 +42,13 @@ export { Slider }
 const Thumb = ({ value }: { value: number }) => {
   return (
     <SliderPrimitive.Thumb className="relative">
-      <div className="absolute bottom-full z-20 flex -translate-x-1/2 cursor-grab flex-col items-center">
-        <div>{getReadableTimestamp(value)}</div>
-        <div className="text-3xl">{'|'}</div>
-      </div>
+      <button className="group absolute bottom-full flex -translate-x-1/2 cursor-grab flex-col items-center active:z-50">
+        <div className="duration-400 mb-1 bg-background opacity-0 transition ease-in-out group-hover:opacity-100">
+          {getReadableTimestamp(value)}
+        </div>
+        <MarkerIcon className="!fill-white" />
+        <div className="relative -bottom-1 h-6 w-0.5 bg-white" />
+      </button>
     </SliderPrimitive.Thumb>
   )
 }
@@ -54,15 +58,15 @@ const Marker = () => {
     <SliderPrimitive.Thumb className="relative">
       <div className="absolute bottom-full flex -translate-x-1/2 cursor-grab flex-col items-center text-brand">
         <MarkerIcon />
-        <div className="">{'|'}</div>
+        <div className="relative -bottom-1 h-6 w-0.5 bg-brand" />
       </div>
     </SliderPrimitive.Thumb>
   )
 }
 
-const MarkerIcon = () => (
+const MarkerIcon = (props: DefaultProps) => (
   <svg
-    className="relative inset-y-1 w-4 fill-brand"
+    className={cn(props.className, 'relative inset-y-1 w-4 fill-brand')}
     viewBox="0 0 384 379"
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
