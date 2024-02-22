@@ -6,36 +6,20 @@ import { Loading } from '../loading'
 import { VideoPlayer } from '../video-player'
 import { VideoUpload } from './video-upload'
 
-import { createFFmpeg } from '@ffmpeg/ffmpeg'
-
-const ffmpeg = createFFmpeg({ log: true })
-
 type VideoEditorProps = {
   video?: any
 }
 
 export function VideoEditor(props: VideoEditorProps) {
-  const [ffmpegLoaded, setFFmpegLoaded] = useState(false)
   const [video, setVideo] = useState<Video | null>(props.video ?? null)
+  // const { ffmpegLoaded } = useFFmpeg()
 
-  const isLoading = !ffmpegLoaded
+  // const isLoading = !ffmpegLoaded
+  const isLoading = false
 
   function resetState() {
     setVideo(null)
   }
-
-  useEffect(() => {
-    if (!ffmpeg.isLoaded()) {
-      ffmpeg
-        .load()
-        .then(() => {
-          setFFmpegLoaded(true)
-        })
-        .catch((err) => {
-          console.error(err)
-        })
-    }
-  }, [])
 
   useEffect(() => {
     if (!video) resetState()
@@ -55,7 +39,7 @@ export function VideoEditor(props: VideoEditorProps) {
               }}
             />
           ) : (
-            <VideoPlayer video={video} ffmpeg={ffmpeg} />
+            <VideoPlayer video={video} />
           )}
         </div>
       </div>

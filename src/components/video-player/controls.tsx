@@ -3,7 +3,7 @@ import { cn, getReadableTimestamp } from '@/lib/utils'
 import { Sliders } from '../ui/slider'
 
 import { Pause, Play, Undo2 } from 'lucide-react'
-import ReactPlayer from 'react-player'
+import type ReactPlayer from 'react-player'
 
 type ControlsProps = {
   disabled: boolean

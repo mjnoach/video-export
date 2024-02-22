@@ -3,11 +3,31 @@ import ytdl from 'ytdl-core'
 
 export const dynamic = 'force-dynamic' // defaults to auto
 
-export async function GET(request: Request) {
-  return Response.json({ message: 'GET Hello World' })
+export async function POST(request: Request) {
+  const data = await request.json()
+  console.log('🚀 ~ POST ~ data.videoUrl:', data.videoUrl)
+
+  const res = await fetch(data.videoUrl, {
+    // headers: {
+    //   'Content-Type': 'video/mp4',
+    //   'Content-Disposition': `attachment; filename="video.mp4"`,
+    // },
+  })
+
+  // console.log('🚀 ~ POST ~ res.headers:', res.headers)
+
+  return new Response(res.body)
+
+  // console.log('🚀 ~ POST ~ res:', res)
+  // console.log('🚀 ~ POST ~ res:', res.body)
+
+  // const blob = await res.blob()
+  // console.log('🚀 ~ POST ~ blob:', blob)
+
+  // return Response.json({ message: 'GET Hello World' })
 }
 
-export async function POST(request: Request) {
+export async function PUT(request: Request) {
   const data = await request.json()
 
   // * USE YOUTUBE-DL

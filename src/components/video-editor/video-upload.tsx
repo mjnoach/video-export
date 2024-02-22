@@ -20,46 +20,34 @@ export function VideoUpload({ disabled, setVideo }: VideoUploadProps) {
   async function handleLoad() {
     setLoading(true)
 
-    // * DIRECT FETCH ATTEMPT
+    setVideo({ path: videoUrl })
 
-    // const res = await fetch(videoUrl, {
-    //   headers: {
-    //     'Content-Type': 'video/mp4',
-    //     'Content-Disposition': `attachment; filename="video.mp4"`,
-    //     // 'Cross-Origin-Resource-Policy': 'cross-origin',
-    //   },
+    // const res: Response | void = await fetchApi({
+    //   method: 'POST',
+    //   body: JSON.stringify({ videoUrl }),
     // })
+    // console.log('🚀 ~ handleLoad ~ res:', res)
+    // console.log('🚀 ~ handleLoad ~ res.body:', res.body)
 
-    // * BACKEND FETCH
+    // const data = await res?.blob()
+    // setVideo({ obj: data })
 
-    const res: Response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/edit/api`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ videoUrl }),
-      }
-    )
+    // const arrayBuffer = await res?.arrayBuffer()
 
-    const data = await res.json()
-    // console.log('🚀 ~ handleLoad ~ data:', data)
-    setVideo({ path: data.filePath })
-
-    // const videoBlob = await res.blob()
-    // const videoStream = await videoBlob.stream()
-
-    // const videoData = await res.arrayBuffer()
-    // console.log('🚀 ~ handleLoad ~ videoData:', videoData)
     // const mediaSource = new MediaSource()
     // mediaSource.addEventListener('sourceopen', function () {
     //   const videoSourceBuffer = mediaSource.addSourceBuffer(
     //     'video/mp4; codecs="avc1.64001e"'
+    //     // 'video/mp4; codecs="avc1.4d401e"'
     //   )
-    //   videoSourceBuffer.appendBuffer(videoData)
+    //   videoSourceBuffer.appendBuffer(arrayBuffer as ArrayBuffer)
+    //   videoSourceBuffer.addEventListener('error', console.error)
     // })
-    // setVideo(mediaSource)
+
+    // console.log('🚀 ~ handleLoad ~ mediaSource:', mediaSource)
+
+    // setVideo({ obj: mediaSource })
+    // setVideo({ path: URL.createObjectURL(mediaSource) })
 
     setLoading(false)
   }
@@ -105,21 +93,7 @@ const Upload = (props: UploadProps) => {
         className="dark:hover:bg-bray-800 mx-auto flex aspect-video h-64 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
       >
         <div className="flex flex-col items-center justify-center pb-6 pt-5">
-          <svg
-            className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 16"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-            />
-          </svg>
+          <UploadIcon />
           <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
             <span className="font-semibold">Click to upload</span> or drag and
             drop
@@ -138,3 +112,21 @@ const Upload = (props: UploadProps) => {
     </div>
   )
 }
+
+const UploadIcon = () => (
+  <svg
+    className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 20 16"
+  >
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+    />
+  </svg>
+)

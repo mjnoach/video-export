@@ -1,5 +1,6 @@
-import { createRef, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
+import { cutVideo } from '@/lib/ffmpeg'
 import { cn } from '@/lib/utils'
 
 import { EditorContext } from '../context/editor'
@@ -7,21 +8,15 @@ import { Loading } from '../loading'
 import { Slider, Sliders } from '../ui/slider'
 import { Controls } from './controls'
 
-import { FFmpeg, fetchFile } from '@ffmpeg/ffmpeg'
-import ReactPlayer from 'react-player'
+import ReactPlayer from 'react-player/lazy'
 
 type VideoPlayerProps = DefaultProps & {
   video: Video
-  ffmpeg: FFmpeg
 }
 
-export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
-  const playerRef = createRef<ReactPlayer>()
-  const sliderRef = createRef<HTMLDivElement>()
-
+export function VideoPlayer({ video }: VideoPlayerProps) {
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
-  const duration = player?.getDuration() ?? 0
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(true)
   const src = (
     video.obj ? URL.createObjectURL(video.obj) : video.path
   ) as string
@@ -31,9 +26,12 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
     useContext(EditorContext)
 
   useEffect(() => {
-    if (hasReachedEnd()) {
-      setIsPlaying(false)
-    }
+    if (hasReachedEnd()) setIsPlaying(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sliderValues])
+
+  useEffect(() => {
+    player && setSliderValues([0, 0, player.getDuration()])
 
     setActions({
       previewVideo: () => {
@@ -44,53 +42,26 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
 
       exportVideo: async () => {
         console.log('🚀 ~ exportVideo: ~ exportVideo:')
-
         setIsPlaying(false)
         setDisabled(true)
-
-        const inputFileName = 'inputFileName.mp4'
-        const outputFileName = 'output.mp4'
-
-        ffmpeg.FS('writeFile', inputFileName, await fetchFile(src))
-        await ffmpeg.run(
-          '-i',
-          inputFileName,
-          '-ss',
-          `${getSlider('Start')}`,
-          '-to',
-          `${getSlider('End')}`,
-          '-f',
-          'mp4',
-          outputFileName
+        const dataUrl = await cutVideo(
+          src,
+          getSlider('Start'),
+          getSlider('End')
         )
-
-        const data = ffmpeg.FS('readFile', outputFileName)
-        const dataUrl = URL.createObjectURL(
-          new Blob([data.buffer], { type: 'video/mp4' })
-        )
-
         console.log('🚀 ~ exportVideo: ~ dataUrl:', dataUrl)
-
         await storeVideo({
           url: dataUrl,
         })
-
         setDisabled(false)
       },
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player, sliderValues])
-
-  useEffect(() => {
-    setSliderValues([0, duration / 2, duration])
-  }, [duration])
+  }, [player])
 
   const hasReachedEnd = () => getSlider('Marker') >= getSlider('End')
 
-  const togglePlaying = () => {
-    if (hasReachedEnd()) setSlider('Marker', getSlider('Start'))
-    setIsPlaying(!isPlaying)
-  }
+  const togglePlaying = () => setIsPlaying(!isPlaying)
 
   const getSlider = (key: keyof typeof Sliders) => sliderValues[Sliders[key]]
 
@@ -101,15 +72,22 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
       return sliders
     })
 
-  function determineActiveSlider(values: number[]) {
-    const activeSlider = values.findIndex((v, i) => v !== sliderValues[i])
-    return activeSlider
-  }
+  const getUpdatedSliderId = (values: number[]) =>
+    sliderValues.findIndex((v, i) => v !== values[i])
 
   function handleSliderChange(values: number[]) {
     setSliderValues(values)
-    const sliderId = determineActiveSlider(values)
+    const sliderId = getUpdatedSliderId(values)
     if (isPlaying && sliderId !== Sliders.Marker) return
+    player?.seekTo(values[sliderId])
+  }
+
+  function handleSliderCommit(values: number[]) {
+    setSliderValues(values)
+    const sliderId = getUpdatedSliderId(values)
+    if (isPlaying && sliderId !== Sliders.Marker) return
+    if (!isPlaying && sliderId !== Sliders.Marker)
+      return player?.seekTo(getSlider('Marker'))
     player?.seekTo(values[sliderId])
   }
 
@@ -118,21 +96,32 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
     setSlider('Marker', value)
   }
 
-  function handlePlay() {
-    player?.seekTo(getSlider('Marker'))
-  }
-
   function handleProgress({ playedSeconds }: { playedSeconds: number }) {
     if (isPlaying) setSlider('Marker', playedSeconds)
   }
 
+  function handleReady(player: ReactPlayer) {
+    setPlayer(player)
+  }
+
+  function handlePlay() {
+    if (hasReachedEnd()) {
+      setSlider('Marker', getSlider('Start'))
+      player?.seekTo(getSlider('Start'))
+    }
+    !isPlaying && togglePlaying()
+  }
+
+  function handlePause() {
+    isPlaying && togglePlaying()
+  }
+
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex w-full flex-col items-center gap-4">
       <div
-        onClick={togglePlaying}
         className={cn(
           disabled ? 'pointer-events-none' : '',
-          'relative aspect-video overflow-clip rounded-md',
+          'relative aspect-video w-full overflow-clip rounded-md',
           player !== null ? 'border-2 border-brand' : ''
         )}
       >
@@ -142,11 +131,20 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
           </Loading>
         )}
         <ReactPlayer
-          onProgress={handleProgress}
+          config={{
+            youtube: {
+              playerVars: {
+                modestbranding: 1,
+                controls: 0,
+                rel: 0,
+                autoplay: Number(isPlaying),
+              },
+            },
+          }}
           onPlay={handlePlay}
-          ref={playerRef}
-          onReady={(player) => setPlayer(player)}
-          className="react-player"
+          onPause={handlePause}
+          onProgress={handleProgress}
+          onReady={handleReady}
           url={src}
           width="100%"
           height="100%"
@@ -165,14 +163,14 @@ export function VideoPlayer({ video, ffmpeg }: VideoPlayerProps) {
               isPlaying={isPlaying}
             />
             <Slider
-              ref={sliderRef}
-              max={duration}
+              max={player.getDuration()}
               step={1}
               disabled={disabled}
               value={sliderValues}
               sliderValues={sliderValues}
               minStepsBetweenThumbs={1}
               onValueChange={handleSliderChange}
+              onValueCommit={handleSliderCommit}
             />
           </>
         )}
