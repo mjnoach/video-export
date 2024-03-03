@@ -3,9 +3,9 @@ import { Inter } from 'next/font/google'
 
 import { Background } from '@/components/background'
 import { Nav } from '@/components/nav'
-import { ThemeProvider } from '@/components/theme-provider'
 
 import './globals.css'
+import { Providers } from './providers'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,18 +22,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           <div className="flex grow flex-col-reverse lg:flex-col">
             <Nav />
             {children}
           </div>
           <Background />
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   )

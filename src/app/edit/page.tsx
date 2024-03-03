@@ -27,10 +27,10 @@ export default function Edit() {
 }
 
 const Actions = () => {
-  const { actions, disabled } = useContext(EditorContext)
+  const { actions, disabled, clip } = useContext(EditorContext)
 
   async function handleExport() {
-    actions.exportVideo?.().catch((e: any) => {
+    actions.exportClip?.(clip).catch((e: any) => {
       console.error(e)
     })
   }
@@ -38,14 +38,14 @@ const Actions = () => {
   return (
     <div className="mx-auto flex gap-4 rounded-lg bg-zinc-900 p-4 drop-shadow-xl">
       <Button
-        disabled={!actions.previewVideo || disabled}
-        onClick={() => actions.previewVideo?.()}
+        disabled={!actions.previewClip || disabled}
+        onClick={() => actions.previewClip?.(clip)}
         className="inline-flex h-8 items-center justify-center whitespace-nowrap rounded-md border border-brand bg-brand/50 px-4 py-2 font-medium text-zinc-300 ring-offset-zinc-500 transition-colors hover:bg-brand/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
       >
         Preview
       </Button>
       <Button
-        disabled={!actions.exportVideo || disabled}
+        disabled={!actions.exportClip || disabled}
         onClick={handleExport}
         className="inline-flex h-8 w-20 items-center justify-center whitespace-nowrap rounded-md border border-zinc-700 bg-zinc-800/50 px-4 py-2 font-medium text-zinc-300 ring-offset-zinc-500 transition-colors hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
       >

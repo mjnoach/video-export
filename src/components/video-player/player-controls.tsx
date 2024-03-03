@@ -5,7 +5,7 @@ import { Sliders } from '../ui/slider'
 import { Pause, Play, Undo2 } from 'lucide-react'
 import type ReactPlayer from 'react-player'
 
-type ControlsProps = {
+type PlayerControlsProps = {
   disabled: boolean
   player: ReactPlayer
   handleSkipTo: (value: number) => void
@@ -14,14 +14,14 @@ type ControlsProps = {
   isPlaying: boolean
 }
 
-export const Controls = ({
+export const PlayerControls = ({
   disabled,
   player,
   handleSkipTo,
   getSlider,
   togglePlaying,
   isPlaying,
-}: ControlsProps) => {
+}: PlayerControlsProps) => {
   return (
     <div className="flex select-none flex-col items-center gap-2">
       <div className="flex">

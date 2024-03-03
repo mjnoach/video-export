@@ -9,6 +9,10 @@ import { VideoLinkForm } from '@/components/video-link-form'
 // 6. Fix: video export not being added to the library
 // // 7. Fix: slider labels overlaping with each other - on hover make current label z-index higher and shadow other labels
 // 8. Feature: shareble link to a player respecting ranges specified in the url query
+// 9. Add start / end thumbs time info
+// 10. Add controls to move start / end thumbs with a click of a button for easier and more precise control
+// 11. add export type: video clip, audio clip, gif
+// 12. Download clip functionality
 
 export default function Home() {
   return (

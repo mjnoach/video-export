@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { cutVideo } from '@/lib/ffmpeg'
+import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 import { EditorContext } from '../context/editor'
 import { Loading } from '../loading'
 import { Slider, Sliders } from '../ui/slider'
-import { Controls } from './controls'
+import { PlayerControls } from './player-controls'
 
 import ReactPlayer from 'react-player/lazy'
 
@@ -16,48 +16,56 @@ type VideoPlayerProps = DefaultProps & {
 
 export function VideoPlayer({ video }: VideoPlayerProps) {
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
-  const [isPlaying, setIsPlaying] = useState(true)
+  const [isPlaying, setIsPlaying] = useState(false)
   const src = (
-    video.obj ? URL.createObjectURL(video.obj) : video.path
+    video.obj ? URL.createObjectURL(video.obj) : video.url ?? video.path
   ) as string
   const [sliderValues, setSliderValues] = useState([0, 0, 0])
 
-  const { actions, setActions, disabled, setDisabled, storeVideo } =
+  const { actions, setActions, disabled, setDisabled, storeVideo, updateClip } =
     useContext(EditorContext)
 
   useEffect(() => {
     if (hasReachedEnd()) setIsPlaying(false)
+    updateClip({
+      start: getSlider('Start'),
+      end: getSlider('End'),
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sliderValues])
 
   useEffect(() => {
     player && setSliderValues([0, 0, player.getDuration()])
-
     setActions({
-      previewVideo: () => {
-        setSlider('Marker', getSlider('Start'))
-        player?.seekTo(getSlider('Start'))
-        setIsPlaying(true)
-      },
-
-      exportVideo: async () => {
-        console.log('🚀 ~ exportVideo: ~ exportVideo:')
-        setIsPlaying(false)
-        setDisabled(true)
-        const dataUrl = await cutVideo(
-          src,
-          getSlider('Start'),
-          getSlider('End')
-        )
-        console.log('🚀 ~ exportVideo: ~ dataUrl:', dataUrl)
-        await storeVideo({
-          url: dataUrl,
-        })
-        setDisabled(false)
-      },
+      previewClip,
+      exportClip,
     })
+
+    const internalPlayer = player?.getInternalPlayer()
+    console.log('🚀 ~ useEffect ~ internalPlayer:', internalPlayer)
+
+    if (internalPlayer) {
+      const videoTitle = internalPlayer.videoTitle
+      updateClip({
+        videoTitle,
+      })
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player])
+
+  function previewClip(clip: Clip) {
+    setSlider('Marker', clip.start)
+    player?.seekTo(clip.start)
+    setIsPlaying(true)
+  }
+
+  async function exportClip(clip: Clip) {
+    setIsPlaying(false)
+    setDisabled(true)
+    await api.exportClip(clip)
+    setDisabled(false)
+  }
 
   const hasReachedEnd = () => getSlider('Marker') >= getSlider('End')
 
@@ -154,7 +162,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
       <div className="flex w-full flex-col items-center gap-10">
         {player && (
           <>
-            <Controls
+            <PlayerControls
               disabled={disabled}
               player={player}
               handleSkipTo={handleSkipTo}

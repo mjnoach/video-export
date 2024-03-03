@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { useSearchParams } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
+
+import { EditorContext } from '../context/editor'
 
 import { Loader2 } from 'lucide-react'
 
@@ -12,54 +14,20 @@ type VideoUploadProps = DefaultProps & {
 }
 
 export function VideoUpload({ disabled, setVideo }: VideoUploadProps) {
-  const [isLoading, setLoading] = useState(false)
-
   const searchParams = useSearchParams()
   const videoUrl = searchParams.get('videoUrl') ?? ''
+  const [isLoading, setLoading] = useState(false)
+  const { updateClip } = useContext(EditorContext)
 
   async function handleLoad() {
     setLoading(true)
-
-    setVideo({ path: videoUrl })
-
-    // const res: Response | void = await fetchApi({
-    //   method: 'POST',
-    //   body: JSON.stringify({ videoUrl }),
-    // })
-    // console.log('🚀 ~ handleLoad ~ res:', res)
-    // console.log('🚀 ~ handleLoad ~ res.body:', res.body)
-
-    // const data = await res?.blob()
-    // setVideo({ obj: data })
-
-    // const arrayBuffer = await res?.arrayBuffer()
-
-    // const mediaSource = new MediaSource()
-    // mediaSource.addEventListener('sourceopen', function () {
-    //   const videoSourceBuffer = mediaSource.addSourceBuffer(
-    //     'video/mp4; codecs="avc1.64001e"'
-    //     // 'video/mp4; codecs="avc1.4d401e"'
-    //   )
-    //   videoSourceBuffer.appendBuffer(arrayBuffer as ArrayBuffer)
-    //   videoSourceBuffer.addEventListener('error', console.error)
-    // })
-
-    // console.log('🚀 ~ handleLoad ~ mediaSource:', mediaSource)
-
-    // setVideo({ obj: mediaSource })
-    // setVideo({ path: URL.createObjectURL(mediaSource) })
-
+    setVideo({ url: videoUrl })
+    updateClip({ videoUrl })
     setLoading(false)
   }
 
   function handleUpload(e: any) {
     const file = e.target.files[0] as File
-    // console.log('🚀 ~ file:', file)
-    // console.log('🚀 ~ file.name:', file.name)
-
-    // const blobUrl = URL.createObjectURL(file)
-    // console.log('🚀 ~ blobUrl:', blobUrl)
-
     setVideo({ obj: file })
   }
 

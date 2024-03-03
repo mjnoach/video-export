@@ -23,7 +23,6 @@ export function VideoLinkForm() {
   const router = useRouter()
 
   const onSubmit = (data: FormData) => {
-    console.log('🚀 ~ VideoLinkForm ~ data:', data)
     router.push(`/edit?videoUrl=${data.videoUrl}`)
   }
 

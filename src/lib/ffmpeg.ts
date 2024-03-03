@@ -27,30 +27,36 @@ export async function useFFmpeg() {
   return { ffmpegLoaded }
 }
 
-export async function cutVideo(
+const CONTENT_TYPE = {
+  mp4: 'vide/mp4',
+  gif: 'image/gif',
+}
+
+async function cutVideo(
   obj: string | Buffer | Blob | File,
   start: number,
-  end: number
+  end: number,
+  ext: keyof typeof CONTENT_TYPE
 ) {
   const inputFileName = 'input.mp4'
-  const outputFileName = 'output.mp4'
+  const outputFileName = `output.${ext}`
 
   ffmpeg.FS('writeFile', inputFileName, await fetchFile(obj))
   await ffmpeg.run(
     '-i',
     inputFileName,
     '-ss',
-    `${start}`,
+    start.toString(),
     '-to',
-    `${end}`,
+    end.toString(),
     '-f',
-    'mp4',
+    ext,
     outputFileName
   )
 
   const data = ffmpeg.FS('readFile', outputFileName)
   const dataUrl = URL.createObjectURL(
-    new Blob([data.buffer], { type: 'video/mp4' })
+    new Blob([data.buffer], { type: CONTENT_TYPE[ext] })
   )
 
   return dataUrl
