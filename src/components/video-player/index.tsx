@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { api } from '@/lib/api'
-import { cn } from '@/lib/utils'
+import { cn, getReadableTimestamp } from '@/lib/utils'
 
 import { EditorContext } from '../context/editor'
 import { Loading } from '../loading'
@@ -42,8 +42,6 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     })
 
     const internalPlayer = player?.getInternalPlayer()
-    console.log('🚀 ~ useEffect ~ internalPlayer:', internalPlayer)
-
     if (internalPlayer) {
       const videoTitle = internalPlayer.videoTitle
       updateClip({
@@ -100,8 +98,22 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   }
 
   function handleSkipTo(value: number) {
+    const start = getSlider('Start')
+    const end = getSlider('End')
+    if (value < start) value = start
+    if (value > end) value = end
     player?.seekTo(value)
     setSlider('Marker', value)
+  }
+
+  function handleMoveSlider(step: number, sliderKey: keyof typeof Sliders) {
+    if (!player) return
+    const duration = player.getDuration()
+    let value = getSlider(sliderKey) + step
+    if (value < 0) value = 0
+    if (value > duration) value = duration
+    player?.seekTo(value)
+    setSlider(sliderKey, value)
   }
 
   function handleProgress({ playedSeconds }: { playedSeconds: number }) {
@@ -162,27 +174,74 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
       <div className="flex w-full flex-col items-center gap-10">
         {player && (
           <>
-            <PlayerControls
-              disabled={disabled}
-              player={player}
-              handleSkipTo={handleSkipTo}
-              getSlider={getSlider}
-              togglePlaying={togglePlaying}
-              isPlaying={isPlaying}
-            />
+            <div className="relative flex w-full justify-center">
+              <div className="absolute left-0 mt-2 grid grid-cols-3 items-center">
+                <div>start:</div>
+                <div className="font-mono">
+                  {getReadableTimestamp(getSlider('Start'))}
+                </div>
+                <SliderControls
+                  handleMoveSlider={handleMoveSlider}
+                  sliderKey={'Start'}
+                />
+                <div>end:</div>
+                <div className="font-mono">
+                  {getReadableTimestamp(getSlider('End'))}
+                </div>
+                <SliderControls
+                  handleMoveSlider={handleMoveSlider}
+                  sliderKey={'End'}
+                />
+              </div>
+              <PlayerControls
+                disabled={disabled}
+                player={player}
+                handleSkipTo={handleSkipTo}
+                getSlider={getSlider}
+                togglePlaying={togglePlaying}
+                isPlaying={isPlaying}
+              />
+            </div>
             <Slider
               max={player.getDuration()}
               step={1}
               disabled={disabled}
               value={sliderValues}
               sliderValues={sliderValues}
-              minStepsBetweenThumbs={1}
+              minStepsBetweenThumbs={0}
               onValueChange={handleSliderChange}
               onValueCommit={handleSliderCommit}
             />
           </>
         )}
       </div>
+    </div>
+  )
+}
+
+type SliderControlsProps = {
+  handleMoveSlider: (step: number, sliderKey: keyof typeof Sliders) => void
+  sliderKey: keyof typeof Sliders
+}
+
+const SliderControls = ({
+  handleMoveSlider,
+  sliderKey,
+}: SliderControlsProps) => {
+  return (
+    <div className="mb-1 ml-1 flex">
+      <button
+        onClick={() => handleMoveSlider(-1, sliderKey)}
+        className="hover-blur-panel flex h-6 w-6 items-center justify-center p-0 text-xl"
+      >
+        -
+      </button>
+      <button
+        onClick={() => handleMoveSlider(1, sliderKey)}
+        className="hover-blur-panel flex h-6 w-6 items-center justify-center p-0 text-xl"
+      >
+        +
+      </button>
     </div>
   )
 }

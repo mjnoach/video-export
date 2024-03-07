@@ -49,7 +49,6 @@ export const PlayerControls = ({
           handleSkipTo={handleSkipTo}
         />
       </div>
-      {/* <p className="-mt-2 text-xs text-gray-500 dark:text-gray-400">spacebar</p> */}
       <div className={cn('text-brand', disabled ? 'opacity-20' : '')}>
         {getReadableTimestamp(getSlider('Marker'))}
       </div>
@@ -57,7 +56,7 @@ export const PlayerControls = ({
   )
 }
 
-const SKIP = 5
+const SKIP_STEP = 5
 
 type SkipProps = {
   disabled: boolean
@@ -69,7 +68,7 @@ type SkipProps = {
 const SkipBackwards = ({ disabled, handleSkipTo, getSlider }: SkipProps) => {
   const value = Math.max(
     getSlider('Start'),
-    Math.max(getSlider('Marker') - SKIP, 0)
+    Math.max(getSlider('Marker') - SKIP_STEP, 0)
   )
 
   return (
@@ -78,7 +77,7 @@ const SkipBackwards = ({ disabled, handleSkipTo, getSlider }: SkipProps) => {
       onClick={() => handleSkipTo(value)}
       className="hover-blur-panel relative p-2"
     >
-      <div className="absolute right-2 top-1 text-xs">{SKIP}</div>
+      <div className="absolute right-2 top-1 text-xs">{SKIP_STEP}</div>
       <Undo2 className="h-8 w-8" />
     </button>
   )
@@ -92,7 +91,7 @@ export const SkipForward = ({
 }: SkipProps) => {
   const value = Math.min(
     getSlider('End'),
-    Math.min(getSlider('Marker') + SKIP, player.getDuration())
+    Math.min(getSlider('Marker') + SKIP_STEP, player.getDuration())
   )
 
   return (
@@ -101,7 +100,7 @@ export const SkipForward = ({
       onClick={() => handleSkipTo(value)}
       className="hover-blur-panel relative p-2"
     >
-      <div className="absolute left-2 top-1 text-xs">{SKIP}</div>
+      <div className="absolute left-2 top-1 text-xs">{SKIP_STEP}</div>
       <Undo2 className="h-8 w-8 scale-x-[-1]" />
     </button>
   )

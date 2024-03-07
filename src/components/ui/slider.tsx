@@ -30,9 +30,15 @@ const Slider = React.forwardRef<
     <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
       <SliderPrimitive.Range className="absolute h-full bg-primary" />
     </SliderPrimitive.Track>
-    <Thumb value={sliderValues[Sliders.Start]} />
-    <Marker />
-    <Thumb value={sliderValues[Sliders.End]} />
+    <div className="z-10">
+      <Thumb value={sliderValues[Sliders.Start]} />
+    </div>
+    <div className="z-20">
+      <Marker />
+    </div>
+    <div className="z-10">
+      <Thumb value={sliderValues[Sliders.End]} />
+    </div>
   </SliderPrimitive.Root>
 ))
 Slider.displayName = SliderPrimitive.Root.displayName
@@ -41,8 +47,8 @@ export { Slider }
 
 const Thumb = ({ value }: { value: number }) => {
   return (
-    <SliderPrimitive.Thumb className="relative">
-      <button className="group absolute bottom-full flex -translate-x-1/2 cursor-grab flex-col items-center active:z-50">
+    <SliderPrimitive.Thumb>
+      <button className="group absolute bottom-full flex -translate-x-1/2 cursor-grab flex-col items-center">
         <div className="duration-400 mb-1 bg-background opacity-0 transition ease-in-out group-hover:opacity-100">
           {getReadableTimestamp(value)}
         </div>
@@ -55,7 +61,7 @@ const Thumb = ({ value }: { value: number }) => {
 
 const Marker = () => {
   return (
-    <SliderPrimitive.Thumb className="relative">
+    <SliderPrimitive.Thumb>
       <div className="absolute bottom-full flex -translate-x-1/2 cursor-grab flex-col items-center text-brand">
         <MarkerIcon />
         <div className="relative -bottom-1 h-6 w-0.5 bg-brand" />
