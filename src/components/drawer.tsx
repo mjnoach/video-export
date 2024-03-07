@@ -23,7 +23,7 @@ export const Drawer = () => {
 
       <ul className="flex flex-col items-center gap-4 p-4">
         {[...storage, {}, {}].map((video, i) => (
-          <DrawerItem key={i} index={i} video={video} />
+          <DrawerItem key={i} index={i} video={{ id: `${i}`, ...video }} />
         ))}
         <li className="drawer-item items-center justify-center bg-gray-900 p-2 hover:border-none hover:bg-gray-800">
           <Plus />
@@ -39,8 +39,9 @@ type DrawerItemProps = {
 }
 
 const DrawerItem = ({ index, video }: DrawerItemProps) => {
-  const id = video.url?.replace('blob:http://localhost:3000/', '') ?? index + 1
-  const href = video.url ?? ''
+  // const id = video.url?.replace('blob:http://localhost:3000/', '') ?? index + 1
+  const id = video.id ?? index + 1
+  const href = video.url ? video.url : `/${video.id}`
 
   return (
     <Link href={href} target="_blank">

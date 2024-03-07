@@ -1,0 +1,3 @@
+type ExportClipData = {
+  fileName: string
+}

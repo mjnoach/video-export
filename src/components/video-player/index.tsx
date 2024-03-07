@@ -48,7 +48,6 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
         videoTitle,
       })
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player])
 
@@ -61,7 +60,10 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   async function exportClip(clip: Clip) {
     setIsPlaying(false)
     setDisabled(true)
-    await api.exportClip(clip)
+    const { fileName } = await api.exportClip(clip)
+    storeVideo({
+      id: fileName,
+    })
     setDisabled(false)
   }
 
@@ -69,7 +71,9 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
 
   const togglePlaying = () => setIsPlaying(!isPlaying)
 
-  const getSlider = (key: keyof typeof Sliders) => sliderValues[Sliders[key]]
+  function getSlider(key: keyof typeof Sliders) {
+    return sliderValues[Sliders[key]]
+  }
 
   const setSlider = (key: keyof typeof Sliders, value: number) =>
     setSliderValues((prev) => {
@@ -174,10 +178,10 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
       <div className="flex w-full flex-col items-center gap-10">
         {player && (
           <>
-            <div className="relative flex w-full justify-center">
-              <div className="absolute left-0 mt-2 grid grid-cols-3 items-center">
+            <div className="relative flex h-32 w-full justify-center">
+              <div className="absolute left-0 mt-2 grid grid-cols-3 items-center gap-x-2 gap-y-1">
                 <div>start:</div>
-                <div className="font-mono">
+                <div className="justify-self-center font-mono">
                   {getReadableTimestamp(getSlider('Start'))}
                 </div>
                 <SliderControls
@@ -185,13 +189,17 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
                   sliderKey={'Start'}
                 />
                 <div>end:</div>
-                <div className="font-mono">
+                <div className="justify-self-center font-mono">
                   {getReadableTimestamp(getSlider('End'))}
                 </div>
                 <SliderControls
                   handleMoveSlider={handleMoveSlider}
                   sliderKey={'End'}
                 />
+                <div>duration:</div>
+                <div className="justify-self-center font-mono">
+                  {getReadableTimestamp(getSlider('End') - getSlider('Start'))}
+                </div>
               </div>
               <PlayerControls
                 disabled={disabled}
@@ -229,7 +237,7 @@ const SliderControls = ({
   sliderKey,
 }: SliderControlsProps) => {
   return (
-    <div className="mb-1 ml-1 flex">
+    <div className="flex">
       <button
         onClick={() => handleMoveSlider(-1, sliderKey)}
         className="hover-blur-panel flex h-6 w-6 items-center justify-center p-0 text-xl"
