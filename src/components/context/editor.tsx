@@ -16,6 +16,7 @@ export const EditorContext = createContext({
   setDisabled: (disabled: boolean) => {},
   storage: [] as Video[],
   storeVideo: (video: Video) => {},
+  removeVideo: (videoId: string) => {},
   clip: {} as Clip,
   updateClip: (clip: Partial<Clip>) => {},
 })
@@ -39,6 +40,12 @@ export const EditorProvider = ({ children }: DefaultProps) => {
     persist(STORAGE_KEY, newStorage)
   }
 
+  function removeVideo(videoId: string) {
+    const newStorage = storage.filter((v) => v.id !== videoId)
+    setStorage(newStorage)
+    persist(STORAGE_KEY, newStorage)
+  }
+
   function updateClip(clipData: Partial<Clip>) {
     const newClip = {
       ...clip,
@@ -56,6 +63,7 @@ export const EditorProvider = ({ children }: DefaultProps) => {
         setDisabled,
         storage,
         storeVideo,
+        removeVideo,
         clip,
         updateClip,
       }}

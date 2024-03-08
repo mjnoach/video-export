@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 import { EditorContext } from './context/editor'
 import { Nav } from './nav'
 
-import { Eye, GripVertical, Plus } from 'lucide-react'
+import { GripVertical, Plus, Trash2 } from 'lucide-react'
 
 export const Drawer = () => {
   const { storage } = useContext(EditorContext)
@@ -45,36 +45,40 @@ const DrawerItem = ({ index, video }: DrawerItemProps) => {
 
   return (
     <Link href={href} target="_blank">
-      <li
-        // onClick={() => {
-        //   console.log('🚀 ~ DrawerItem ~ href:', href)
-        // }}
-        className="drawer-item group justify-between bg-black hover:border-brand"
-      >
-        <div className="max-w-16 overflow-clip truncate whitespace-nowrap">
-          {id}
-        </div>
-        <DownloadButton className="invisible group-hover:visible" />
+      <li className="drawer-item group relative justify-between bg-black hover:border-brand">
+        <div className="overflow-clip truncate whitespace-nowrap">{id}</div>
+        <RemoveButton
+          className="invisible absolute right-0 top-0 m-2 group-hover:visible"
+          index={video.id}
+        />
       </li>
     </Link>
   )
 }
 
-const DownloadButton = (props: DefaultProps) => {
-  function handleDownload(e: any) {
-    console.log('🚀 ~ handleDownload ~ handleDownload:')
+type RemoveButtonProps = DefaultProps & {
+  index: string
+}
+
+const RemoveButton = ({ index, className }: RemoveButtonProps) => {
+  const { removeVideo } = useContext(EditorContext)
+
+  function handleClick(e: any) {
+    e.preventDefault()
+    removeVideo(index)
   }
 
   return (
     <button
-      onClick={handleDownload}
+      onClick={handleClick}
       className={cn(
-        props.className,
+        className,
         'z-10 h-6 w-6 rounded-md bg-zinc-600 px-1 py-1 text-white'
       )}
     >
       {/* <ArrowDownToLine className="h-full w-full" /> */}
-      <Eye className="h-full w-full" />
+      {/* <Eye className="h-full w-full" /> */}
+      <Trash2 className="h-full w-full" />
     </button>
   )
 }
