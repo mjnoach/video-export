@@ -1,38 +1,65 @@
-import { useEffect, useState } from 'react'
-
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg'
 
 export const ffmpeg = createFFmpeg({ log: true })
 
-export async function useFFmpeg() {
-  const [ffmpegLoaded, setFFmpegLoaded] = useState(false)
+export async function rewriteFileMetadata(filePath: string) {
+  console.log('🚀 ~ rewriteFileMetadata ~ filePath:', filePath)
+  if (!ffmpeg.isLoaded()) await ffmpeg.load()
+  // Use ffmpeg to correct video duration metadata
+  await ffmpeg.run(
+    '-i',
+    filePath,
+    '-c',
+    'copy',
+    '-fflags',
+    '+genpts',
+    `${filePath}_temp`,
+    '&&',
+    'mv',
+    `${filePath}_temp`,
+    filePath
+  )
 
-  function loadFFmpeg() {
-    if (!ffmpeg.isLoaded()) {
-      ffmpeg
-        .load()
-        .then(() => {
-          setFFmpegLoaded(true)
-        })
-        .catch((err) => {
-          console.error(err)
-        })
-    }
-  }
-
-  useEffect(() => {
-    loadFFmpeg()
-  }, [])
-
-  return { ffmpegLoaded }
+  // await ffmpeg.run(
+  //   '-i',
+  //   filePath,
+  //   '-vcodec',
+  //   'copy',
+  //   '-acodec',
+  //   'copy',
+  //   `${filePath}_fixed.mp4`
+  // )
 }
+
+// export async function useFFmpeg() {
+//   const [ffmpegLoaded, setFFmpegLoaded] = useState(false)
+
+//   function loadFFmpeg() {
+//     if (!ffmpeg.isLoaded()) {
+//       ffmpeg
+//         .load()
+//         .then(() => {
+//           setFFmpegLoaded(true)
+//         })
+//         .catch((err) => {
+//           console.error(err)
+//         })
+//     }
+//   }
+
+//   useEffect(() => {
+//     loadFFmpeg()
+//   }, [])
+
+//   return { ffmpegLoaded }
+// }
 
 const CONTENT_TYPE = {
   mp4: 'vide/mp4',
   gif: 'image/gif',
 }
 
-async function cutVideo(
+export async function cutVideo(
   obj: string | Buffer | Blob | File,
   start: number,
   end: number,

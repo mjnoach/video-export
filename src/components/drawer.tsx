@@ -2,8 +2,6 @@ import { useContext } from 'react'
 
 import Link from 'next/link'
 
-import { cn } from '@/lib/utils'
-
 import { EditorContext } from './context/editor'
 import { Nav } from './nav'
 
@@ -23,9 +21,9 @@ export const Drawer = () => {
 
       <ul className="flex flex-col items-center gap-4 p-4">
         {[...storage, {}, {}].map((video, i) => (
-          <DrawerItem key={i} index={i} video={{ id: `${i}`, ...video }} />
+          <DrawerItem key={i} video={{ id: `${i}`, ...video }} />
         ))}
-        <li className="drawer-item items-center justify-center bg-gray-900 p-2 hover:border-none hover:bg-gray-800">
+        <li className="flex aspect-video w-32 cursor-pointer select-none items-center justify-center rounded-lg border bg-gray-900 p-2 transition hover:border-none hover:bg-gray-800">
           <Plus />
         </li>
       </ul>
@@ -34,51 +32,36 @@ export const Drawer = () => {
 }
 
 type DrawerItemProps = {
-  index: number
   video: Video
 }
 
-const DrawerItem = ({ index, video }: DrawerItemProps) => {
-  // const id = video.url?.replace('blob:http://localhost:3000/', '') ?? index + 1
-  const id = video.id ?? index + 1
-  const href = video.url ? video.url : `/${video.id}`
-
-  return (
-    <Link href={href} target="_blank">
-      <li className="drawer-item group relative justify-between bg-black hover:border-brand">
-        <div className="overflow-clip truncate whitespace-nowrap">{id}</div>
-        <RemoveButton
-          className="invisible absolute right-0 top-0 m-2 group-hover:visible"
-          index={video.id}
-        />
-      </li>
-    </Link>
-  )
-}
-
-type RemoveButtonProps = DefaultProps & {
-  index: string
-}
-
-const RemoveButton = ({ index, className }: RemoveButtonProps) => {
+const DrawerItem = ({ video }: DrawerItemProps) => {
   const { removeVideo } = useContext(EditorContext)
+  const href = video.url ? video.url : `/${video.id}`
+  // const id = video.url?.replace('blob:http://localhost:3000/', '') ?? index + 1
 
   function handleClick(e: any) {
     e.preventDefault()
-    removeVideo(index)
+    removeVideo(video.id)
   }
 
   return (
-    <button
-      onClick={handleClick}
-      className={cn(
-        className,
-        'z-10 h-6 w-6 rounded-md bg-zinc-600 px-1 py-1 text-white'
-      )}
-    >
-      {/* <ArrowDownToLine className="h-full w-full" /> */}
-      {/* <Eye className="h-full w-full" /> */}
-      <Trash2 className="h-full w-full" />
-    </button>
+    <Link href={href} target="_blank">
+      <li className="group flex aspect-video w-32 cursor-pointer select-none items-end justify-between rounded-lg border bg-black transition hover:border-brand">
+        <div className="overflow-clip truncate whitespace-nowrap pb-1 pl-1">
+          {video.id}
+        </div>
+        <button
+          onClick={handleClick}
+          className={'invisible p-1 text-white group-hover:visible'}
+        >
+          <div className="rounded-md bg-zinc-600 p-1">
+            <Trash2 className="h-4 w-4" />
+          </div>
+          {/* <ArrowDownToLine /> */}
+          {/* <Eye /> */}
+        </button>
+      </li>
+    </Link>
   )
 }

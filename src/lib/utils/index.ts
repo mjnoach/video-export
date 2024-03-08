@@ -5,9 +5,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function sliderValueToVideoTime(duration: number, sliderValue: number) {
-  return Math.round((duration * sliderValue) / duration)
-}
 export function getReadableTimestamp(seconds: number) {
   const hours = Math.floor(seconds / 3600)
   const minutes = Math.floor((seconds % 3600) / 60)
