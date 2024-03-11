@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import {
   Select,
   SelectContent,
@@ -18,9 +20,16 @@ export function ExtensionSelector({
   disabled,
   onValueChange,
 }: ExtensionSelectorProps) {
+  const defaultValue = EXTENSIONS[0]
+
+  useEffect(() => {
+    onValueChange(defaultValue)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <Select
-      defaultValue={EXTENSIONS[0]}
+      defaultValue={defaultValue}
       disabled={disabled}
       onValueChange={onValueChange}
     >

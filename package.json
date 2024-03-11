@@ -12,12 +12,12 @@
     "ui:add": "bunx shadcn-ui@latest add"
   },
   "dependencies": {
-    "@ffmpeg/ffmpeg": "0.10.0",
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slider": "^1.1.2",
     "@radix-ui/react-slot": "^1.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "fluent-ffmpeg": "^2.1.2",
     "ky": "^1.2.2",
     "lucide-react": "^0.323.0",
     "nanoid": "^5.0.6",
