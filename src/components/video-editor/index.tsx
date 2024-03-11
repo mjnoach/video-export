@@ -7,11 +7,11 @@ import { VideoPlayer } from '../video-player'
 import { VideoUpload } from './video-upload'
 
 type VideoEditorProps = {
-  video?: any
+  video?: SourceVideo
 }
 
 export function VideoEditor(props: VideoEditorProps) {
-  const [video, setVideo] = useState<Video | null>(props.video ?? null)
+  const [video, setVideo] = useState<SourceVideo | null>(props.video ?? null)
   // const { ffmpegLoaded } = useFFmpeg()
 
   // const isLoading = !ffmpegLoaded
@@ -34,7 +34,7 @@ export function VideoEditor(props: VideoEditorProps) {
           ) : !video ? (
             <VideoUpload
               disabled={!!video}
-              setVideo={(video: Video) => {
+              setVideo={(video: SourceVideo) => {
                 setVideo(video)
               }}
             />

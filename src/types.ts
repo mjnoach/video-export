@@ -1,15 +1,18 @@
 type DefaultProps = React.HTMLAttributes<HTMLElement>
 
-type Video = {
-  id: string
-  path?: string
-  url?: string
-  obj?: Blob | MediaSource // string | Blob | Buffer | File
+type SourceVideo = {
+  url: string
+  title?: string
 }
 
 type Clip = {
   start: number
   end: number
-  videoUrl: string
-  videoTitle?: string
+  extension: string
+  sourceVideo: SourceVideo
+}
+
+type ExportedObj = {
+  id: string
+  url: string
 }

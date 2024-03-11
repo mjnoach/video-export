@@ -20,8 +20,18 @@ export const Drawer = () => {
       </div>
 
       <ul className="flex flex-col items-center gap-4 p-4">
-        {[...storage, {}, {}].map((video, i) => (
-          <DrawerItem key={i} video={{ id: `${i}`, ...video }} />
+        {[
+          ...storage,
+          {
+            id: '1',
+            url: '',
+          },
+          {
+            id: '0',
+            url: '',
+          },
+        ].map((obj, i) => (
+          <DrawerItem key={i} obj={obj} />
         ))}
         <li className="flex aspect-video w-32 cursor-pointer select-none items-center justify-center rounded-lg border bg-gray-900 p-2 transition hover:border-none hover:bg-gray-800">
           <Plus />
@@ -32,28 +42,27 @@ export const Drawer = () => {
 }
 
 type DrawerItemProps = {
-  video: Video
+  obj: ExportedObj
 }
 
-const DrawerItem = ({ video }: DrawerItemProps) => {
-  const { removeVideo } = useContext(EditorContext)
-  const href = video.url ? video.url : `/${video.id}`
-  // const id = video.url?.replace('blob:http://localhost:3000/', '') ?? index + 1
+const DrawerItem = ({ obj }: DrawerItemProps) => {
+  const { removeObject } = useContext(EditorContext)
+  // const id = obj.url?.replace('blob:http://localhost:3000/', '') ?? index + 1
 
   function handleClick(e: any) {
     e.preventDefault()
-    removeVideo(video.id)
+    removeObject(obj.id)
   }
 
   return (
-    <Link href={href} target="_blank">
+    <Link href={obj.url} target="_blank">
       <li className="group flex aspect-video w-32 cursor-pointer select-none items-end justify-between rounded-lg border bg-black transition hover:border-brand">
         <div className="overflow-clip truncate whitespace-nowrap pb-1 pl-1">
-          {video.id}
+          {obj.id}
         </div>
         <button
           onClick={handleClick}
-          className={'invisible p-1 text-white group-hover:visible'}
+          className={'invisible self-start p-1 text-white group-hover:visible'}
         >
           <div className="rounded-md bg-zinc-600 p-1">
             <Trash2 className="h-4 w-4" />

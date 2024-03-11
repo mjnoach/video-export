@@ -11,11 +11,19 @@ const EXTENSIONS = ['.mp4', '.gif']
 
 type ExtensionSelectorProps = {
   disabled: boolean
+  onValueChange: (value: string) => void
 }
 
-export function ExtensionSelector({ disabled }: ExtensionSelectorProps) {
+export function ExtensionSelector({
+  disabled,
+  onValueChange,
+}: ExtensionSelectorProps) {
   return (
-    <Select defaultValue={EXTENSIONS[0]} disabled={disabled}>
+    <Select
+      defaultValue={EXTENSIONS[0]}
+      disabled={disabled}
+      onValueChange={onValueChange}
+    >
       <SelectTrigger className="h-8 w-20 whitespace-nowrap rounded-md border border-zinc-700 bg-zinc-800/50 text-zinc-300 transition-colors hover:bg-zinc-800 disabled:pointer-events-none disabled:opacity-50">
         <SelectValue placeholder={EXTENSIONS[0]} />
       </SelectTrigger>

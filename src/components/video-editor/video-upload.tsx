@@ -1,34 +1,31 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 
 import { useSearchParams } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
 
-import { EditorContext } from '../context/editor'
-
 import { Loader2 } from 'lucide-react'
 
 type VideoUploadProps = DefaultProps & {
   disabled: boolean
-  setVideo: (video: Video) => void
+  setVideo: (video: SourceVideo) => void
 }
 
 export function VideoUpload({ disabled, setVideo }: VideoUploadProps) {
   const searchParams = useSearchParams()
   const videoUrl = searchParams.get('videoUrl') ?? ''
   const [isLoading, setLoading] = useState(false)
-  const { updateClip } = useContext(EditorContext)
 
   async function handleLoad() {
     setLoading(true)
     setVideo({ url: videoUrl })
-    updateClip({ videoUrl })
     setLoading(false)
   }
 
   function handleUpload(e: any) {
     const file = e.target.files[0] as File
-    setVideo({ obj: file })
+    console.log('🚀 ~ handleUpload ~ file:', file)
+    // setVideo({ obj: file })
   }
 
   return (

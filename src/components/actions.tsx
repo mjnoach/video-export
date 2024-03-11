@@ -5,7 +5,7 @@ import { ExtensionSelector } from './extension-selector'
 import { Button } from './ui/button'
 
 export const Actions = () => {
-  const { actions, disabled, clip } = useContext(EditorContext)
+  const { actions, disabled, clip, updateClip } = useContext(EditorContext)
 
   async function handleExport() {
     actions.exportClip?.(clip).catch((e: any) => {
@@ -29,7 +29,10 @@ export const Actions = () => {
       >
         Export
       </Button>
-      <ExtensionSelector disabled={!actions.previewClip || disabled} />
+      <ExtensionSelector
+        onValueChange={(value) => updateClip({ extension: value })}
+        disabled={!actions.previewClip || disabled}
+      />
     </div>
   )
 }

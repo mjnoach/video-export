@@ -11,19 +11,23 @@ import { PlayerControls } from './player-controls'
 import ReactPlayer from 'react-player/lazy'
 
 type VideoPlayerProps = DefaultProps & {
-  video: Video
+  video: SourceVideo
 }
 
 export function VideoPlayer({ video }: VideoPlayerProps) {
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
-  const src = (
-    video.obj ? URL.createObjectURL(video.obj) : video.url ?? video.path
-  ) as string
   const [sliderValues, setSliderValues] = useState([0, 0, 0])
 
-  const { actions, setActions, disabled, setDisabled, storeVideo, updateClip } =
-    useContext(EditorContext)
+  const {
+    actions,
+    setActions,
+    disabled,
+    setDisabled,
+    storeObject,
+    clip,
+    updateClip,
+  } = useContext(EditorContext)
 
   useEffect(() => {
     if (hasReachedEnd()) setIsPlaying(false)
@@ -43,9 +47,12 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
 
     const internalPlayer = player?.getInternalPlayer()
     if (internalPlayer) {
-      const videoTitle = internalPlayer.videoTitle
+      const title = internalPlayer.videoTitle
       updateClip({
-        videoTitle,
+        sourceVideo: {
+          url: video.url,
+          title,
+        },
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,8 +68,9 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     setIsPlaying(false)
     setDisabled(true)
     const { fileName } = await api.exportClip(clip)
-    storeVideo({
+    storeObject({
       id: fileName,
+      url: fileName,
     })
     setDisabled(false)
   }
@@ -169,7 +177,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
           onPause={handlePause}
           onProgress={handleProgress}
           onReady={handleReady}
-          url={src}
+          url={video.url}
           width="100%"
           height="100%"
           playing={isPlaying}

@@ -9,7 +9,10 @@ async function exportClip(clip: Clip) {
     json: clip,
   })
   console.log('🚀 ~ res:', res)
-  const data = await res.json<ExportClipData>()
+  const data = await res.json<{
+    fileName: string
+    filePath: string
+  }>()
   console.log('🚀 ~ exportVideo: ~ data:', data)
   return data
 }

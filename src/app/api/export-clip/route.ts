@@ -13,7 +13,7 @@ export const ffmpeg = createFFmpeg({
 export async function POST(request: Request) {
   const data: Clip = await request.json()
   console.log('🚀 ~ POST ~ data:', data)
-  const { videoUrl, start, end } = data
+  const { sourceVideo, start, end } = data
 
   const downloadData = await downloadClip(data)
   if (!downloadData) return
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
   // fs.access(filePath, fs.constants.F_OK, (err) => {
   //   // file doesn't exist
   //   if (err) {
-  //     ytdl(videoUrl, {
+  //     ytdl(sourceVideo.url, {
   //       // range: {
   //       //   start: start,
   //       //   end: end,
