@@ -14,5 +14,6 @@ type Clip = {
 
 type ExportedObj = {
   id: string
+  path: string
   url: string
 }

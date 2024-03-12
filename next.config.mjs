@@ -11,7 +11,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/api/export-clip',
+        source: '/api/export',
         headers: [
           {
             key: 'Cross-Origin-Opener-Policy',

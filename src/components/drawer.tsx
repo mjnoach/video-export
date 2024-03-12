@@ -23,11 +23,8 @@ export const Drawer = () => {
         {[
           ...storage,
           {
-            id: '1',
-            url: '',
-          },
-          {
             id: '0',
+            path: '',
             url: '',
           },
         ].map((obj, i) => (
@@ -47,7 +44,6 @@ type DrawerItemProps = {
 
 const DrawerItem = ({ obj }: DrawerItemProps) => {
   const { removeObject } = useContext(EditorContext)
-  // const id = obj.url?.replace('blob:http://localhost:3000/', '') ?? index + 1
 
   function handleClick(e: any) {
     e.preventDefault()

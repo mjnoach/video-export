@@ -27,3 +27,9 @@ export function restore(key: string) {
   const value = localStorage.getItem(key)
   return value ? JSON.parse(value) : null
 }
+
+export const parseSeconds = (timemark: string) => {
+  const secondsStr = timemark.split(':').at(-1) as string
+  let seconds = parseInt(secondsStr)
+  return isNaN(seconds) ? 0 : seconds
+}

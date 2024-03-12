@@ -14,7 +14,7 @@ export const Actions = () => {
   }
 
   return (
-    <div className="mx-auto flex items-center gap-4 rounded-lg bg-zinc-900 p-4 drop-shadow-xl">
+    <div className="mx-auto flex select-none items-center gap-4 rounded-lg bg-zinc-900 p-4 drop-shadow-xl">
       <Button
         disabled={!actions.previewClip || disabled}
         onClick={() => actions.previewClip?.(clip)}

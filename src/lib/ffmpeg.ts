@@ -1,8 +1,18 @@
+import { parseSeconds } from './utils'
+
 import ffmpeg from 'fluent-ffmpeg'
 import { Readable } from 'stream'
 
 ffmpeg.setFfmpegPath('/Users/andrzej/ffmpeg/bin/ffmpeg')
 ffmpeg.setFfprobePath('/Users/andrzej/ffmpeg/bin/ffprobe')
+
+type ProgressData = {
+  frames: number
+  currentFps: number
+  currentKbps: number
+  targetSize: number
+  timemark: string
+}
 
 export async function transcodeVideoStream(
   source: string | Readable,
@@ -14,18 +24,26 @@ export async function transcodeVideoStream(
   }
 ) {
   const { path, start, end, format } = target
+  const duration = end - start
   return new Promise((resolve, reject) => {
     ffmpeg()
       .input(source)
-      .setDuration(end - start)
+      .setDuration(duration)
       .output(path)
       .seekOutput(start)
       .format(format)
       .on('start', () => {
         console.log('Transcoding started!')
       })
+      .on('progress', (progress: ProgressData) => {
+        const percent = (
+          (parseSeconds(progress.timemark) / duration) *
+          100
+        ).toFixed(0)
+        console.log(`Processing: ${percent}%`)
+      })
       .on('end', () => {
-        console.log('Transcoding complete!', target)
+        console.log('Transcoding complete!', target.path)
         resolve(true)
       })
       .on('error', (err) => {
@@ -35,38 +53,3 @@ export async function transcodeVideoStream(
       .run()
   })
 }
-
-const CONTENT_TYPE = {
-  mp4: 'vide/mp4',
-  gif: 'image/gif',
-}
-
-// export async function cutVideo(
-//   obj: string | Buffer | Blob | File,
-//   start: number,
-//   end: number,
-//   ext: keyof typeof CONTENT_TYPE
-// ) {
-//   const inputFileName = 'input.mp4'
-//   const outputFileName = `output.${ext}`
-
-//   ffmpeg.FS('writeFile', inputFileName, await fetchFile(obj))
-//   await ffmpeg.run(
-//     '-i',
-//     inputFileName,
-//     '-ss',
-//     start.toString(),
-//     '-to',
-//     end.toString(),
-//     '-f',
-//     ext,
-//     outputFileName
-//   )
-
-//   const data = ffmpeg.FS('readFile', outputFileName)
-//   const dataUrl = URL.createObjectURL(
-//     new Blob([data.buffer], { type: CONTENT_TYPE[ext] })
-//   )
-
-//   return dataUrl
-// }

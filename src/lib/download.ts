@@ -8,9 +8,10 @@ export async function downloadClip(
   callbacks?: {
     onFinish: () => void
   }
-) {
+): Promise<ExportedObj> {
   const FILE_NAME_LENGTH = 8
-  const fileName = `${nanoid(FILE_NAME_LENGTH)}${extension}`
+  const objId = nanoid(FILE_NAME_LENGTH)
+  const fileName = `${objId}${extension}`
   const targetPath = `public/${fileName}`
 
   const info = await ytdl.getInfo(sourceVideo.url)
@@ -37,17 +38,5 @@ export async function downloadClip(
     format: extension.replace(/^./, ''),
   })
 
-  // const writeStream = fs.createWriteStream(targetPath)
-  // readStream.pipe(writeStream)
-
-  // writeStream.on('finish', () => {
-  //   console.log('Download complete!')
-  //   callbacks.onFinish()
-  // })
-
-  // writeStream.on('close', () => {
-  //   console.log('Write stream closed.')
-  // })
-
-  return { filePath: targetPath, fileName }
+  return { id: objId, path: targetPath, url: fileName }
 }

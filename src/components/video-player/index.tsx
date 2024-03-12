@@ -1,13 +1,15 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { api } from '@/lib/api'
-import { cn, getReadableTimestamp } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 import { EditorContext } from '../context/editor'
 import { Loading } from '../loading'
 import { Slider, Sliders } from '../ui/slider'
 import { PlayerControls } from './player-controls'
+import { SliderControls } from './slider-controls'
 
+import { useQuery } from '@tanstack/react-query'
 import ReactPlayer from 'react-player/lazy'
 
 type VideoPlayerProps = DefaultProps & {
@@ -28,6 +30,12 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     clip,
     updateClip,
   } = useContext(EditorContext)
+
+  const { refetch: exportQuery } = useQuery<ExportedObj>({
+    ...api.exportQuery(clip),
+    enabled: false,
+    // refetchOnWindowFocus: false
+  })
 
   useEffect(() => {
     if (hasReachedEnd()) setIsPlaying(false)
@@ -67,12 +75,10 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   async function exportClip(clip: Clip) {
     setIsPlaying(false)
     setDisabled(true)
-    const { fileName } = await api.exportClip(clip)
-    storeObject({
-      id: fileName,
-      url: fileName,
-    })
+    const { data: exportedObj, error } = await exportQuery()
+    exportedObj && storeObject(exportedObj)
     setDisabled(false)
+    // if (error) set error overlay
   }
 
   const hasReachedEnd = () => getSlider('Marker') >= getSlider('End')
@@ -153,7 +159,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
       <div
         className={cn(
           disabled ? 'pointer-events-none' : '',
-          'relative aspect-video w-full overflow-clip rounded-md',
+          'relative aspect-video w-full select-none overflow-clip rounded-md',
           player !== null ? 'border-2 border-brand' : ''
         )}
       >
@@ -187,28 +193,10 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
         {player && (
           <>
             <div className="relative flex h-32 w-full justify-center">
-              <div className="absolute left-0 mt-2 grid grid-cols-3 items-center gap-x-2 gap-y-1">
-                <div>start:</div>
-                <div className="justify-self-center font-mono">
-                  {getReadableTimestamp(getSlider('Start'))}
-                </div>
-                <SliderControls
-                  handleMoveSlider={handleMoveSlider}
-                  sliderKey={'Start'}
-                />
-                <div>end:</div>
-                <div className="justify-self-center font-mono">
-                  {getReadableTimestamp(getSlider('End'))}
-                </div>
-                <SliderControls
-                  handleMoveSlider={handleMoveSlider}
-                  sliderKey={'End'}
-                />
-                <div>duration:</div>
-                <div className="justify-self-center font-mono">
-                  {getReadableTimestamp(getSlider('End') - getSlider('Start'))}
-                </div>
-              </div>
+              <SliderControls
+                handleMoveSlider={handleMoveSlider}
+                getSlider={getSlider}
+              />
               <PlayerControls
                 disabled={disabled}
                 player={player}
@@ -231,33 +219,6 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
           </>
         )}
       </div>
-    </div>
-  )
-}
-
-type SliderControlsProps = {
-  handleMoveSlider: (step: number, sliderKey: keyof typeof Sliders) => void
-  sliderKey: keyof typeof Sliders
-}
-
-const SliderControls = ({
-  handleMoveSlider,
-  sliderKey,
-}: SliderControlsProps) => {
-  return (
-    <div className="flex">
-      <button
-        onClick={() => handleMoveSlider(-1, sliderKey)}
-        className="hover-blur-panel flex h-6 w-6 items-center justify-center p-0 text-xl"
-      >
-        -
-      </button>
-      <button
-        onClick={() => handleMoveSlider(1, sliderKey)}
-        className="hover-blur-panel flex h-6 w-6 items-center justify-center p-0 text-xl"
-      >
-        +
-      </button>
     </div>
   )
 }
