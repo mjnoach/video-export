@@ -1,21 +1,29 @@
 import ffmpeg from 'fluent-ffmpeg'
-import { Readable, Writable } from 'stream'
+import { Readable } from 'stream'
 
 ffmpeg.setFfmpegPath('/Users/andrzej/ffmpeg/bin/ffmpeg')
 ffmpeg.setFfprobePath('/Users/andrzej/ffmpeg/bin/ffprobe')
 
 export async function transcodeVideoStream(
   source: string | Readable,
-  target: string | Writable,
-  start: number,
-  end: number
+  target: {
+    path: string
+    start: number
+    end: number
+    format: string
+  }
 ) {
+  const { path, start, end, format } = target
   return new Promise((resolve, reject) => {
     ffmpeg()
       .input(source)
-      // .setStartTime(Number(start))
-      // .setDuration(Number(end - start))
-      .output(target)
+      .setDuration(end - start)
+      .output(path)
+      .seekOutput(start)
+      .format(format)
+      .on('start', () => {
+        console.log('Transcoding started!')
+      })
       .on('end', () => {
         console.log('Transcoding complete!', target)
         resolve(true)
@@ -27,13 +35,6 @@ export async function transcodeVideoStream(
       .run()
   })
 }
-
-// ffmpeg(new BufferStream(buffer))
-//   .format('gif')
-//   .size('640x360')
-//   .duration('0:15')
-//   .inputFPS(8)
-//   .writeToStream(outStream, { end: true })
 
 const CONTENT_TYPE = {
   mp4: 'vide/mp4',

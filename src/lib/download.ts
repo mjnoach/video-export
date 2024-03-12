@@ -4,14 +4,14 @@ import { nanoid } from 'nanoid'
 import ytdl from 'ytdl-core'
 
 export async function downloadClip(
-  { sourceVideo, start, end }: Clip,
+  { sourceVideo, start, end, extension }: Clip,
   callbacks?: {
     onFinish: () => void
   }
 ) {
   const FILE_NAME_LENGTH = 8
-  const fileName = `${nanoid(FILE_NAME_LENGTH)}.mp4`
-  const filePath = `public/${fileName}`
+  const fileName = `${nanoid(FILE_NAME_LENGTH)}${extension}`
+  const targetPath = `public/${fileName}`
 
   const info = await ytdl.getInfo(sourceVideo.url)
   const formats = info.formats
@@ -20,22 +20,24 @@ export async function downloadClip(
     filter: (format) => format.container === 'mp4',
   })
 
-  // Calculate byte offsets based on bitrate
-  const bitrate = format.bitrate as number
-  const startOffset = Math.round((start * bitrate) / 8)
-  const endOffset = Math.round((end * bitrate) / 8)
-
   const readStream = ytdl(sourceVideo.url, {
     format,
-    range: {
-      start: startOffset,
-      end: endOffset,
-    },
   })
 
-  await transcodeVideoStream(readStream, filePath, start, end)
+  const readError = readStream.errored
+  if (readError)
+    throw new Error(
+      `Error downloading video stream. ${readError.name} ${readError.message}`
+    )
 
-  // const writeStream = fs.createWriteStream(filePath)
+  await transcodeVideoStream(readStream, {
+    path: targetPath,
+    start,
+    end,
+    format: extension.replace(/^./, ''),
+  })
+
+  // const writeStream = fs.createWriteStream(targetPath)
   // readStream.pipe(writeStream)
 
   // writeStream.on('finish', () => {
@@ -47,5 +49,5 @@ export async function downloadClip(
   //   console.log('Write stream closed.')
   // })
 
-  return { filePath, fileName }
+  return { filePath: targetPath, fileName }
 }

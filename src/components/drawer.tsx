@@ -64,7 +64,7 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
           onClick={handleClick}
           className={'invisible self-start p-1 text-white group-hover:visible'}
         >
-          <div className="rounded-md bg-zinc-600 p-1">
+          <div className="rounded-md bg-zinc-600 p-1 hover:bg-red-600/70">
             <Trash2 className="h-4 w-4" />
           </div>
           {/* <ArrowDownToLine /> */}

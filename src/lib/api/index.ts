@@ -5,10 +5,10 @@ export const api = {
 }
 
 async function exportClip(clip: Clip) {
+  console.log('🚀 ~ exportClip ~ clip:', clip)
   const res = await ky.post('/api/export-clip', {
     json: clip,
   })
-  console.log('🚀 ~ res:', res)
   const data = await res.json<{
     fileName: string
     filePath: string
