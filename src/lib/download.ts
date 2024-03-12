@@ -1,10 +1,11 @@
-import fs from 'fs'
+import { transcodeVideoStream } from './ffmpeg'
+
 import { nanoid } from 'nanoid'
 import ytdl from 'ytdl-core'
 
 export async function downloadClip(
   { sourceVideo, start, end }: Clip,
-  callbacks: {
+  callbacks?: {
     onFinish: () => void
   }
 ) {
@@ -24,24 +25,27 @@ export async function downloadClip(
   const startOffset = Math.round((start * bitrate) / 8)
   const endOffset = Math.round((end * bitrate) / 8)
 
-  const writeStream = fs.createWriteStream(filePath)
-
   const readStream = ytdl(sourceVideo.url, {
     format,
     range: {
       start: startOffset,
       end: endOffset,
     },
-  }).pipe(writeStream)
-
-  writeStream.on('finish', () => {
-    console.log('Download complete!')
-    callbacks.onFinish()
   })
 
-  writeStream.on('close', () => {
-    console.log('Write stream closed.')
-  })
+  await transcodeVideoStream(readStream, filePath, start, end)
+
+  // const writeStream = fs.createWriteStream(filePath)
+  // readStream.pipe(writeStream)
+
+  // writeStream.on('finish', () => {
+  //   console.log('Download complete!')
+  //   callbacks.onFinish()
+  // })
+
+  // writeStream.on('close', () => {
+  //   console.log('Write stream closed.')
+  // })
 
   return { filePath, fileName }
 }

@@ -1,40 +1,39 @@
 import ffmpeg from 'fluent-ffmpeg'
-import fs from 'fs'
+import { Readable, Writable } from 'stream'
 
 ffmpeg.setFfmpegPath('/Users/andrzej/ffmpeg/bin/ffmpeg')
 ffmpeg.setFfprobePath('/Users/andrzej/ffmpeg/bin/ffprobe')
 
-export async function rewriteFileMetadata(filePath: string) {
-  console.log('🚀 ~ rewriteFileMetadata ~ filePath:', filePath)
-
-  try {
-    const tempFile = `${filePath}.temp.mp4`
+export async function transcodeVideoStream(
+  source: string | Readable,
+  target: string | Writable,
+  start: number,
+  end: number
+) {
+  return new Promise((resolve, reject) => {
     ffmpeg()
-      .input(filePath)
-      .output(tempFile)
+      .input(source)
+      // .setStartTime(Number(start))
+      // .setDuration(Number(end - start))
+      .output(target)
       .on('end', () => {
-        console.log('Conversion finished')
-        fs.unlinkSync(filePath)
-        fs.rename(tempFile, tempFile.replace('.temp.mp4', ''), (err) => {
-          console.error(err)
-        })
+        console.log('Transcoding complete!', target)
+        resolve(true)
       })
       .on('error', (err) => {
         console.error(err)
+        reject(err)
       })
       .run()
-
-    // ffmpeg(new BufferStream(buffer))
-    //   .format('gif')
-    //   .size('640x360')
-    //   .duration('0:15')
-    //   .inputFPS(8)
-    //   .writeToStream(outStream, { end: true })
-  } catch (error) {
-    console.error(error)
-    // res.status(500).json({ error: 'Internal Server Error' })
-  }
+  })
 }
+
+// ffmpeg(new BufferStream(buffer))
+//   .format('gif')
+//   .size('640x360')
+//   .duration('0:15')
+//   .inputFPS(8)
+//   .writeToStream(outStream, { end: true })
 
 const CONTENT_TYPE = {
   mp4: 'vide/mp4',
