@@ -18,6 +18,7 @@ type VideoPlayerProps = DefaultProps & {
 
 export function VideoPlayer({ video }: VideoPlayerProps) {
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
+  const [loading, setLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [sliderValues, setSliderValues] = useState([0, 0, 0])
 
@@ -139,6 +140,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
 
   function handleReady(player: ReactPlayer) {
     setPlayer(player)
+    setLoading(false)
   }
 
   function handlePlay() {
@@ -157,14 +159,14 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     <div className="flex w-full flex-col items-center gap-4">
       <div
         className={cn(
+          'relative aspect-video w-full select-none',
           disabled ? 'pointer-events-none' : '',
-          'relative aspect-video w-full select-none overflow-clip rounded-md',
-          player !== null ? 'border-2 border-brand' : ''
+          !loading ? 'rounded-md border-2 border-brand' : ''
         )}
       >
-        {disabled && (
+        {loading && (
           <Loading>
-            <h1 className="text-xl">Processing video export...</h1>
+            {/* <h1 className="text-xl">Loading video player...</h1> */}
           </Loading>
         )}
         <ReactPlayer
