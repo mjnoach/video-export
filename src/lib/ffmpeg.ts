@@ -43,7 +43,7 @@ export async function transcodeVideoStream(
         console.log(`Processing: ${percent}%`)
       })
       .on('end', () => {
-        console.log('Transcoding complete!', target.path)
+        console.log('Transcoding complete!', path)
         resolve(true)
       })
       .on('error', (err) => {
@@ -51,5 +51,30 @@ export async function transcodeVideoStream(
         reject(err)
       })
       .run()
+  })
+}
+
+export async function generateThumbnail(objPath: string, objId: string) {
+  const folder = objPath.split('/').slice(0, -1).join('/')
+  return new Promise((resolve, reject) => {
+    ffmpeg()
+      .input(objPath)
+      .on('filenames', (filenames) => {
+        console.log(`Generating thumbnail for ${objPath}`)
+      })
+      .on('end', () => {
+        console.log('Thumbnail generated!')
+        resolve(true)
+      })
+      .on('error', (err) => {
+        console.error(err)
+        reject(err)
+      })
+      .thumbnail({
+        folder,
+        filename: `${objId}.png`,
+        timestamps: ['50%'],
+        size: '320x240',
+      })
   })
 }

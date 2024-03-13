@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { api } from '@/lib/api'
+import { useExport } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 import { EditorContext } from '../context/editor'
@@ -9,7 +9,6 @@ import { Slider, Sliders } from '../ui/slider'
 import { PlayerControls } from './player-controls'
 import { SliderControls } from './slider-controls'
 
-import { useQuery } from '@tanstack/react-query'
 import ReactPlayer from 'react-player/lazy'
 
 type VideoPlayerProps = DefaultProps & {
@@ -32,10 +31,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     updateClip,
   } = useContext(EditorContext)
 
-  const { refetch: exportQuery } = useQuery<ExportedObj>({
-    ...api.exportQuery(clip),
-    enabled: false,
-  })
+  const { refetch } = useExport(clip)
 
   useEffect(() => {
     if (hasReachedEnd()) setIsPlaying(false)
@@ -75,7 +71,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   async function exportClip(clip: Clip) {
     setIsPlaying(false)
     setDisabled(true)
-    const { data: exportedObj, error } = await exportQuery()
+    const { data: exportedObj, error } = await refetch()
     exportedObj && storeObject(exportedObj)
     setDisabled(false)
     // if (error) set error overlay
@@ -164,11 +160,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
           !loading ? 'rounded-md border-2 border-brand' : ''
         )}
       >
-        {loading && (
-          <Loading>
-            {/* <h1 className="text-xl">Loading video player...</h1> */}
-          </Loading>
-        )}
+        {loading && <Loading />}
         <ReactPlayer
           config={{
             youtube: {

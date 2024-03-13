@@ -9,13 +9,13 @@ export async function downloadClip(
     onFinish: () => void
   }
 ): Promise<ExportedObj> {
-  const FILE_NAME_LENGTH = 8
-  const objId = nanoid(FILE_NAME_LENGTH)
+  const OBJ_ID_LENGTH = 8
+  const objId = nanoid(OBJ_ID_LENGTH)
   const fileName = `${objId}${extension}`
-  const targetPath = `public/${fileName}`
+  const filePath = `public/${fileName}`
+  const fileFormat = extension.replace(/^./, '')
 
   const info = await ytdl.getInfo(sourceVideo.url)
-  const formats = info.formats
   const format = ytdl.chooseFormat(info.formats, {
     quality: 'lowest',
     filter: (format) => format.container === 'mp4',
@@ -32,11 +32,13 @@ export async function downloadClip(
     )
 
   await transcodeVideoStream(readStream, {
-    path: targetPath,
+    path: filePath,
     start,
     end,
-    format: extension.replace(/^./, ''),
+    format: fileFormat,
   })
 
-  return { id: objId, path: targetPath, url: fileName }
+  // if (fileFormat === 'mp4') await generateThumbnail(filePath, objId)
+
+  return { id: objId, path: filePath, url: fileName }
 }
