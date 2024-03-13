@@ -4,8 +4,6 @@ import { useSearchParams } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
 
-import { Loader2 } from 'lucide-react'
-
 type VideoUploadProps = DefaultProps & {
   disabled: boolean
   setVideo: (video: SourceVideo) => void
@@ -29,15 +27,10 @@ export function VideoUpload({ disabled, setVideo }: VideoUploadProps) {
   }
 
   return (
-    <div className="w-full space-y-10">
+    <div className="flex flex-col items-center space-y-10">
       <Upload accept="video/*" onChange={handleUpload} />
-      <Button
-        className="mx-auto flex"
-        onClick={handleLoad}
-        disabled={isLoading}
-        variant="outline"
-      >
-        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      <Button className="action h-8" onClick={handleLoad} disabled={isLoading}>
+        {/* {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} */}
         Load Video
       </Button>
     </div>
@@ -55,18 +48,14 @@ const Upload = (props: UploadProps) => {
     <div>
       <label
         htmlFor="dropzone-file"
-        className="dark:hover:bg-bray-800 mx-auto flex aspect-video h-64 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+        className="center action aspect-video h-64 rounded-lg border-2 border-dashed"
       >
-        <div className="flex flex-col items-center justify-center pb-6 pt-5">
-          <UploadIcon />
-          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-            <span className="font-semibold">Click to upload</span> or drag and
-            drop
-          </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            {/* {supportedFormats} */}
-          </p>
-        </div>
+        <UploadIcon />
+        <p className="mb-2 text-sm text-zinc-400">
+          <span className="font-semibold">Click to upload</span> or drag and
+          drop
+        </p>
+        <p className="text-xs text-zinc-400">{/* {supportedFormats} */}</p>
         <input
           onChange={props.onChange}
           id="dropzone-file"
@@ -80,7 +69,7 @@ const Upload = (props: UploadProps) => {
 
 const UploadIcon = () => (
   <svg
-    className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
+    className="mb-4 h-8 w-8 text-zinc-500 dark:text-zinc-400"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"

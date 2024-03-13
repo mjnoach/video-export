@@ -24,9 +24,7 @@ const config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
-        danger: 'rgb(239,68,68)',
-        success: 'rgb(34,197,94)',
-        brand: 'rgb(221,82,76)',
+        brand: 'rgb(var(--brand))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

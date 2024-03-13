@@ -33,7 +33,7 @@ export const PlayerControls = ({
         />
         <button
           disabled={disabled}
-          className="hover-blur-panel p-2"
+          className="panel p-2"
           onClick={togglePlaying}
         >
           {isPlaying ? (
@@ -75,7 +75,7 @@ const SkipBackwards = ({ disabled, handleSkipTo, getSlider }: SkipProps) => {
     <button
       disabled={disabled}
       onClick={() => handleSkipTo(value)}
-      className="hover-blur-panel relative p-2"
+      className="panel relative p-2"
     >
       <div className="absolute right-2 top-1 text-xs">{SKIP_STEP}</div>
       <Undo2 className="h-8 w-8" />
@@ -98,7 +98,7 @@ export const SkipForward = ({
     <button
       disabled={disabled}
       onClick={() => handleSkipTo(value)}
-      className="hover-blur-panel relative p-2"
+      className="panel relative p-2"
     >
       <div className="absolute left-2 top-1 text-xs">{SKIP_STEP}</div>
       <Undo2 className="h-8 w-8 scale-x-[-1]" />

@@ -11,11 +11,11 @@ export const Drawer = () => {
   const { storage } = useContext(EditorContext)
 
   return (
-    <div className="fixed left-0 top-0 z-40 h-screen -translate-x-[85%] overflow-y-auto border-r border-gray-800 bg-black bg-opacity-70 p-4 pt-12 backdrop-blur-md transition-transform hover:-translate-x-[0%]">
+    <div className="fixed left-0 top-0 z-40 h-screen -translate-x-[85%] overflow-y-auto border-r border-zinc-800 bg-black bg-opacity-70 p-4 pt-12 backdrop-blur-md transition-transform hover:-translate-x-[0%]">
       <div className="invisible">
         <Nav />
       </div>
-      <div className="absolute bottom-0 right-0 top-0 flex items-center text-gray-800">
+      <div className="absolute bottom-0 right-0 top-0 flex items-center text-zinc-800">
         <GripVertical />
       </div>
 
@@ -30,7 +30,7 @@ export const Drawer = () => {
         ].map((obj, i) => (
           <DrawerItem key={i} obj={obj} />
         ))}
-        <li className="flex aspect-video w-32 cursor-pointer select-none items-center justify-center rounded-lg border bg-gray-900 p-2 transition hover:border-none hover:bg-gray-800">
+        <li className="action center aspect-video w-32">
           <Plus />
         </li>
       </ul>
@@ -52,15 +52,15 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
 
   return (
     <Link href={obj.url} target="_blank">
-      <li className="group flex aspect-video w-32 cursor-pointer select-none items-end justify-between rounded-lg border bg-black transition hover:border-brand">
+      <li className="group flex aspect-video w-32 cursor-pointer select-none items-end justify-between rounded-lg border border-zinc-700 bg-black transition">
         <div className="overflow-clip truncate whitespace-nowrap pb-1 pl-1">
           {obj.id}
         </div>
         <button
           onClick={handleClick}
-          className={'invisible self-start p-1 text-white group-hover:visible'}
+          className={'invisible self-start p-1 group-hover:visible'}
         >
-          <div className="hover:bg-danger rounded-md bg-zinc-600 p-1">
+          <div className="action p-1 hover:!border-destructive hover:!bg-destructive">
             <Trash2 className="h-4 w-4" />
           </div>
           {/* <ArrowDownToLine /> */}

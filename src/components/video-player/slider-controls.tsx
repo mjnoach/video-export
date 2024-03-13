@@ -50,13 +50,13 @@ const SliderControlsButtons = ({
     <div className="flex select-none">
       <button
         onClick={() => handleMoveSlider(-1, sliderKey)}
-        className="hover-blur-panel flex h-6 w-6 items-center justify-center p-0 text-xl"
+        className="panel flex h-6 w-6 items-center justify-center p-0 text-xl"
       >
         -
       </button>
       <button
         onClick={() => handleMoveSlider(1, sliderKey)}
-        className="hover-blur-panel flex h-6 w-6 items-center justify-center p-0 text-xl"
+        className="panel flex h-6 w-6 items-center justify-center p-0 text-xl"
       >
         +
       </button>

@@ -10,7 +10,7 @@ export const Window = (props: WindowProps) => (
     <div className="relative mx-auto max-w-4xl rounded-lg border border-zinc-800 bg-black/80 shadow-2xl">
       <div className="relative flex select-none items-center px-2 py-4">
         {/* <WindowControlsOSX className="left-0 ml-6" /> */}
-        <div className="relative mx-auto inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-gray-400 ring-gray-800">
+        <div className="relative mx-auto inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-zinc-400 ring-zinc-800">
           <DotIcon />
           <span className="bg-transparent pl-2 text-center focus:border-none focus:outline-none">
             {props.title}

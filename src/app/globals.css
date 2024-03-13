@@ -37,6 +37,8 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+
+    --brand: 221 82 76;
   }
 
   .dark {
@@ -77,10 +79,9 @@
 
 @layer base {
   * {
-    @apply border-border;
   }
   body {
-    @apply flex min-h-screen w-full flex-col bg-background text-foreground;
+    @apply flex min-h-screen w-full flex-col;
 
     color: rgb(var(--foreground-rgb));
     background: linear-gradient(
@@ -93,8 +94,24 @@
   main {
     @apply flex grow flex-col items-center py-12;
   }
+}
 
-  .hover-blur-panel {
-    @apply cursor-pointer rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 disabled:cursor-default disabled:opacity-20 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30;
+@layer utilities {
+  .action {
+    @apply cursor-pointer whitespace-nowrap transition-colors;
+    @apply bg-zinc-800/50 text-zinc-300;
+    @apply rounded-md border border-zinc-700;
+    @apply disabled:pointer-events-none disabled:opacity-50;
+    @apply hover:!bg-zinc-800/70;
+    &.brand {
+      @apply !border-brand !bg-brand/50 hover:!bg-brand/60;
+    }
+  }
+  .panel {
+    @apply rounded-lg border border-transparent transition-colors;
+    @apply hover:border-neutral-700 hover:bg-neutral-800/30;
+  }
+  .center {
+    @apply flex flex-col items-center justify-center;
   }
 }

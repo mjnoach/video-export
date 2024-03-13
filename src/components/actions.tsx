@@ -18,14 +18,14 @@ export const Actions = () => {
       <Button
         disabled={!actions.previewClip || disabled}
         onClick={() => actions.previewClip?.(clip)}
-        className="h-8 whitespace-nowrap rounded-md border border-brand bg-brand/50 text-zinc-300 transition-colors hover:bg-brand/60 disabled:pointer-events-none disabled:opacity-50"
+        className="action brand h-8"
       >
         Preview
       </Button>
       <Button
         disabled={!actions.exportClip || disabled}
         onClick={handleExport}
-        className="h-8 whitespace-nowrap rounded-md border border-zinc-700 bg-zinc-800/50 text-zinc-300 transition-colors hover:bg-zinc-800 disabled:pointer-events-none disabled:opacity-50"
+        className="action h-8"
       >
         Export
       </Button>

@@ -16,6 +16,7 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slider": "^1.1.2",
     "@radix-ui/react-slot": "^1.0.2",
+    "@tailwindcss/nesting": "^0.0.0-insiders.565cd3e",
     "@tanstack/react-query": "^5.27.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

@@ -30,13 +30,13 @@ export function VideoLinkForm() {
     <div className="flex flex-col">
       <div
         onClick={() => setFocus('videoUrl')}
-        className="group/form hover-blur-panel flex flex-col gap-6"
+        className="group/form panel flex flex-col gap-6 px-5 py-4"
       >
         <div>
           <h2 className={`mb-3 text-2xl font-semibold`}>
             Paste & Go <Arrow className="group-hover/form:translate-x-1" />
           </h2>
-          <p className={`m-0 max-w-md text-sm opacity-50`}>
+          <p className={`m-0 max-w-md text-sm text-muted-foreground`}>
             Paste a YouTube video link and jump into the editor!
           </p>
         </div>
@@ -46,10 +46,7 @@ export function VideoLinkForm() {
             <div className="group/input grow">
               <label
                 htmlFor="videoUrl"
-                className={cn(
-                  'mb-2 block text-sm font-medium',
-                  errors.videoUrl && 'text-red-700 dark:text-red-500'
-                )}
+                className={cn('mb-2 block text-sm font-medium')}
               >
                 Video link
               </label>
@@ -66,9 +63,8 @@ export function VideoLinkForm() {
                   type="url"
                   id="videoUrl"
                   className={cn(
-                    'block w-full rounded-lg border p-2.5 text-sm dark:bg-gray-700',
-                    errors.videoUrl &&
-                      'border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-red-500 dark:border-red-500 dark:bg-gray-700 dark:text-red-500 dark:placeholder-red-500'
+                    'block w-full rounded-lg border p-2.5 text-sm',
+                    errors.videoUrl && 'border-red-500'
                   )}
                   placeholder="YouTube video link"
                 />

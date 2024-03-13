@@ -33,7 +33,7 @@ export function ExtensionSelector({
       disabled={disabled}
       onValueChange={onValueChange}
     >
-      <SelectTrigger className="h-8 w-20 whitespace-nowrap rounded-md border border-zinc-700 bg-zinc-800/50 text-zinc-300 transition-colors hover:bg-zinc-800 disabled:pointer-events-none disabled:opacity-50">
+      <SelectTrigger className="action h-8 w-20">
         <SelectValue placeholder={EXTENSIONS[0]} />
       </SelectTrigger>
       <SelectContent
