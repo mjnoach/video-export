@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from './ui/select'
 
-const EXTENSIONS = ['.mp4', '.gif']
+const EXTENSIONS = ['.mp4', '.gif', '.mp3']
 
 type ExtensionSelectorProps = {
   disabled: boolean
