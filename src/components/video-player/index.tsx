@@ -34,7 +34,6 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   const { refetch: exportQuery } = useQuery<ExportedObj>({
     ...api.exportQuery(clip),
     enabled: false,
-    // refetchOnWindowFocus: false
   })
 
   useEffect(() => {

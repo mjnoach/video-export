@@ -1,11 +1,10 @@
 import { VideoLinkForm } from '@/components/video-link-form'
 
 // TODO
-// 3. Add additional playback ranges to clip different parts of the same video easily
-// 4. Add video export progress bar
-// 5. Feature: download clip
-// 8. Feature: shareble link to a player respecting ranges specified in the url query
-// 11. add export type: video clip, audio clip, gif
+// – Feature: Multiple slider ranges for exporting a video combined of multiple clips
+// – Feature: Export to mp3 format
+// – Improvement: Video player loading tranition - no blinking/jumping elements
+// – Improvement: Video processing progress state
 
 export default function Home() {
   return (
