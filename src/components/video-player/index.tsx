@@ -31,7 +31,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     updateClip,
   } = useContext(EditorContext)
 
-  const { refetch } = useExport(clip)
+  const { refetch: exportQuery } = useExport(clip)
 
   useEffect(() => {
     if (hasReachedEnd()) setIsPlaying(false)
@@ -71,7 +71,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   async function exportClip(clip: Clip) {
     setProcessing(true)
     setIsPlaying(false)
-    const { data: exportedObj, error } = await refetch()
+    const { data: exportedObj, error } = await exportQuery()
     exportedObj && storeObject(exportedObj)
     setProcessing(false)
     // if (error) set error overlay

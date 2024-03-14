@@ -5,9 +5,7 @@ import { VideoLinkForm } from '@/components/video-link-form'
 // – Feature: Add a cropping frame that will only capture the selected area for a given slider range
 // – Improve: Video processing progress state
 // – Improve: Press and hold a slider control button to quickly seek start/end sliders
-// – Improve: Storage drawer should display more contextualised items based on format. mp4 exports should display a thumbnail?
 // - Fix: Change "export" call from query to mutation
-// – Improve: Clear editor after successful export
 
 export default function Home() {
   return (
