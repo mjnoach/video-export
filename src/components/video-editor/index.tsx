@@ -9,6 +9,10 @@ type VideoEditorProps = {
   video?: SourceVideo
 }
 
+// TODO
+// remove this component
+// move to edit page
+
 export function VideoEditor(props: VideoEditorProps) {
   const [video, setVideo] = useState<SourceVideo | null>(props.video ?? null)
 

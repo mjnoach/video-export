@@ -96,6 +96,15 @@
   }
 }
 
+@layer components {
+  .drawer-icon {
+    @apply h-4 w-4;
+  }
+  .overlay-icon {
+    @apply h-16 w-16;
+  }
+}
+
 @layer utilities {
   .action {
     @apply cursor-pointer whitespace-nowrap transition-colors;

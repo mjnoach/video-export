@@ -1,15 +1,17 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import Link from 'next/link'
 
+import { cn } from '@/lib/utils'
 import { getReadableDuration } from '@/lib/utils/time'
 
 import { EditorContext } from './context/editor'
 import { Nav } from './nav'
 
-import { GripVertical, Plus, Trash2 } from 'lucide-react'
+import { GripVertical, Pin, PinOff, Plus, Trash2 } from 'lucide-react'
 
 export const Drawer = () => {
+  const [isPinned, setPinned] = useState(false)
   const { storage } = useContext(EditorContext)
   const dummy: ExportedObj = {
     id: '0',
@@ -19,23 +21,45 @@ export const Drawer = () => {
     duration: 0,
   }
 
-  return (
-    <div className="fixed left-0 top-0 z-40 h-screen -translate-x-[85%] overflow-y-auto border-r border-zinc-800 bg-black bg-opacity-70 p-4 pt-12 backdrop-blur-md transition-transform hover:-translate-x-[0%]">
-      <div className="invisible">
-        <Nav />
-      </div>
-      <div className="absolute bottom-0 right-0 top-0 flex items-center text-zinc-800">
-        <GripVertical />
-      </div>
+  useEffect(() => {
+    setPinned(false)
+  }, [])
 
-      <ul className="flex flex-col items-center gap-4 p-4">
-        {[...storage, dummy].map((obj, i) => (
-          <DrawerItem key={i} obj={obj} />
-        ))}
-        <li className="action center aspect-video w-32">
-          <Plus className="stroke-zinc-400" />
-        </li>
-      </ul>
+  return (
+    <div
+      className={cn(
+        'fixed left-0 top-0 z-40 flex h-screen -translate-x-52 overflow-y-auto border-r border-zinc-800 bg-black bg-opacity-70 backdrop-blur-md transition-transform hover:-translate-x-0',
+        isPinned ? '-translate-x-0' : ''
+      )}
+    >
+      <div>
+        <div className="invisible">
+          <Nav />
+        </div>
+        <ul className="flex flex-col items-center gap-4 px-4 py-12">
+          <button
+            onClick={() => setPinned(!isPinned)}
+            className={
+              'action mb-4 flex h-7 w-7 items-center justify-center place-self-end'
+            }
+          >
+            {isPinned ? (
+              <PinOff className={'drawer-icon stroke-zinc-400'} />
+            ) : (
+              <Pin className={'drawer-icon stroke-zinc-400'} />
+            )}
+          </button>
+          {[...storage, dummy].map((obj, i) => (
+            <DrawerItem key={i} obj={obj} />
+          ))}
+          <li className="action center aspect-video w-32">
+            <Plus className="stroke-zinc-400" />
+          </li>
+        </ul>
+      </div>
+      <div className="flex items-center">
+        <GripVertical className="stroke-zinc-800" />
+      </div>
     </div>
   )
 }
@@ -54,26 +78,26 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
   }
 
   return (
-    <Link href={obj.url} target="_blank">
-      <li className="group/item flex aspect-video w-32 cursor-pointer select-none items-end justify-between rounded-lg border border-zinc-700 bg-black transition">
-        <div className="my-1 ml-1 flex h-full flex-col justify-between overflow-clip text-zinc-300">
-          <div className="">{getReadableDuration(obj.duration)}</div>
-          <div className="truncate whitespace-nowrap ">{obj.id}</div>
-        </div>
-        <div className="m-1 flex h-full flex-col justify-between">
+    <li className="group/item flex aspect-video w-44 cursor-pointer select-none rounded-lg border border-zinc-700 transition">
+      <Link href={obj.url} className="w-full" target="_blank">
+        <div className="grid h-full grid-cols-3 content-between p-1">
+          <div className="col-span-2 text-zinc-400">
+            {getReadableDuration(obj.duration)}
+          </div>
           <button
             onClick={handleClick}
             className={
-              'action invisible flex h-7 w-7 items-center justify-center self-end p-1 hover:!border-destructive hover:!bg-destructive group-hover/item:visible'
+              'action invisible flex h-7 w-7 items-center justify-center place-self-end hover:!border-destructive hover:!bg-destructive group-hover/item:visible'
             }
           >
-            <Trash2 className="w-full stroke-zinc-400" />
-            {/* <ArrowDownToLine /> */}
-            {/* <Eye /> */}
+            <Trash2 className="drawer-icon stroke-zinc-400" />
           </button>
-          <div className="text-zinc-400">{extension}</div>
+          <div className="col-span-2 w-full truncate whitespace-nowrap text-zinc-300">
+            {obj.id}
+          </div>
+          <div className="place-self-end text-zinc-400">{extension}</div>
         </div>
-      </li>
-    </Link>
+      </Link>
+    </li>
   )
 }

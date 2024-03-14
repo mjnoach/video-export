@@ -5,6 +5,8 @@ import { VideoLinkForm } from '@/components/video-link-form'
 // – Feature: Add a cropping frame that will only capture the selected area for a given slider range
 // – Improve: Video processing progress state
 // – Improve: Press and hold a slider control button to quickly seek start/end sliders
+// – Improve: Video processing progress state. Use backend polling to display export process progress.
+// – Fix: Disable editor while response overlay is shown
 
 export default function Home() {
   return (
