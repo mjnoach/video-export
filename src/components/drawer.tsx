@@ -13,13 +13,6 @@ import { GripVertical, Pin, PinOff, Plus, Trash2 } from 'lucide-react'
 export const Drawer = () => {
   const [isPinned, setPinned] = useState(false)
   const { storage } = useContext(EditorContext)
-  const dummy: ExportedObj = {
-    id: '0',
-    path: '',
-    url: '',
-    format: 'gif',
-    duration: 0,
-  }
 
   useEffect(() => {
     setPinned(false)
@@ -33,23 +26,18 @@ export const Drawer = () => {
       )}
     >
       <div>
-        <div className="invisible">
-          <Nav />
+        <div className="relative mb-12">
+          <div className="invisible">
+            <Nav />
+          </div>
+          <PinButton
+            className="absolute right-0 top-12 mr-4"
+            isPinned={isPinned}
+            setPinned={setPinned}
+          />
         </div>
-        <ul className="flex flex-col items-center gap-4 px-4 py-12">
-          <button
-            onClick={() => setPinned(!isPinned)}
-            className={
-              'action mb-4 flex h-7 w-7 items-center justify-center place-self-end'
-            }
-          >
-            {isPinned ? (
-              <PinOff className={'drawer-icon stroke-zinc-400'} />
-            ) : (
-              <Pin className={'drawer-icon stroke-zinc-400'} />
-            )}
-          </button>
-          {[...storage, dummy].map((obj, i) => (
+        <ul className="flex flex-col items-center gap-4 px-4">
+          {[...storage].map((obj, i) => (
             <DrawerItem key={i} obj={obj} />
           ))}
           <li className="action center aspect-video w-32">
@@ -78,7 +66,7 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
   }
 
   return (
-    <li className="group/item flex aspect-video w-44 cursor-pointer select-none rounded-lg border border-zinc-700 transition">
+    <li className="group/item flex aspect-video w-44 cursor-pointer select-none rounded-lg border border-zinc-700 bg-black transition">
       <Link href={obj.url} className="w-full" target="_blank">
         <div className="grid h-full grid-cols-3 content-between p-1">
           <div className="col-span-2 text-zinc-400">
@@ -99,5 +87,28 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
         </div>
       </Link>
     </li>
+  )
+}
+
+type PinButtonProps = DefaultProps & {
+  isPinned: boolean
+  setPinned: (state: boolean) => void
+}
+
+const PinButton = ({ isPinned, setPinned, className }: PinButtonProps) => {
+  return (
+    <button
+      onClick={() => setPinned(!isPinned)}
+      className={cn(
+        className,
+        'action flex h-7 w-7 items-center justify-center place-self-end'
+      )}
+    >
+      {isPinned ? (
+        <PinOff className={'drawer-icon stroke-zinc-400'} />
+      ) : (
+        <Pin className={'drawer-icon stroke-zinc-400'} />
+      )}
+    </button>
   )
 }
