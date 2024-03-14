@@ -12,14 +12,10 @@ import {
 const EXTENSIONS = ['.mp4', '.gif', '.mp3']
 
 type ExtensionSelectorProps = {
-  disabled: boolean
   onValueChange: (value: string) => void
 }
 
-export function ExtensionSelector({
-  disabled,
-  onValueChange,
-}: ExtensionSelectorProps) {
+export function ExtensionSelector({ onValueChange }: ExtensionSelectorProps) {
   const defaultValue = EXTENSIONS[0]
 
   useEffect(() => {
@@ -28,11 +24,7 @@ export function ExtensionSelector({
   }, [])
 
   return (
-    <Select
-      defaultValue={defaultValue}
-      disabled={disabled}
-      onValueChange={onValueChange}
-    >
+    <Select defaultValue={defaultValue} onValueChange={onValueChange}>
       <SelectTrigger className="action h-8 w-20">
         <SelectValue placeholder={EXTENSIONS[0]} />
       </SelectTrigger>

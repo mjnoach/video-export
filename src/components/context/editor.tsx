@@ -9,25 +9,27 @@ type EditorActions = {
   exportClip: (clip: Clip) => Promise<void>
 }
 
-export const EditorContext = createContext({
+const editor = {
   actions: {} as EditorActions,
   setActions: (actions: EditorActions) => {},
-  disabled: false,
-  setDisabled: (disabled: boolean) => {},
+  isProcessing: false,
+  setProcessing: (processing: boolean) => {},
   storage: [] as ExportedObj[],
   storeObject: (obj: ExportedObj) => {},
   removeObject: (objId: string) => {},
   clip: {} as Clip,
   updateClip: (clip: Partial<Clip>) => {},
-})
+}
+
+export const EditorContext = createContext(editor)
 
 const STORAGE_KEY = 'editor-storage'
 
 export const EditorProvider = ({ children }: DefaultProps) => {
-  const [actions, setActions] = useState({} as EditorActions)
-  const [disabled, setDisabled] = useState(false)
-  const [storage, setStorage] = useState([] as ExportedObj[])
-  const [clip, setClip] = useState({} as Clip)
+  const [actions, setActions] = useState(editor.actions)
+  const [isProcessing, setProcessing] = useState(editor.isProcessing)
+  const [storage, setStorage] = useState(editor.storage)
+  const [clip, setClip] = useState(editor.clip)
 
   useEffect(() => {
     const restoredStorage = restore(STORAGE_KEY) as ExportedObj[]
@@ -51,7 +53,7 @@ export const EditorProvider = ({ children }: DefaultProps) => {
       ...clip,
       ...clipData,
     }
-    setClip(newClip)
+    setClip(newClip as Clip)
   }
 
   return (
@@ -59,8 +61,8 @@ export const EditorProvider = ({ children }: DefaultProps) => {
       value={{
         actions,
         setActions,
-        disabled,
-        setDisabled,
+        isProcessing,
+        setProcessing,
         storage,
         storeObject,
         removeObject,

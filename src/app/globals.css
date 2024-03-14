@@ -110,6 +110,10 @@
   .panel {
     @apply rounded-lg border border-transparent transition-colors;
     @apply hover:border-neutral-700 hover:bg-neutral-800/30;
+    @apply disabled:pointer-events-none disabled:opacity-50;
+  }
+  .disable {
+    @apply pointer-events-none cursor-default select-none opacity-50;
   }
   .center {
     @apply flex flex-col items-center justify-center;

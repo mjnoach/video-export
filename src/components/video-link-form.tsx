@@ -27,7 +27,7 @@ export function VideoLinkForm() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col text-zinc-300">
       <div
         onClick={() => setFocus('videoUrl')}
         className="group/form panel flex flex-col gap-6 px-5 py-4"
@@ -36,7 +36,7 @@ export function VideoLinkForm() {
           <h2 className={`mb-3 text-2xl font-semibold`}>
             Paste & Go <Arrow className="group-hover/form:translate-x-1" />
           </h2>
-          <p className={`m-0 max-w-md text-sm text-muted-foreground`}>
+          <p className={`m-0 max-w-md text-sm text-zinc-400`}>
             Paste a YouTube video link and jump into the editor!
           </p>
         </div>
@@ -63,7 +63,7 @@ export function VideoLinkForm() {
                   type="url"
                   id="videoUrl"
                   className={cn(
-                    'block w-full rounded-lg border p-2.5 text-sm',
+                    '/border block w-full rounded-lg p-2.5 text-sm',
                     errors.videoUrl && 'border-red-500'
                   )}
                   placeholder="YouTube video link"
@@ -90,12 +90,11 @@ const Arrow = ({ className }: React.SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     fill="none"
-    stroke="currentColor"
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
     className={cn(
-      'inline-block h-8 w-8 transition-transform motion-reduce:transform-none',
+      'inline-block h-8 w-8 stroke-zinc-300 transition-transform motion-reduce:transform-none',
       className
     )}
   >

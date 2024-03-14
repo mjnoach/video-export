@@ -21,7 +21,6 @@ const Slider = React.forwardRef<
   <SliderPrimitive.Root
     ref={ref}
     className={cn(
-      props.disabled ? 'cursor-default opacity-20' : '',
       'relative flex w-full touch-none select-none items-center',
       className
     )}

@@ -17,15 +17,15 @@ type VideoPlayerProps = DefaultProps & {
 
 export function VideoPlayer({ video }: VideoPlayerProps) {
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [isLoadingPlayer, setLoadingPlayer] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [sliderValues, setSliderValues] = useState([0, 0, 0])
 
   const {
     actions,
     setActions,
-    disabled,
-    setDisabled,
+    isProcessing,
+    setProcessing,
     storeObject,
     clip,
     updateClip,
@@ -69,11 +69,11 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   }
 
   async function exportClip(clip: Clip) {
+    setProcessing(true)
     setIsPlaying(false)
-    setDisabled(true)
     const { data: exportedObj, error } = await refetch()
     exportedObj && storeObject(exportedObj)
-    setDisabled(false)
+    setProcessing(false)
     // if (error) set error overlay
   }
 
@@ -136,7 +136,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
 
   function handleReady(player: ReactPlayer) {
     setPlayer(player)
-    setLoading(false)
+    setLoadingPlayer(false)
   }
 
   function handlePlay() {
@@ -152,15 +152,15 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   }
 
   return (
-    <div className="flex w-full flex-col items-center gap-4">
+    <div className={cn('flex w-full flex-col items-center gap-4')}>
       <div
         className={cn(
           'relative aspect-video w-full select-none',
-          disabled ? 'pointer-events-none' : '',
-          !loading ? 'rounded-md border-2 border-brand' : ''
+          !isLoadingPlayer ? 'rounded-md border-2 border-brand' : ''
         )}
       >
-        {loading && <Loading />}
+        {isProcessing && <Loading>Processing...</Loading>}
+        {isLoadingPlayer && <Loading />}
         <ReactPlayer
           config={{
             youtube: {
@@ -182,36 +182,37 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
           playing={isPlaying}
         />
       </div>
-      <div className="flex w-full flex-col items-center gap-10">
-        {player && (
-          <>
-            <div className="relative flex h-32 w-full justify-center">
-              <SliderControls
-                handleMoveSlider={handleMoveSlider}
-                getSlider={getSlider}
-              />
-              <PlayerControls
-                disabled={disabled}
-                player={player}
-                handleSkipTo={handleSkipTo}
-                getSlider={getSlider}
-                togglePlaying={togglePlaying}
-                isPlaying={isPlaying}
-              />
-            </div>
-            <Slider
-              max={player.getDuration()}
-              step={1}
-              disabled={disabled}
-              value={sliderValues}
-              sliderValues={sliderValues}
-              minStepsBetweenThumbs={0}
-              onValueChange={handleSliderChange}
-              onValueCommit={handleSliderCommit}
+      {!isLoadingPlayer && player && (
+        <div
+          className={cn(
+            'flex w-full flex-col items-center gap-10',
+            isProcessing ? 'disable' : ''
+          )}
+        >
+          <div className="relative flex h-32 w-full justify-center">
+            <SliderControls
+              handleMoveSlider={handleMoveSlider}
+              getSlider={getSlider}
             />
-          </>
-        )}
-      </div>
+            <PlayerControls
+              player={player}
+              handleSkipTo={handleSkipTo}
+              getSlider={getSlider}
+              togglePlaying={togglePlaying}
+              isPlaying={isPlaying}
+            />
+          </div>
+          <Slider
+            max={player.getDuration()}
+            step={1}
+            value={sliderValues}
+            sliderValues={sliderValues}
+            minStepsBetweenThumbs={0}
+            onValueChange={handleSliderChange}
+            onValueCommit={handleSliderCommit}
+          />
+        </div>
+      )}
     </div>
   )
 }

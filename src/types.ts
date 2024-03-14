@@ -16,4 +16,5 @@ type ExportedObj = {
   id: string
   path: string
   url: string
+  format: string
 }

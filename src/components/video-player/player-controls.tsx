@@ -1,4 +1,4 @@
-import { cn, getReadableTimestamp } from '@/lib/utils'
+import { getReadableTimestamp } from '@/lib/utils'
 
 import { Sliders } from '../ui/slider'
 
@@ -6,7 +6,6 @@ import { Pause, Play, Undo2 } from 'lucide-react'
 import type ReactPlayer from 'react-player'
 
 type PlayerControlsProps = {
-  disabled: boolean
   player: ReactPlayer
   handleSkipTo: (value: number) => void
   getSlider: (index: keyof typeof Sliders) => number
@@ -15,7 +14,6 @@ type PlayerControlsProps = {
 }
 
 export const PlayerControls = ({
-  disabled,
   player,
   handleSkipTo,
   getSlider,
@@ -26,16 +24,11 @@ export const PlayerControls = ({
     <div className="flex select-none flex-col items-center gap-2">
       <div className="flex">
         <SkipBackwards
-          disabled={disabled}
           player={player}
           getSlider={getSlider}
           handleSkipTo={handleSkipTo}
         />
-        <button
-          disabled={disabled}
-          className="panel p-2"
-          onClick={togglePlaying}
-        >
+        <button className="panel p-2" onClick={togglePlaying}>
           {isPlaying ? (
             <Pause className="h-8 w-8" />
           ) : (
@@ -43,13 +36,12 @@ export const PlayerControls = ({
           )}
         </button>
         <SkipForward
-          disabled={disabled}
           player={player}
           getSlider={getSlider}
           handleSkipTo={handleSkipTo}
         />
       </div>
-      <div className={cn('text-brand', disabled ? 'opacity-20' : '')}>
+      <div className={'text-brand'}>
         {getReadableTimestamp(getSlider('Marker'))}
       </div>
     </div>
@@ -59,47 +51,33 @@ export const PlayerControls = ({
 const SKIP_STEP = 5
 
 type SkipProps = {
-  disabled: boolean
   player: ReactPlayer
   handleSkipTo: (value: number) => void
   getSlider: (index: keyof typeof Sliders) => number
 }
 
-const SkipBackwards = ({ disabled, handleSkipTo, getSlider }: SkipProps) => {
+const SkipBackwards = ({ handleSkipTo, getSlider }: SkipProps) => {
   const value = Math.max(
     getSlider('Start'),
     Math.max(getSlider('Marker') - SKIP_STEP, 0)
   )
 
   return (
-    <button
-      disabled={disabled}
-      onClick={() => handleSkipTo(value)}
-      className="panel relative p-2"
-    >
+    <button onClick={() => handleSkipTo(value)} className="panel relative p-2">
       <div className="absolute right-2 top-1 text-xs">{SKIP_STEP}</div>
       <Undo2 className="h-8 w-8" />
     </button>
   )
 }
 
-export const SkipForward = ({
-  disabled,
-  player,
-  handleSkipTo,
-  getSlider,
-}: SkipProps) => {
+export const SkipForward = ({ player, handleSkipTo, getSlider }: SkipProps) => {
   const value = Math.min(
     getSlider('End'),
     Math.min(getSlider('Marker') + SKIP_STEP, player.getDuration())
   )
 
   return (
-    <button
-      disabled={disabled}
-      onClick={() => handleSkipTo(value)}
-      className="panel relative p-2"
-    >
+    <button onClick={() => handleSkipTo(value)} className="panel relative p-2">
       <div className="absolute left-2 top-1 text-xs">{SKIP_STEP}</div>
       <Undo2 className="h-8 w-8 scale-x-[-1]" />
     </button>

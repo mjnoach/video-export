@@ -55,7 +55,7 @@ const Upload = (props: UploadProps) => {
           <span className="font-semibold">Click to upload</span> or drag and
           drop
         </p>
-        <p className="text-xs text-zinc-400">{/* {supportedFormats} */}</p>
+        <p className="text-xs text-zinc-500">{/* {supportedFormats} */}</p>
         <input
           onChange={props.onChange}
           id="dropzone-file"
@@ -69,7 +69,7 @@ const Upload = (props: UploadProps) => {
 
 const UploadIcon = () => (
   <svg
-    className="mb-4 h-8 w-8 text-zinc-500 dark:text-zinc-400"
+    className="mb-4 h-8 w-8 text-zinc-400"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"

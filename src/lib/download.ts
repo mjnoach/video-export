@@ -40,5 +40,12 @@ export async function downloadClip(
 
   // if (fileFormat === 'mp4') await generateThumbnail(filePath, objId)
 
-  return { id: objId, path: filePath, url: fileName }
+  const exportData: ExportedObj = {
+    id: objId,
+    path: filePath,
+    url: fileName,
+    format: fileFormat,
+  }
+
+  return exportData
 }
