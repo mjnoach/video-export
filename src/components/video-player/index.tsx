@@ -1,14 +1,17 @@
 import { useContext, useEffect, useState } from 'react'
 
+import Link from 'next/link'
+
 import { useExport } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 import { EditorContext } from '../context/editor'
-import { Loading } from '../loading'
+import { Overlay } from '../overlay'
 import { Slider, Sliders } from '../ui/slider'
 import { PlayerControls } from './player-controls'
 import { SliderControls } from './slider-controls'
 
+import { LucideLink } from 'lucide-react'
 import ReactPlayer from 'react-player/lazy'
 
 type VideoPlayerProps = DefaultProps & {
@@ -21,17 +24,31 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [sliderValues, setSliderValues] = useState([0, 0, 0])
 
-  const {
-    actions,
-    setActions,
-    isProcessing,
-    setProcessing,
-    storeObject,
-    clip,
-    updateClip,
-  } = useContext(EditorContext)
+  const { actions, setActions, setProcessing, storeObject, clip, updateClip } =
+    useContext(EditorContext)
 
-  const { refetch: exportQuery } = useExport(clip)
+  const exportMutation = useExport()
+
+  useEffect(() => {
+    if (exportMutation.isError) {
+      setProcessing(false)
+      setTimeout(() => {
+        exportMutation.reset()
+      }, 5000)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exportMutation.isError])
+
+  useEffect(() => {
+    if (exportMutation.isSuccess) {
+      storeObject(exportMutation.data)
+      setProcessing(false)
+      // setTimeout(() => {
+      //   exportMutation.reset()
+      // }, 5000)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exportMutation.isSuccess])
 
   useEffect(() => {
     if (hasReachedEnd()) setIsPlaying(false)
@@ -71,10 +88,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   async function exportClip(clip: Clip) {
     setProcessing(true)
     setIsPlaying(false)
-    const { data: exportedObj, error } = await exportQuery()
-    exportedObj && storeObject(exportedObj)
-    setProcessing(false)
-    // if (error) set error overlay
+    exportMutation.mutate(clip)
   }
 
   const hasReachedEnd = () => getSlider('Marker') >= getSlider('End')
@@ -159,8 +173,27 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
           !isLoadingPlayer ? 'rounded-md border-2 border-brand' : ''
         )}
       >
-        {isProcessing && <Loading>Processing...</Loading>}
-        {isLoadingPlayer && <Loading />}
+        {exportMutation.isPending && (
+          <Overlay type={'loading'} title="Processing..."></Overlay>
+        )}
+        {exportMutation.isError && (
+          <Overlay type={'error'} title="Error">
+            {exportMutation.error.message}
+          </Overlay>
+        )}
+        {exportMutation.isSuccess && (
+          <Overlay type={'success'} title="Processing complete!">
+            <Link
+              href={exportMutation.data.url}
+              className="flex items-center gap-2"
+              target="_blank"
+            >
+              <LucideLink className="w-5 stroke-zinc-500" />
+              {`${exportMutation.data.id}.${exportMutation.data.format}`}
+            </Link>
+          </Overlay>
+        )}
+        {isLoadingPlayer && <Overlay type={'loading'}></Overlay>}
         <ReactPlayer
           config={{
             youtube: {
@@ -186,7 +219,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
         <div
           className={cn(
             'flex w-full flex-col items-center gap-10',
-            isProcessing ? 'disable' : ''
+            exportMutation.isPending ? 'disable' : ''
           )}
         >
           <div className="relative flex h-32 w-full justify-center">

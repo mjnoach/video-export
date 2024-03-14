@@ -24,6 +24,8 @@ const config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
+        // success: '#22c55e',
+        danger: '#22c55e',
         brand: 'rgb(var(--brand))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -77,6 +79,7 @@ const config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'spin-slow': 'spin 5s linear infinite',
       },
     },
   },

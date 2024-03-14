@@ -8,6 +8,7 @@ export async function POST(request: Request) {
   const data: Clip = await request.json()
   console.log('🚀 ~ POST ~ data:', data)
   try {
+    // throw new Error('test')
     const exportedObj = await downloadClip(data)
     return NextResponse.json(exportedObj)
   } catch (e) {

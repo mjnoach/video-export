@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import ky from 'ky'
 
 const api = {
@@ -10,13 +10,8 @@ const api = {
       .json<ExportedObj>(),
 }
 
-export const useExport = (data: Clip) => {
-  return useQuery({
-    queryKey: ['export'],
-    queryFn: () => api.export(data),
-    // TODO
-    // change to mutation and delete this
-    enabled: false,
-    refetchOnWindowFocus: false,
+export const useExport = () => {
+  return useMutation({
+    mutationFn: (data: Clip) => api.export(data),
   })
 }

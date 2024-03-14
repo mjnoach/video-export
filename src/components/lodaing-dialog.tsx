@@ -12,10 +12,10 @@ import {
 } from './ui/dialog'
 
 export function LoadingDialog({}: DefaultProps) {
-  const { processing } = useContext(EditorContext)
+  const { isProcessing } = useContext(EditorContext)
 
   return (
-    <Dialog open={processing}>
+    <Dialog open={isProcessing}>
       <DialogContent className="bg-background">
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
