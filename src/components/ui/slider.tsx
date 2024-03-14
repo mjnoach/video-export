@@ -2,7 +2,8 @@
 
 import * as React from 'react'
 
-import { cn, getReadableTimestamp } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+import { getReadableTimestamp } from '@/lib/utils/time'
 
 import * as SliderPrimitive from '@radix-ui/react-slider'
 

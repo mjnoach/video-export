@@ -1,4 +1,4 @@
-import { getReadableTimestamp } from '@/lib/utils'
+import { getReadableTimestamp } from '@/lib/utils/time'
 
 import { Sliders } from '../ui/slider'
 

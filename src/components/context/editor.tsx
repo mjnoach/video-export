@@ -2,7 +2,7 @@
 
 import { createContext, useEffect, useState } from 'react'
 
-import { persist, restore } from '@/lib/utils'
+import { persist, restore } from '@/lib/utils/storage'
 
 type EditorActions = {
   previewClip: (clip: Clip) => void

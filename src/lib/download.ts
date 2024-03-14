@@ -14,6 +14,7 @@ export async function downloadClip(
   const fileName = `${objId}${extension}`
   const filePath = `public/${fileName}`
   const fileFormat = extension.replace(/^./, '')
+  const duration = end - start
 
   const info = await ytdl.getInfo(sourceVideo.url)
   const format = ytdl.chooseFormat(info.formats, {
@@ -34,7 +35,7 @@ export async function downloadClip(
   await transcodeVideoStream(readStream, {
     path: filePath,
     start,
-    end,
+    duration,
     format: fileFormat,
   })
 
@@ -45,6 +46,7 @@ export async function downloadClip(
     path: filePath,
     url: fileName,
     format: fileFormat,
+    duration,
   }
 
   return exportData

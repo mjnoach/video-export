@@ -2,6 +2,8 @@ import { useContext } from 'react'
 
 import Link from 'next/link'
 
+import { getReadableDuration } from '@/lib/utils/time'
+
 import { EditorContext } from './context/editor'
 import { Nav } from './nav'
 
@@ -14,6 +16,7 @@ export const Drawer = () => {
     path: '',
     url: '',
     format: 'gif',
+    duration: 0,
   }
 
   return (
@@ -53,10 +56,9 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
   return (
     <Link href={obj.url} target="_blank">
       <li className="group/item flex aspect-video w-32 cursor-pointer select-none items-end justify-between rounded-lg border border-zinc-700 bg-black transition">
-        <div className="my-1 ml-1 overflow-clip">
-          <div className="truncate whitespace-nowrap text-zinc-300">
-            {obj.id}
-          </div>
+        <div className="my-1 ml-1 flex h-full flex-col justify-between overflow-clip text-zinc-300">
+          <div className="">{getReadableDuration(obj.duration)}</div>
+          <div className="truncate whitespace-nowrap ">{obj.id}</div>
         </div>
         <div className="m-1 flex h-full flex-col justify-between">
           <button

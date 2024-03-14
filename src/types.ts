@@ -17,4 +17,5 @@ type ExportedObj = {
   path: string
   url: string
   format: string
+  duration: number
 }

@@ -1,4 +1,4 @@
-import { parseSeconds } from './utils'
+import { parseSeconds } from './utils/time'
 
 import ffmpeg from 'fluent-ffmpeg'
 import { Readable } from 'stream'
@@ -19,12 +19,11 @@ export async function transcodeVideoStream(
   target: {
     path: string
     start: number
-    end: number
+    duration: number
     format: string
   }
 ) {
-  const { path, start, end, format } = target
-  const duration = end - start
+  const { path, start, duration, format } = target
   return new Promise((resolve, reject) => {
     ffmpeg()
       .input(source)
