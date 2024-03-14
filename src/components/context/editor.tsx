@@ -12,8 +12,8 @@ type EditorActions = {
 const editor = {
   actions: {} as EditorActions,
   setActions: (actions: EditorActions) => {},
-  isProcessing: false,
-  setProcessing: (processing: boolean) => {},
+  isDisabled: false,
+  setDisabled: (state: boolean) => {},
   storage: [] as ExportedObj[],
   storeObject: (obj: ExportedObj) => {},
   removeObject: (objId: string) => {},
@@ -27,7 +27,7 @@ const STORAGE_KEY = 'editor-storage'
 
 export const EditorProvider = ({ children }: DefaultProps) => {
   const [actions, setActions] = useState(editor.actions)
-  const [isProcessing, setProcessing] = useState(editor.isProcessing)
+  const [isDisabled, setDisabled] = useState(editor.isDisabled)
   const [storage, setStorage] = useState(editor.storage)
   const [clip, setClip] = useState(editor.clip)
 
@@ -62,8 +62,8 @@ export const EditorProvider = ({ children }: DefaultProps) => {
       value={{
         actions,
         setActions,
-        isProcessing,
-        setProcessing,
+        isDisabled,
+        setDisabled,
         storage,
         storeObject,
         removeObject,

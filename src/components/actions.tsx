@@ -7,7 +7,7 @@ import { ExtensionSelector } from './extension-selector'
 import { Button } from './ui/button'
 
 export const Actions = () => {
-  const { actions, isProcessing, clip, updateClip } = useContext(EditorContext)
+  const { actions, isDisabled, clip, updateClip } = useContext(EditorContext)
 
   async function handleExport() {
     actions.exportClip?.(clip).catch((e: any) => {
@@ -18,7 +18,7 @@ export const Actions = () => {
   return (
     <div
       className={cn(
-        isProcessing || !clip.sourceVideo ? 'disable' : '',
+        isDisabled || !clip.sourceVideo ? 'disable' : '',
         'mx-auto flex select-none items-center gap-4 rounded-lg bg-zinc-900 p-4 drop-shadow-xl'
       )}
     >

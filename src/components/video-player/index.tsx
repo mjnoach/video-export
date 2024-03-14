@@ -24,16 +24,23 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [sliderValues, setSliderValues] = useState([0, 0, 0])
 
-  const { actions, setActions, setProcessing, storeObject, clip, updateClip } =
-    useContext(EditorContext)
+  const {
+    actions,
+    setActions,
+    isDisabled,
+    setDisabled,
+    storeObject,
+    clip,
+    updateClip,
+  } = useContext(EditorContext)
 
   const exportMutation = useExport()
 
   useEffect(() => {
     if (exportMutation.isError) {
-      setProcessing(false)
       setTimeout(() => {
         exportMutation.reset()
+        setDisabled(false)
       }, 5000)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,10 +49,10 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   useEffect(() => {
     if (exportMutation.isSuccess) {
       storeObject(exportMutation.data)
-      setProcessing(false)
-      // setTimeout(() => {
-      //   exportMutation.reset()
-      // }, 5000)
+      setTimeout(() => {
+        exportMutation.reset()
+        setDisabled(false)
+      }, 5000)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exportMutation.isSuccess])
@@ -86,7 +93,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   }
 
   async function exportClip(clip: Clip) {
-    setProcessing(true)
+    setDisabled(true)
     setIsPlaying(false)
     exportMutation.mutate(clip)
   }
@@ -219,7 +226,13 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
         <div
           className={cn(
             'flex w-full flex-col items-center gap-10',
-            exportMutation.isPending ? 'disable' : ''
+            isDisabled ? 'disable' : ''
+            // exportMutation.isPending ||
+            //   !exportMutation.isIdle ||
+            //   exportMutation.isError
+            //   ? 'disable'
+            //   : ''
+            // exportMutation.isPending || !exportMutation.isIdle ? 'disable' : ''
           )}
         >
           <div className="relative flex h-32 w-full justify-center">

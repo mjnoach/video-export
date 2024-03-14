@@ -1,6 +1,3 @@
-import { useContext } from 'react'
-
-import { EditorContext } from './context/editor'
 import { Button } from './ui/button'
 import {
   Dialog,
@@ -12,10 +9,8 @@ import {
 } from './ui/dialog'
 
 export function LoadingDialog({}: DefaultProps) {
-  const { isProcessing } = useContext(EditorContext)
-
   return (
-    <Dialog open={isProcessing}>
+    <Dialog open={true}>
       <DialogContent className="bg-background">
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
