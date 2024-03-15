@@ -27,6 +27,7 @@ const config = {
         // success: '#22c55e',
         danger: '#22c55e',
         brand: 'rgb(var(--brand))',
+        player: 'rgb(var(--player-theme))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

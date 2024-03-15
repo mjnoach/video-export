@@ -50,6 +50,8 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     if (exportMutation.isSuccess) {
       storeObject(exportMutation.data)
       setTimeout(() => {
+        // TODO
+        // verify if thats necessary and correct
         exportMutation.reset()
         setDisabled(false)
       }, 5000)
@@ -177,7 +179,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
       <div
         className={cn(
           'relative aspect-video w-full select-none',
-          !isLoadingPlayer ? 'rounded-md border-2 border-brand' : ''
+          !isLoadingPlayer ? 'border-player rounded-md border-2' : ''
         )}
       >
         {exportMutation.isPending && (
