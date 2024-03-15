@@ -229,20 +229,16 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
           className={cn(
             'flex w-full flex-col items-center gap-10',
             isDisabled ? 'disable' : ''
-            // exportMutation.isPending ||
-            //   !exportMutation.isIdle ||
-            //   exportMutation.isError
-            //   ? 'disable'
-            //   : ''
-            // exportMutation.isPending || !exportMutation.isIdle ? 'disable' : ''
           )}
         >
           <div className="relative flex h-32 w-full justify-center">
             <SliderControls
+              disabled={isDisabled}
               handleMoveSlider={handleMoveSlider}
               getSlider={getSlider}
             />
             <PlayerControls
+              disabled={isDisabled}
               player={player}
               handleSkipTo={handleSkipTo}
               getSlider={getSlider}
@@ -251,6 +247,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
             />
           </div>
           <Slider
+            disabled={isDisabled}
             max={player.getDuration()}
             step={1}
             value={sliderValues}

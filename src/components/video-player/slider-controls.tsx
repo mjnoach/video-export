@@ -5,11 +5,13 @@ import { Sliders } from '../ui/slider'
 type SliderControlsProps = DefaultProps & {
   handleMoveSlider: (step: number, sliderKey: keyof typeof Sliders) => void
   getSlider(key: keyof typeof Sliders): number
+  disabled: boolean
 }
 
 export const SliderControls = ({
   handleMoveSlider,
   getSlider,
+  disabled,
 }: SliderControlsProps) => {
   return (
     <div className="absolute left-0 mt-2 grid grid-cols-3 items-center gap-x-2 gap-y-1">
@@ -18,6 +20,7 @@ export const SliderControls = ({
         {getReadableTimestamp(getSlider('Start'))}
       </div>
       <SliderControlsButtons
+        disabled={disabled}
         handleMoveSlider={handleMoveSlider}
         sliderKey={'Start'}
       />
@@ -26,6 +29,7 @@ export const SliderControls = ({
         {getReadableTimestamp(getSlider('End'))}
       </div>
       <SliderControlsButtons
+        disabled={disabled}
         handleMoveSlider={handleMoveSlider}
         sliderKey={'End'}
       />
@@ -40,21 +44,25 @@ export const SliderControls = ({
 type SliderControlsButtonsProps = {
   handleMoveSlider: (step: number, sliderKey: keyof typeof Sliders) => void
   sliderKey: keyof typeof Sliders
+  disabled: boolean
 }
 
 const SliderControlsButtons = ({
   handleMoveSlider,
   sliderKey,
+  disabled,
 }: SliderControlsButtonsProps) => {
   return (
     <div className="flex select-none">
       <button
+        disabled={disabled}
         onClick={() => handleMoveSlider(-1, sliderKey)}
         className="panel slider-controls-icon flex items-center justify-center p-0 text-xl"
       >
         -
       </button>
       <button
+        disabled={disabled}
         onClick={() => handleMoveSlider(1, sliderKey)}
         className="panel slider-controls-icon flex items-center justify-center p-0 text-xl"
       >

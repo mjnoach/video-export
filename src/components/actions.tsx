@@ -23,15 +23,21 @@ export const Actions = () => {
       )}
     >
       <Button
+        disabled={isDisabled}
         onClick={() => actions.previewClip?.(clip)}
         className="action brand h-8"
       >
         Preview
       </Button>
-      <Button onClick={handleExport} className="action h-8">
+      <Button
+        disabled={isDisabled}
+        onClick={handleExport}
+        className="action h-8"
+      >
         Export
       </Button>
       <ExtensionSelector
+        disabled={isDisabled}
         onValueChange={(value) => updateClip({ extension: value })}
       />
     </div>

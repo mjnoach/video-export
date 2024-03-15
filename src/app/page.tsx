@@ -1,7 +1,6 @@
 import { VideoLinkForm } from '@/components/video-link-form'
 
 // TODO
-// Fix: Disable editor while response overlay is shown. Inputs and buttons must be disabled funcionally as well.
 // Fix: Arrow Icon gets invisible when a long link is pasted into video link form
 
 // Feature: Multiple slider ranges for exporting a video combined of multiple clips
