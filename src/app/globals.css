@@ -124,7 +124,7 @@
   .action {
     @apply cursor-pointer whitespace-nowrap transition-colors;
     @apply bg-secondary-1/50 hover:!bg-secondary-1/70;
-    @apply border-secondary-2 rounded-md border;
+    @apply rounded-md border border-secondary-2;
     @apply disabled:pointer-events-none disabled:opacity-50;
 
     &.brand {
@@ -141,5 +141,8 @@
   }
   .center {
     @apply flex flex-col items-center justify-center;
+  }
+  .autofill-bg {
+    @apply shadow-[inset_0_0_0px_1000px_rgb(var(--secondary-2))];
   }
 }

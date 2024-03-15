@@ -36,7 +36,7 @@ export function VideoLinkForm() {
           <h2 className={`mb-3 text-2xl font-semibold`}>
             Paste & Go <ArrowIcon className="group-hover/form:translate-x-1" />
           </h2>
-          <p className={`text-primary-2 m-0 max-w-md text-sm`}>
+          <p className={`m-0 max-w-md text-sm text-primary-2`}>
             Paste a YouTube video link and jump into the editor!
           </p>
         </div>
@@ -63,13 +63,13 @@ export function VideoLinkForm() {
                   type="url"
                   id="videoUrl"
                   className={cn(
-                    '/border block w-full rounded-lg p-2.5 text-sm',
+                    'autofill-bg w-full rounded-lg p-2.5 text-sm',
                     errors.videoUrl && 'border-red-500'
                   )}
                   placeholder="YouTube video link"
                 />
                 <button className="flex" type="submit">
-                  <ArrowIcon className="absolute right-6 cursor-pointer select-none self-center group-hover/input:translate-x-1" />
+                  <ArrowIcon className="absolute right-2 cursor-pointer select-none self-center bg-secondary-2 group-hover/input:translate-x-1" />
                 </button>
               </div>
               {errors.videoUrl && (
@@ -94,7 +94,7 @@ const ArrowIcon = ({ className }: React.SVGProps<SVGSVGElement>) => (
     strokeLinecap="round"
     strokeLinejoin="round"
     className={cn(
-      'stroke-primary-1 inline-block h-8 w-8 transition-transform motion-reduce:transform-none',
+      'inline-block h-8 w-8 stroke-primary-1 transition-transform motion-reduce:transform-none',
       className
     )}
   >
