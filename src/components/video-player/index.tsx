@@ -50,8 +50,6 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     if (exportMutation.isSuccess) {
       storeObject(exportMutation.data)
       setTimeout(() => {
-        // TODO
-        // verify if thats necessary and correct
         exportMutation.reset()
         setDisabled(false)
       }, 5000)
@@ -143,14 +141,17 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     setSlider('Marker', value)
   }
 
-  function handleMoveSlider(step: number, sliderKey: keyof typeof Sliders) {
+  function moveSlider(step: number, sliderKey: keyof typeof Sliders) {
     if (!player) return
-    const duration = player.getDuration()
-    let value = getSlider(sliderKey) + step
-    if (value < 0) value = 0
-    if (value > duration) value = duration
-    player?.seekTo(value)
-    setSlider(sliderKey, value)
+    setSliderValues((prev) => {
+      const duration = player.getDuration()
+      const sliders = [...prev]
+      const value = sliders[Sliders[sliderKey]] + step
+      if (value < 0 || value > duration) return sliders
+      sliders[Sliders[sliderKey]] = value
+      player?.seekTo(value)
+      return sliders
+    })
   }
 
   function handleProgress({ playedSeconds }: { playedSeconds: number }) {
@@ -179,7 +180,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
       <div
         className={cn(
           'relative aspect-video w-full select-none',
-          !isLoadingPlayer ? 'border-player rounded-md border-2' : ''
+          !isLoadingPlayer ? 'rounded-md border-2 border-player' : ''
         )}
       >
         {exportMutation.isPending && (
@@ -197,7 +198,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
               className="flex items-center gap-2"
               target="_blank"
             >
-              <LucideLink className="text-primary-2 w-5" />
+              <LucideLink className="w-5 text-primary-2" />
               {`${exportMutation.data.id}.${exportMutation.data.format}`}
             </Link>
           </Overlay>
@@ -234,7 +235,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
           <div className="relative flex h-32 w-full justify-center">
             <SliderControls
               disabled={isDisabled}
-              handleMoveSlider={handleMoveSlider}
+              moveSlider={moveSlider}
               getSlider={getSlider}
             />
             <PlayerControls

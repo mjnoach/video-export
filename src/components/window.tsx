@@ -7,12 +7,12 @@ type WindowProps = DefaultProps & {
 
 export const Window = (props: WindowProps) => (
   <div className="relative isolate">
-    <div className="border-secondary-1 relative mx-auto max-w-4xl rounded-lg border bg-black/80 shadow-2xl">
+    <div className="relative mx-auto max-w-4xl rounded-lg border border-secondary-1 bg-black/80 shadow-2xl">
       <div className="relative flex select-none items-center px-2 py-4">
         {/* <WindowControlsOSX className="left-0 ml-6" /> */}
         <div className="relative mx-auto inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium">
           <DotIcon />
-          <span className="text-primary-2 bg-transparent pl-2 text-center focus:border-none focus:outline-none">
+          <span className="bg-transparent pl-2 text-center text-primary-2 focus:border-none focus:outline-none">
             {props.title}
           </span>
         </div>
@@ -45,7 +45,10 @@ const WindowControlsOSXs = ({ className }: DefaultProps) => (
 
 const WindowControls = ({ className }: DefaultProps) => (
   <div
-    className={cn('text-primary-3 absolute flex items-center gap-3', className)}
+    className={cn(
+      'absolute flex items-center gap-3 text-secondary-2',
+      className
+    )}
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"

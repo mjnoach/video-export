@@ -64,7 +64,7 @@ const Marker = () => {
     <SliderPrimitive.Thumb>
       <div className="absolute bottom-full flex -translate-x-1/2 cursor-grab flex-col items-center">
         <MarkerIcon />
-        <div className="bg-player relative -bottom-1 h-6 w-0.5" />
+        <div className="relative -bottom-1 h-6 w-0.5 bg-player" />
       </div>
     </SliderPrimitive.Thumb>
   )
@@ -72,7 +72,7 @@ const Marker = () => {
 
 const MarkerIcon = ({ className }: DefaultProps) => (
   <svg
-    className={cn(className, 'fill-player relative inset-y-1 w-4')}
+    className={cn(className, 'relative inset-y-1 w-4 fill-player')}
     viewBox="0 0 384 379"
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
