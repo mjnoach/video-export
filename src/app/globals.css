@@ -35,10 +35,6 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --brand: 221 82 76;
   }
 
   .dark {
@@ -75,15 +71,30 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
+
+  :root {
+    --radius: 0.5rem;
+
+    --brand: 221 82 76;
+
+    /* zinc-300 */
+    --primary-1: 212 212 216;
+    /* zinc-400 */
+    --primary-2: 161 161 170;
+    /* zinc-500 */
+    --primary-3: 113 113 122;
+
+    /* zinc-800 */
+    --secondary-1: 39 39 42;
+    /* zinc-700 */
+    --secondary-2: 63 63 70;
+  }
 }
 
 @layer base {
-  * {
-  }
   body {
+    @apply text-primary-1;
     @apply flex min-h-screen w-full flex-col;
-
-    color: rgb(var(--foreground-rgb));
     background: linear-gradient(
         to bottom,
         transparent,
@@ -103,15 +114,18 @@
   .overlay-icon {
     @apply h-16 w-16;
   }
+  .slider-controls-icon {
+    @apply h-6 w-6;
+  }
 }
 
 @layer utilities {
   .action {
     @apply cursor-pointer whitespace-nowrap transition-colors;
-    @apply bg-zinc-800/50 text-zinc-300;
-    @apply rounded-md border border-zinc-700;
+    @apply bg-secondary-1/50 hover:!bg-secondary-1/70;
+    @apply border-secondary-2 rounded-md border;
     @apply disabled:pointer-events-none disabled:opacity-50;
-    @apply hover:!bg-zinc-800/70;
+
     &.brand {
       @apply !border-brand !bg-brand/50 hover:!bg-brand/60;
     }

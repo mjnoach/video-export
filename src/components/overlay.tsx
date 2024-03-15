@@ -12,8 +12,8 @@ type OverlayPropps = DefaultProps & {
 export const Overlay = ({ children, type, isOpen, title }: OverlayPropps) => {
   const Icon = {
     loading: <Loader2 className={'overlay-icon animate-spin'} />,
-    error: <AlertTriangle className={'overlay-icon stroke-destructive'} />,
-    success: <CheckCircle2 className={'overlay-icon stroke-zinc-500'} />,
+    error: <AlertTriangle className={'overlay-icon text-destructive'} />,
+    success: <CheckCircle2 className={'overlay-icon text-primary-2'} />,
   }[type]
 
   return (

@@ -29,12 +29,12 @@ export function ExtensionSelector({ onValueChange }: ExtensionSelectorProps) {
         <SelectValue placeholder={EXTENSIONS[0]} />
       </SelectTrigger>
       <SelectContent
-        className="border-zinc-700 bg-zinc-900"
+        className="border-secondary-2 bg-zinc-900"
         position="item-aligned"
       >
         <SelectGroup>
           {EXTENSIONS.map((ext) => (
-            <SelectItem key={ext} value={ext} className="focus:bg-zinc-800">
+            <SelectItem key={ext} value={ext} className="focus:bg-secondary-1">
               {ext}
             </SelectItem>
           ))}

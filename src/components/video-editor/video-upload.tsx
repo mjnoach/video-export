@@ -23,26 +23,24 @@ export function VideoUpload({ disabled, setVideo }: VideoUploadProps) {
   function handleUpload(e: any) {
     const file = e.target.files[0] as File
     console.log('🚀 ~ handleUpload ~ file:', file)
-    // setVideo({ obj: file })
   }
 
   return (
     <div className="flex flex-col items-center space-y-10">
-      <Upload accept="video/*" onChange={handleUpload} />
+      <UploadInput accept="video/*" onChange={handleUpload} />
       <Button className="action h-8" onClick={handleLoad} disabled={isLoading}>
-        {/* {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} */}
         Load Video
       </Button>
     </div>
   )
 }
 
-type UploadProps = DefaultProps & {
+type UploadInputProps = DefaultProps & {
   accept?: string
   onChange: (info: any) => void
 }
 
-const Upload = (props: UploadProps) => {
+const UploadInput = (props: UploadInputProps) => {
   const supportedFormats = 'SVG, PNG, JPG or GIF (MAX. 800x400px)'
   return (
     <div>
@@ -51,11 +49,11 @@ const Upload = (props: UploadProps) => {
         className="center action aspect-video h-64 rounded-lg border-2 border-dashed"
       >
         <UploadIcon />
-        <p className="mb-2 text-sm text-zinc-400">
+        <p className="text-primary-2 mb-2 text-sm">
           <span className="font-semibold">Click to upload</span> or drag and
           drop
         </p>
-        <p className="text-xs text-zinc-500">{/* {supportedFormats} */}</p>
+        <p className="text-primary-3 text-xs">{/* {supportedFormats} */}</p>
         <input
           onChange={props.onChange}
           id="dropzone-file"
@@ -69,7 +67,7 @@ const Upload = (props: UploadProps) => {
 
 const UploadIcon = () => (
   <svg
-    className="mb-4 h-8 w-8 text-zinc-400"
+    className="mb-4 h-8 w-8"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"

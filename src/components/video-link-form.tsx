@@ -27,16 +27,16 @@ export function VideoLinkForm() {
   }
 
   return (
-    <div className="flex flex-col text-zinc-300">
+    <div className="flex flex-col">
       <div
         onClick={() => setFocus('videoUrl')}
         className="group/form panel flex flex-col gap-6 px-5 py-4"
       >
         <div>
           <h2 className={`mb-3 text-2xl font-semibold`}>
-            Paste & Go <Arrow className="group-hover/form:translate-x-1" />
+            Paste & Go <ArrowIcon className="group-hover/form:translate-x-1" />
           </h2>
-          <p className={`m-0 max-w-md text-sm text-zinc-400`}>
+          <p className={`text-primary-2 m-0 max-w-md text-sm`}>
             Paste a YouTube video link and jump into the editor!
           </p>
         </div>
@@ -69,7 +69,7 @@ export function VideoLinkForm() {
                   placeholder="YouTube video link"
                 />
                 <button className="flex" type="submit">
-                  <Arrow className="absolute right-6 cursor-pointer select-none self-center group-hover/input:translate-x-1" />
+                  <ArrowIcon className="absolute right-6 cursor-pointer select-none self-center group-hover/input:translate-x-1" />
                 </button>
               </div>
               {errors.videoUrl && (
@@ -85,7 +85,7 @@ export function VideoLinkForm() {
   )
 }
 
-const Arrow = ({ className }: React.SVGProps<SVGSVGElement>) => (
+const ArrowIcon = ({ className }: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
@@ -94,7 +94,7 @@ const Arrow = ({ className }: React.SVGProps<SVGSVGElement>) => (
     strokeLinecap="round"
     strokeLinejoin="round"
     className={cn(
-      'inline-block h-8 w-8 stroke-zinc-300 transition-transform motion-reduce:transform-none',
+      'stroke-primary-1 inline-block h-8 w-8 transition-transform motion-reduce:transform-none',
       className
     )}
   >

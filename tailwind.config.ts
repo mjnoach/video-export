@@ -35,10 +35,15 @@ const config = {
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
+          1: 'rgb(var(--primary-1))',
+          2: 'rgb(var(--primary-2))',
+          3: 'rgb(var(--primary-3))',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
+          1: 'rgb(var(--secondary-1))',
+          2: 'rgb(var(--secondary-2))',
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',

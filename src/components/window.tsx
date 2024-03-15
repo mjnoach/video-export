@@ -7,12 +7,12 @@ type WindowProps = DefaultProps & {
 
 export const Window = (props: WindowProps) => (
   <div className="relative isolate">
-    <div className="relative mx-auto max-w-4xl rounded-lg border border-zinc-800 bg-black/80 shadow-2xl">
+    <div className="border-secondary-1 relative mx-auto max-w-4xl rounded-lg border bg-black/80 shadow-2xl">
       <div className="relative flex select-none items-center px-2 py-4">
         {/* <WindowControlsOSX className="left-0 ml-6" /> */}
-        <div className="relative mx-auto inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-zinc-400 ring-zinc-800">
+        <div className="relative mx-auto inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium">
           <DotIcon />
-          <span className="bg-transparent pl-2 text-center focus:border-none focus:outline-none">
+          <span className="text-primary-2 bg-transparent pl-2 text-center focus:border-none focus:outline-none">
             {props.title}
           </span>
         </div>
@@ -35,7 +35,7 @@ const DotIcon = () => (
   </div>
 )
 
-const WindowControlsOSXs = (props: DefaultProps) => (
+const WindowControlsOSXs = ({ className }: DefaultProps) => (
   <div className="absolute flex items-center gap-3">
     <div className="h-3 w-3 rounded-full bg-red-500"></div>
     <div className="h-3 w-3 rounded-full bg-yellow-300"></div>
@@ -43,12 +43,9 @@ const WindowControlsOSXs = (props: DefaultProps) => (
   </div>
 )
 
-const WindowControls = (props: DefaultProps) => (
+const WindowControls = ({ className }: DefaultProps) => (
   <div
-    className={cn(
-      props.className,
-      'absolute flex items-center gap-3 text-zinc-700'
-    )}
+    className={cn('text-primary-3 absolute flex items-center gap-3', className)}
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"

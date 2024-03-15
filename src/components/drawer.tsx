@@ -21,7 +21,7 @@ export const Drawer = () => {
   return (
     <div
       className={cn(
-        'fixed left-0 top-0 z-40 flex h-screen -translate-x-52 overflow-y-auto border-r border-zinc-800 bg-black bg-opacity-70 backdrop-blur-md transition-transform hover:-translate-x-0',
+        'border-secondary-1 fixed left-0 top-0 z-40 flex h-screen -translate-x-52 overflow-y-auto border-r bg-black bg-opacity-70 backdrop-blur-md transition-transform hover:-translate-x-0',
         isPinned ? '-translate-x-0' : ''
       )}
     >
@@ -41,12 +41,12 @@ export const Drawer = () => {
             <DrawerItem key={i} obj={obj} />
           ))}
           <li className="action center aspect-video w-32">
-            <Plus className="stroke-zinc-400" />
+            <Plus />
           </li>
         </ul>
       </div>
       <div className="flex items-center">
-        <GripVertical className="stroke-zinc-800" />
+        <GripVertical className="text-secondary-1" />
       </div>
     </div>
   )
@@ -66,10 +66,10 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
   }
 
   return (
-    <li className="group/item flex aspect-video w-44 cursor-pointer select-none rounded-lg border border-zinc-700 bg-black transition">
+    <li className="group/item border-secondary-2 flex aspect-video w-44 cursor-pointer select-none rounded-lg border bg-black transition">
       <Link href={obj.url} className="w-full" target="_blank">
         <div className="grid h-full grid-cols-3 content-between p-1">
-          <div className="col-span-2 text-zinc-400">
+          <div className="text-primary-2 col-span-2">
             {getReadableDuration(obj.duration)}
           </div>
           <button
@@ -78,12 +78,12 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
               'action invisible flex h-7 w-7 items-center justify-center place-self-end hover:!border-destructive hover:!bg-destructive group-hover/item:visible'
             }
           >
-            <Trash2 className="drawer-icon stroke-zinc-400" />
+            <Trash2 className="drawer-icon" />
           </button>
-          <div className="col-span-2 w-full truncate whitespace-nowrap text-zinc-300">
+          <div className="col-span-2 w-full truncate whitespace-nowrap">
             {obj.id}
           </div>
-          <div className="place-self-end text-zinc-400">{extension}</div>
+          <div className="text-primary-2 place-self-end">{extension}</div>
         </div>
       </Link>
     </li>
@@ -105,9 +105,9 @@ const PinButton = ({ isPinned, setPinned, className }: PinButtonProps) => {
       )}
     >
       {isPinned ? (
-        <PinOff className={'drawer-icon stroke-zinc-400'} />
+        <PinOff className={'drawer-icon'} />
       ) : (
-        <Pin className={'drawer-icon stroke-zinc-400'} />
+        <Pin className={'drawer-icon'} />
       )}
     </button>
   )

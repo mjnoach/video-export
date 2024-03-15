@@ -189,13 +189,13 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
           </Overlay>
         )}
         {exportMutation.isSuccess && (
-          <Overlay type={'success'} title="Processing complete!">
+          <Overlay type={'success'} title="Export complete!">
             <Link
               href={exportMutation.data.url}
               className="flex items-center gap-2"
               target="_blank"
             >
-              <LucideLink className="w-5 stroke-zinc-500" />
+              <LucideLink className="text-primary-2 w-5" />
               {`${exportMutation.data.id}.${exportMutation.data.format}`}
             </Link>
           </Overlay>
