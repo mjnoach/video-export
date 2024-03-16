@@ -8,6 +8,8 @@ import { VideoLinkForm } from '@/components/video-link-form'
 // Improve: Unset video buffering screen after player seek or clip export
 // Improve: Video processing progress state. Use backend polling to display export process progress.
 
+// Fix: Drawer element border showing when drawer is closed
+
 export default function Home() {
   return (
     <main>

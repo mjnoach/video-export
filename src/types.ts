@@ -18,4 +18,5 @@ type ExportedObj = {
   url: string
   format: string
   duration: number
+  thumbnail: string | null
 }

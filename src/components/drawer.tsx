@@ -21,7 +21,7 @@ export const Drawer = () => {
   return (
     <div
       className={cn(
-        'border-secondary-1 fixed left-0 top-0 z-40 flex h-screen -translate-x-52 overflow-y-auto border-r bg-black bg-opacity-70 backdrop-blur-md transition-transform hover:-translate-x-0',
+        'fixed left-0 top-0 z-40 flex h-screen -translate-x-[12.5rem] overflow-y-auto border-r border-secondary-1 bg-black bg-opacity-70 backdrop-blur-md transition-transform hover:-translate-x-0',
         isPinned ? '-translate-x-0' : ''
       )}
     >
@@ -36,8 +36,8 @@ export const Drawer = () => {
             setPinned={setPinned}
           />
         </div>
-        <ul className="flex flex-col items-center gap-4 px-4">
-          {[...storage].map((obj, i) => (
+        <ul className="flex flex-col items-center gap-4 pl-6">
+          {storage.map((obj, i) => (
             <DrawerItem key={i} obj={obj} />
           ))}
           <li className="action center aspect-video w-32">
@@ -45,8 +45,8 @@ export const Drawer = () => {
           </li>
         </ul>
       </div>
-      <div className="flex items-center">
-        <GripVertical className="text-secondary-1" />
+      <div className="flex w-6 items-center">
+        <GripVertical className="text-secondary-2" />
       </div>
     </div>
   )
@@ -65,11 +65,21 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
     removeObject(obj.id)
   }
 
+  // const thumbnail = obj.thumbnail ? obj.thumbnail.replace('public', '') : null
+
   return (
-    <li className="group/item border-secondary-2 flex aspect-video w-44 cursor-pointer select-none rounded-lg border bg-black transition">
+    <li
+      className={cn(
+        'group/item flex aspect-video w-44 cursor-pointer select-none rounded-lg border border-secondary-2 bg-black transition',
+        'bg-black'
+        // thumbnail
+        //   ? 'bg-[url(/K2rI5DbQ.png)] bg-contain bg-center bg-no-repeat'
+        //   : 'bg-black'
+      )}
+    >
       <Link href={obj.url} className="w-full" target="_blank">
         <div className="grid h-full grid-cols-3 content-between p-1">
-          <div className="text-primary-2 col-span-2">
+          <div className="bg-black/ px-1.5/ col-span-2 w-fit text-primary-2">
             {getReadableDuration(obj.duration)}
           </div>
           <button
@@ -80,10 +90,12 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
           >
             <Trash2 className="drawer-icon" />
           </button>
-          <div className="col-span-2 w-full truncate whitespace-nowrap">
+          <div className="bg-black/ px-1.5/ col-span-2 w-fit max-w-full truncate whitespace-nowrap">
             {obj.id}
           </div>
-          <div className="text-primary-2 place-self-end">{extension}</div>
+          <div className="bg-black/ px-1.5/ w-fit place-self-end text-player">
+            {extension}
+          </div>
         </div>
       </Link>
     </li>

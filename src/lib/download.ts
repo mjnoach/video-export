@@ -1,4 +1,4 @@
-import { transcodeVideoStream } from './ffmpeg'
+import { generateThumbnail, transcodeVideoStream } from './ffmpeg'
 
 import { nanoid } from 'nanoid'
 import ytdl from 'ytdl-core'
@@ -39,7 +39,8 @@ export async function downloadClip(
     format: fileFormat,
   })
 
-  // if (fileFormat === 'mp4') await generateThumbnail(filePath, objId)
+  const thumbnail =
+    fileFormat === 'mp4' ? await generateThumbnail(filePath, objId) : null
 
   const exportData: ExportedObj = {
     id: objId,
@@ -47,6 +48,7 @@ export async function downloadClip(
     url: fileName,
     format: fileFormat,
     duration,
+    thumbnail,
   }
 
   return exportData

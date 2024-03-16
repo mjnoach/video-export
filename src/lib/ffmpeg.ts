@@ -55,7 +55,8 @@ export async function transcodeVideoStream(
 
 export async function generateThumbnail(objPath: string, objId: string) {
   const folder = objPath.split('/').slice(0, -1).join('/')
-  return new Promise((resolve, reject) => {
+  const extension = '.png'
+  return new Promise<string>((resolve, reject) => {
     ffmpeg()
       .input(objPath)
       .on('filenames', (filenames) => {
@@ -63,7 +64,8 @@ export async function generateThumbnail(objPath: string, objId: string) {
       })
       .on('end', () => {
         console.log('Thumbnail generated!')
-        resolve(true)
+        const path = `${folder}/${objId}${extension}`
+        resolve(path)
       })
       .on('error', (err) => {
         console.error(err)
@@ -71,9 +73,10 @@ export async function generateThumbnail(objPath: string, objId: string) {
       })
       .thumbnail({
         folder,
-        filename: `${objId}.png`,
+        filename: `${objId}${extension}`,
         timestamps: ['50%'],
-        size: '320x240',
+        size: '427x240',
+        // size: '320x240',
       })
   })
 }
