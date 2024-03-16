@@ -21,7 +21,10 @@ export const Drawer = () => {
   return (
     <div
       className={cn(
-        'fixed left-0 top-0 z-40 flex h-screen -translate-x-[12.5rem] overflow-y-auto border-r border-secondary-1 bg-black bg-opacity-70 backdrop-blur-md transition-transform hover:-translate-x-0',
+        !storage.length
+          ? '-translate-x-[100%]'
+          : '-translate-x-[calc(100%-1.5rem)]',
+        'fixed left-0 top-0 z-40 flex h-screen overflow-y-auto border-r border-secondary-1 bg-black bg-opacity-70 backdrop-blur-md transition-transform hover:-translate-x-0',
         isPinned ? '-translate-x-0' : ''
       )}
     >
@@ -31,7 +34,7 @@ export const Drawer = () => {
             <Nav />
           </div>
           <PinButton
-            className="absolute right-0 top-12 mr-4"
+            className="absolute right-0 top-12"
             isPinned={isPinned}
             setPinned={setPinned}
           />

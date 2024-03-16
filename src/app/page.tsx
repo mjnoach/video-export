@@ -4,11 +4,8 @@ import { VideoLinkForm } from '@/components/video-link-form'
 // Feature: Multiple slider ranges for exporting a video combined of multiple clips
 // Feature: Add a cropping frame that will only capture the selected area for a given slider range
 
-// Improve: Add thumbnails for exported files
 // Improve: Unset video buffering screen after player seek or clip export
 // Improve: Video processing progress state. Use backend polling to display export process progress.
-
-// Fix: Drawer element border showing when drawer is closed
 
 export default function Home() {
   return (
