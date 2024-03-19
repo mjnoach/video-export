@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 
-import { downloadClip } from './download'
 import { BadRequest, NotFound } from './errors'
-import { taskManager } from './task-manager'
+
+import ky from 'ky'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,14 +10,15 @@ export async function POST(request: Request) {
   const data: Clip = await request.json()
   console.log('🚀 ~ POST ~ data:', data)
   try {
-    const { id } = taskManager.initializeTask()
-    downloadClip(id, data)
-
+    const res = await ky.post('http://localhost:3001/export', {
+      json: data,
+    })
+    const id = await res.json<ExportedObj['id']>()
     return NextResponse.json(id)
   } catch (e) {
     if (e instanceof Error) console.error(e.name, e.message, e.cause)
     return new NextResponse(
-      `Failed downloading a clip from source: ${data.sourceVideo.url}`,
+      `Failed submitting export data for source video ${data.sourceVideo.url}`,
       { status: 500 }
     )
   }
@@ -26,30 +27,13 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const id = searchParams.get('id')
+  console.log('🚀 ~ GET ~ id:', id)
 
   if (!id) throw new BadRequest(`Task id must be provided`)
 
   try {
-    const stream = new TransformStream()
-    const writer = stream.writable.getWriter()
-
-    const task = taskManager.getTask(id)
-    if (!task) throw new NotFound(id)
-
-    task.callbacks = {
-      onProgress: (progress) => {
-        writer.write(progress)
-      },
-      onFinish: (obj) => {
-        writer.write(`data:${JSON.stringify(obj)}`)
-        writer.close()
-      },
-      onError: () => {
-        writer.close()
-      },
-    }
-
-    return new NextResponse(stream.readable)
+    const res = await ky.get(`http://localhost:3001/export/${id}`)
+    return new NextResponse(res.body)
   } catch (e) {
     if (e instanceof Error) console.error(e.name, e.message, e.cause)
     if (e instanceof BadRequest)

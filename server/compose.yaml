@@ -1,0 +1,13 @@
+services:
+  server:
+    build: .
+    ports:
+      - '3001:3001'
+    develop:
+      watch:
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: compose.yaml
+        - action: rebuild
+          path: ./src

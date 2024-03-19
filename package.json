@@ -9,7 +9,8 @@
     "lint": "next lint",
     "format": "prettier --check --ignore-path .gitignore .",
     "format:fix": "prettier --write --ignore-path .gitignore .",
-    "ui:add": "bunx shadcn-ui@latest add"
+    "ui:add": "bunx shadcn-ui@latest add",
+    "hono-server": "docker compose -f hono-server/compose.yaml -d watch"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
@@ -22,10 +23,8 @@
     "@uidotdev/usehooks": "^2.4.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "fluent-ffmpeg": "^2.1.2",
     "ky": "^1.2.2",
     "lucide-react": "^0.323.0",
-    "nanoid": "^5.0.6",
     "next": "14.1.0",
     "next-themes": "^0.2.1",
     "react": "^18",
@@ -33,13 +32,11 @@
     "react-hook-form": "^7.50.1",
     "react-player": "^2.14.1",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7",
-    "ytdl-core": "^4.11.5"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.27.7",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "@types/fluent-ffmpeg": "^2.1.24",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

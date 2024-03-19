@@ -1,0 +1,18 @@
+{
+  "name": "hono-server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "",
+    "test": ""
+  },
+  "dependencies": {
+    "hono": "^4.1.2",
+    "ytdl-core": "^4.11.5",
+    "nanoid": "^5.0.6",
+    "fluent-ffmpeg": "^2.1.2"
+  },
+  "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.24"
+  }
+}

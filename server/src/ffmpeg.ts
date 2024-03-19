@@ -1,5 +1,3 @@
-import { getTotalSeconds } from '@/lib/utils/time'
-
 import { taskManager } from './task-manager'
 
 import ffmpeg from 'fluent-ffmpeg'
@@ -14,6 +12,14 @@ type ProgressData = {
   currentKbps: number
   targetSize: number
   timemark: string
+}
+
+function getTotalSeconds(timemark: string): number {
+  if (timemark === 'N/A') return 0
+  let [hours, minutes, seconds] = timemark.split(':').map(parseFloat)
+  seconds = parseInt(seconds.toFixed())
+  const totalSeconds = hours * 3600 + minutes * 60 + seconds
+  return totalSeconds
 }
 
 const getProgressPercent = (
