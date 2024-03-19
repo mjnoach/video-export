@@ -5,11 +5,9 @@ import { VideoLinkForm } from '@/components/video-link-form'
 // Feature: Add a cropping frame that will only capture the selected area for a given slider range
 
 // Improve: Unset video buffering screen after player seek or clip export
-// Improve: Video processing progress state. Use backend polling to display export process progress.
+// Improve: Use SSE instead of raw stream?
 
-// Improve:
-//  POST method of the /api/export endpoint should return an obj id and pending status initially
-//  GET method on /api/export/[id] implementing SSE emitting export progress updates and finally the exported obj
+// Fix: Export progress gets fragmented into multiple 100% chunks
 
 export default function Home() {
   return (

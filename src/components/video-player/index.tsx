@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 
 import { EditorContext } from '../context/editor'
 import { Overlay } from '../overlay'
+import { Progress } from '../ui/progress'
 import { Slider, Sliders } from '../ui/slider'
 import { PlayerControls } from './player-controls'
 import { SliderControls } from './slider-controls'
@@ -186,6 +187,10 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
         {exportRequest.isPending && (
           <Overlay type={'loading'} title="Processing...">
             {exportProgress ? `${exportProgress}%` : 'initializing'}
+            <Progress
+              value={Number(exportProgress)}
+              className="absolute -bottom-8 h-1 w-[200%]"
+            />
           </Overlay>
         )}
         {exportRequest.isError && (
