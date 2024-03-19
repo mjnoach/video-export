@@ -1,9 +1,5 @@
 import { nanoid } from 'nanoid'
 
-// type CallbackQueue = {
-//   [callback in keyof ExportCallbacks]: ExportCallbacks[callback][]
-// }
-
 type ExportCallbacks = {
   onProgress: (progress: string) => void
   onFinish: (obj: ExportedObj) => void

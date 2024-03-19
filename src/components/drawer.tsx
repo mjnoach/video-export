@@ -24,12 +24,12 @@ export const Drawer = () => {
         !storage.length
           ? '-translate-x-[100%]'
           : '-translate-x-[calc(100%-1.5rem)]',
-        'fixed left-0 top-0 z-40 flex h-screen overflow-y-auto border-r border-secondary-1 bg-black bg-opacity-70 backdrop-blur-md transition-transform hover:-translate-x-0',
+        'fixed left-0 top-0 z-40 flex h-screen border-r border-secondary-1 bg-black bg-opacity-70 backdrop-blur-md transition-transform hover:-translate-x-0',
         isPinned ? '-translate-x-0' : ''
       )}
     >
-      <div>
-        <div className="relative mb-12">
+      <div className="overflow-y-auto">
+        <div className="relative">
           <div className="invisible">
             <Nav />
           </div>
@@ -39,13 +39,11 @@ export const Drawer = () => {
             setPinned={setPinned}
           />
         </div>
-        <ul className="flex flex-col items-center gap-4 pl-6">
+        <ul className="my-12 mb-24 ml-6 flex w-44 flex-col items-center gap-4">
           {storage.map((obj, i) => (
             <DrawerItem key={i} obj={obj} />
           ))}
-          <li className="action center aspect-video w-32">
-            <Plus />
-          </li>
+          {/* <NewItemButton /> */}
         </ul>
       </div>
       <div className="flex w-6 items-center">
@@ -68,16 +66,15 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
     removeObject(obj.id)
   }
 
-  // const thumbnail = obj.thumbnail ? obj.thumbnail.replace('public', '') : null
-
   return (
     <li
+      style={{
+        backgroundImage: obj.thumbnail ? `url(${obj.thumbnail})` : '',
+      }}
       className={cn(
         'group/item flex aspect-video w-44 cursor-pointer select-none rounded-lg border border-secondary-2 bg-black transition',
-        'bg-black'
-        // thumbnail
-        //   ? 'bg-[url(/K2rI5DbQ.png)] bg-contain bg-center bg-no-repeat'
-        //   : 'bg-black'
+        'bg-black',
+        obj.thumbnail ? 'bg-contain bg-center bg-no-repeat' : 'bg-black'
       )}
     >
       <Link href={obj.url} className="w-full" target="_blank">
@@ -127,3 +124,9 @@ const PinButton = ({ isPinned, setPinned, className }: PinButtonProps) => {
     </button>
   )
 }
+
+const NewItemButton = () => (
+  <li className="action center aspect-video w-32">
+    <Plus />
+  </li>
+)

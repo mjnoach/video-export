@@ -181,7 +181,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
       <div
         className={cn(
           'relative aspect-video w-full select-none',
-          !isLoadingPlayer ? 'rounded-md border-2 border-player' : ''
+          !isLoadingPlayer ? 'rounded-md border-4 border-secondary-1' : ''
         )}
       >
         {exportRequest.isPending && (

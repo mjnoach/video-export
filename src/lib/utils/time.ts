@@ -34,3 +34,11 @@ export const parseSeconds = (timemark: string) => {
   let seconds = parseInt(secondsStr)
   return isNaN(seconds) ? 0 : seconds
 }
+
+export function getTotalSeconds(timemark: string): number {
+  if (timemark === 'N/A') return 0
+  let [hours, minutes, seconds] = timemark.split(':').map(parseFloat)
+  seconds = parseInt(seconds.toFixed())
+  const totalSeconds = hours * 3600 + minutes * 60 + seconds
+  return totalSeconds
+}

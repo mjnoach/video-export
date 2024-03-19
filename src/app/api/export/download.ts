@@ -1,5 +1,5 @@
-import { taskManager } from '../task-manager'
-import { transcodeVideo } from './ffmpeg'
+import { generateThumbnail, transcodeVideo } from './ffmpeg'
+import { taskManager } from './task-manager'
 
 import ytdl from 'ytdl-core'
 
@@ -21,8 +21,11 @@ export async function downloadClip(
   const stream = await getSourceStream(sourceVideo)
   await transcodeVideo(id, stream, { ...targetClip, start })
 
-  const thumbnail = null
-  // fileFormat === 'mp4' ? await generateThumbnail(filePath, objId) : null
+  const withThumbnails = false
+  const thumbnail =
+    withThumbnails && fileFormat === 'mp4'
+      ? await generateThumbnail(filePath, id)
+      : null
 
   const exportedObj = {
     id,

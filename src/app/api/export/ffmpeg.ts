@@ -1,6 +1,6 @@
-import { parseSeconds } from '@/lib/utils/time'
+import { getTotalSeconds } from '@/lib/utils/time'
 
-import { taskManager } from '../task-manager'
+import { taskManager } from './task-manager'
 
 import ffmpeg from 'fluent-ffmpeg'
 import { Readable } from 'stream'
@@ -14,6 +14,17 @@ type ProgressData = {
   currentKbps: number
   targetSize: number
   timemark: string
+}
+
+const getProgressPercent = (
+  { timemark }: ProgressData,
+  start: number,
+  duration: number
+) => {
+  const seconds = getTotalSeconds(timemark)
+  const fraction = seconds / duration
+  const percent = (fraction * 100).toFixed(0)
+  return percent
 }
 
 export async function transcodeVideo(
@@ -34,12 +45,9 @@ export async function transcodeVideo(
         console.log('Transcoding started!')
       })
       .on('progress', (progress: ProgressData) => {
-        const percent = (
-          (parseSeconds(progress.timemark) / duration) *
-          100
-        ).toFixed(0)
-        console.log(`Processing: ${percent}%`)
+        const percent = getProgressPercent(progress, start, duration)
         task.callbacks?.onProgress(percent)
+        // console.log(`Processing: ${percent}%`)
       })
       .on('end', () => {
         console.log('Transcoding complete!', path)
@@ -65,7 +73,8 @@ export async function generateThumbnail(objPath: string, objId: string) {
       .on('end', () => {
         console.log('Thumbnail generated!')
         const path = `${folder}/${objId}${extension}`
-        resolve(path)
+        const url = `/${objId}${extension}`
+        resolve(url)
       })
       .on('error', (err) => {
         console.error(err)
