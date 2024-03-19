@@ -1,5 +1,7 @@
 import { parseSeconds } from '@/lib/utils/time'
 
+import { taskManager } from '../task-manager'
+
 import ffmpeg from 'fluent-ffmpeg'
 import { Readable } from 'stream'
 
@@ -14,15 +16,12 @@ type ProgressData = {
   timemark: string
 }
 
-export async function transcodeVideoStream(
+export async function transcodeVideo(
+  id: string,
   source: string | Readable,
-  target: {
-    path: string
-    start: number
-    duration: number
-    format: string
-  }
+  target: TargetClip & { start: number }
 ) {
+  const task = taskManager.getTask(id)
   const { path, start, duration, format } = target
   return new Promise((resolve, reject) => {
     ffmpeg()
@@ -40,6 +39,7 @@ export async function transcodeVideoStream(
           100
         ).toFixed(0)
         console.log(`Processing: ${percent}%`)
+        task.callbacks?.onProgress(percent)
       })
       .on('end', () => {
         console.log('Transcoding complete!', path)

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 
 import Link from 'next/link'
 
-import { useExport } from '@/lib/api'
+import { api, useExport } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 import { EditorContext } from '../context/editor'
@@ -95,7 +95,8 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   async function exportClip(clip: Clip) {
     setDisabled(true)
     setIsPlaying(false)
-    exportMutation.mutate(clip)
+    // exportMutation.mutate(clip)
+    api.export(clip)
   }
 
   const hasReachedEnd = () => getSlider('Marker') >= getSlider('End')

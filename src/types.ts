@@ -12,11 +12,14 @@ type Clip = {
   sourceVideo: SourceVideo
 }
 
-type ExportedObj = {
-  id: string
+type TargetClip = {
   path: string
-  url: string
-  format: string
   duration: number
+  format: string
+}
+
+type ExportedObj = TargetClip & {
+  id: string
+  url: string
   thumbnail: string | null
 }
