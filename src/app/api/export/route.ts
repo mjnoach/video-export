@@ -38,11 +38,10 @@ export async function GET(request: Request) {
 
     task.callbacks = {
       onProgress: (progress) => {
-        console.log('🚀 ~ GET ~ progress:', progress)
         writer.write(progress)
       },
       onFinish: (obj) => {
-        // writer.write(obj)
+        writer.write(`data:${JSON.stringify(obj)}`)
         writer.close()
       },
       onError: () => {
@@ -50,15 +49,7 @@ export async function GET(request: Request) {
       },
     }
 
-    return new NextResponse(stream.readable, {
-      // headers: new Headers({
-      //   Connection: 'keep-alive',
-      //   'Content-Type': 'text/event-stream',
-      //   'Cache-Control': 'no-cache, no-transform',
-      //   'X-Accel-Buffering': 'no',
-      //   'Content-Encoding': 'none',
-      // }),
-    })
+    return new NextResponse(stream.readable)
   } catch (e) {
     if (e instanceof Error) console.error(e.name, e.message, e.cause)
     if (e instanceof BadRequest)

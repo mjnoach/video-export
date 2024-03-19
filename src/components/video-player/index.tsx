@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 
 import Link from 'next/link'
 
-import { api, useExport } from '@/lib/api'
+import { useExport } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 import { EditorContext } from '../context/editor'
@@ -34,28 +34,28 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     updateClip,
   } = useContext(EditorContext)
 
-  const exportMutation = useExport()
+  const { exportRequest, exportProgress } = useExport()
 
   useEffect(() => {
-    if (exportMutation.isError) {
+    if (exportRequest.isError) {
       setTimeout(() => {
-        exportMutation.reset()
+        exportRequest.reset()
         setDisabled(false)
       }, 5000)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exportMutation.isError])
+  }, [exportRequest.isError])
 
   useEffect(() => {
-    if (exportMutation.isSuccess) {
-      storeObject(exportMutation.data)
+    if (exportRequest.isSuccess) {
+      storeObject(exportRequest.data)
       setTimeout(() => {
-        exportMutation.reset()
+        exportRequest.reset()
         setDisabled(false)
       }, 5000)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exportMutation.isSuccess])
+  }, [exportRequest.isSuccess])
 
   useEffect(() => {
     if (hasReachedEnd()) setIsPlaying(false)
@@ -95,8 +95,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   async function exportClip(clip: Clip) {
     setDisabled(true)
     setIsPlaying(false)
-    // exportMutation.mutate(clip)
-    api.export(clip)
+    exportRequest.mutate(clip)
   }
 
   const hasReachedEnd = () => getSlider('Marker') >= getSlider('End')
@@ -184,23 +183,25 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
           !isLoadingPlayer ? 'rounded-md border-2 border-player' : ''
         )}
       >
-        {exportMutation.isPending && (
-          <Overlay type={'loading'} title="Processing..."></Overlay>
-        )}
-        {exportMutation.isError && (
-          <Overlay type={'error'} title="Error">
-            {exportMutation.error.message}
+        {exportRequest.isPending && (
+          <Overlay type={'loading'} title="Processing...">
+            {exportProgress ? `${exportProgress}%` : 'initializing'}
           </Overlay>
         )}
-        {exportMutation.isSuccess && (
+        {exportRequest.isError && (
+          <Overlay type={'error'} title="Error">
+            {exportRequest.error.message}
+          </Overlay>
+        )}
+        {exportRequest.isSuccess && (
           <Overlay type={'success'} title="Export complete!">
             <Link
-              href={exportMutation.data.url}
+              href={exportRequest.data.url}
               className="flex items-center gap-2"
               target="_blank"
             >
               <LucideLink className="w-5 text-primary-2" />
-              {`${exportMutation.data.id}.${exportMutation.data.format}`}
+              {`${exportRequest.data.id}.${exportRequest.data.format}`}
             </Link>
           </Overlay>
         )}
