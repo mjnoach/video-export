@@ -1,4 +1,4 @@
-import { parseSeconds } from './utils/time'
+import { parseSeconds } from '@/lib/utils/time'
 
 import ffmpeg from 'fluent-ffmpeg'
 import { Readable } from 'stream'

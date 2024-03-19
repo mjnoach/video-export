@@ -7,6 +7,10 @@ import { VideoLinkForm } from '@/components/video-link-form'
 // Improve: Unset video buffering screen after player seek or clip export
 // Improve: Video processing progress state. Use backend polling to display export process progress.
 
+// Improve:
+//  POST method of the /api/export endpoint should return an obj id and pending status initially
+//  GET method on /api/export/[id] implementing SSE emitting export progress updates and finally the exported obj
+
 export default function Home() {
   return (
     <main>

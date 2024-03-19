@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { downloadClip } from '@/lib/download'
+import { downloadClip } from './download'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,7 +9,9 @@ export async function POST(request: Request) {
   console.log('🚀 ~ POST ~ data:', data)
   try {
     // throw new Error('test')
+
     const exportedObj = await downloadClip(data)
+
     return NextResponse.json(exportedObj)
   } catch (e) {
     const msg = `Failed downloading a clip from source: ${data.sourceVideo.url}`
