@@ -1,38 +1,28 @@
-# use the official Bun image
-# see all versions at https://hub.docker.com/r/oven/bun/tags
-FROM oven/bun:1 as base
+FROM node:21-alpine AS base
+
+FROM base AS builder
 WORKDIR /app
 
-# install dependencies into temp directory
-# this will cache them and speed up future builds
-FROM base AS install
-RUN mkdir -p /temp/dev
-COPY package.json bun.lockb /temp/dev/
-RUN cd /temp/dev && bun install --frozen-lockfile
+RUN apk add --no-cache libc6-compat python3
+# RUN apk --no-cache --virtual build-dependencies add \
 
-# install with --production (exclude devDependencies)
-RUN mkdir -p /temp/prod
-COPY package.json bun.lockb /temp/prod/
-RUN cd /temp/prod && bun install --frozen-lockfile --production
+COPY package*json tsconfig.json src ./
 
-# copy node_modules from temp directory
-# then copy all (non-ignored) project files into the image
-FROM base AS prerelease
-COPY --from=install /temp/dev/node_modules node_modules
-COPY . .
+RUN npm i && \
+    npm run build && \
+    npm prune --production
 
-# # [optional] tests & build
-# ENV NODE_ENV=production
-# RUN bun test
-# RUN bun run build
+FROM base AS runner
+WORKDIR /app
 
-# copy production dependencies and source code into final image
-FROM base AS release
-COPY --from=install /temp/prod/node_modules node_modules
-COPY --from=prerelease /app/src src
-COPY --from=prerelease /app/package.json .
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 hono
 
-# run the app
-USER bun
-EXPOSE 3001/tcp
-ENTRYPOINT [ "bun", "run", "src/index.ts" ]
+COPY --from=builder --chown=hono:nodejs /app/node_modules /app/node_modules
+COPY --from=builder --chown=hono:nodejs /app/dist /app/dist
+COPY package.json /app
+
+USER hono
+EXPOSE 3001
+
+CMD ["npm", "run", "start"]

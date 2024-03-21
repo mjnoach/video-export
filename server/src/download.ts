@@ -1,5 +1,5 @@
-import { generateThumbnail, transcodeVideo } from './ffmpeg'
-import { taskManager } from './task-manager'
+import { generateThumbnail, transcodeVideo } from './ffmpeg.js'
+import { taskManager } from './task-manager.js'
 
 import ytdl from 'ytdl-core'
 

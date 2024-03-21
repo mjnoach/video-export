@@ -1,9 +1,12 @@
 {
   "scripts": {
-    "start": "tsx src/index.ts",
+    "start": "node --experimental-specifier-resolution=node dist/index.js",
     "dev": "tsx watch src/index.ts",
-    "build": "",
-    "test": ""
+    "build": "tsc",
+    "test": "",
+    "docker:clear": "docker rm -vf server-server-1; docker rmi -f server-server",
+    "docker:dev": "bun docker:clear; docker compose up --watch",
+    "docker": "docker compose up --watch"
   },
   "dependencies": {
     "@hono/node-server": "^1.8.2",
@@ -16,6 +19,8 @@
   "devDependencies": {
     "@types/fluent-ffmpeg": "^2.1.24",
     "@types/node": "^20.11.17",
-    "tsx": "^3.12.2"
-  }
+    "tsx": "^3.12.2",
+    "typescript": "^5.4.3"
+  },
+  "type": "module"
 }

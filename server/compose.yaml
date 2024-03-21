@@ -6,8 +6,7 @@ services:
     develop:
       watch:
         - action: rebuild
+          path: src
+        - action: rebuild
           path: package.json
-        - action: rebuild
-          path: compose.yaml
-        - action: rebuild
-          path: ./src
+          # path: '*'

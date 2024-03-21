@@ -1,11 +1,12 @@
-import { downloadClip } from './download'
-import { InitException, NotFoundException } from './exceptions'
-import { taskManager } from './task-manager'
+import { downloadClip } from './download.js'
+import { InitException, NotFoundException } from './exceptions.js'
+import { taskManager } from './task-manager.js'
 
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
 import { streamText } from 'hono/streaming'
+import { AddressInfo } from 'net'
 
 const app = new Hono()
 
@@ -21,6 +22,12 @@ const app = new Hono()
 app.get('/', (c) => {
   console.log('🚀 ~ app.get')
   return c.text('Hono!')
+})
+
+app.get('/asd', (c) => {
+  return new Response('Good morning!')
+  console.log('🚀 ~ ASDASDASDASD')
+  return c.text('ASDASDASDASD!')
 })
 
 app.get('/streamText', (c) => {
@@ -91,11 +98,19 @@ app.get(
   })
 )
 
-serve({
-  fetch: app.fetch,
-  port: 3001,
-  // hostname: 'localhost',
-})
+serve(
+  {
+    fetch: app.fetch,
+    port: 3001,
+    // hostname: 'localhost',
+    // keyFile: process.env.SSL_KEY_FILE || './key.pem',
+    // certFile: process.env.SSL_CERTIFICATE_FILE || './cert.pem',
+  },
+  (info: AddressInfo) => {
+    console.log(`🚀 Server ready!`)
+    console.log(`${info.address}:${info.port}`)
+  }
+)
 
 // serve(
 //   {
@@ -104,8 +119,5 @@ serve({
 //       key: readFileSync(`${process.env.CERT_KEY}`),
 //       cert: readFileSync(`${process.env.CERT}`),
 //     },
-//   },
-//   (info: AddressInfo) => {
-//     console.log(`Server ready!`, info)
 //   }
 // )

@@ -7,6 +7,9 @@ import { VideoLinkForm } from '@/components/video-link-form'
 // Improve: Use SSE instead of raw stream?
 // Improve: Unset video buffering screen after player seek or clip export
 
+// Todo: Run server as container
+// Todo: Install ffmpeg in the container
+
 export default function Home() {
   return (
     <main>

@@ -1,4 +1,4 @@
-import { taskManager } from './task-manager'
+import { taskManager } from './task-manager.js'
 
 import ffmpeg from 'fluent-ffmpeg'
 import { Readable } from 'stream'
