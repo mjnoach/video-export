@@ -66,6 +66,7 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
     removeObject(obj.id)
   }
 
+  const href = `${process.env.NEXT_PUBLIC_API_URL}${obj.url}`
   return (
     <li
       style={{
@@ -77,21 +78,14 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
         obj.thumbnail ? 'bg-contain bg-center bg-no-repeat' : 'bg-black'
       )}
     >
-      <Link href={obj.url} className="w-full" target="_blank">
+      <Link href={href} className="w-full" target="_blank">
         <div className="grid h-full grid-cols-3 content-between p-1">
           <div className="bg-black/ px-1.5/ col-span-2 w-fit text-primary-2">
             {getReadableDuration(obj.duration)}
           </div>
-          <button
-            onClick={handleClick}
-            className={
-              'action invisible flex h-7 w-7 items-center justify-center place-self-end hover:!border-destructive hover:!bg-destructive group-hover/item:visible'
-            }
-          >
-            <Trash2 className="drawer-icon" />
-          </button>
+          <RemoveButton obj={obj} />
           <div className="bg-black/ px-1.5/ col-span-2 w-fit max-w-full truncate whitespace-nowrap">
-            {obj.id}
+            {obj.id}R
           </div>
           <div className="bg-black/ px-1.5/ w-fit place-self-end text-player">
             {extension}
@@ -99,6 +93,30 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
         </div>
       </Link>
     </li>
+  )
+}
+
+type RemoveButtonProps = {
+  obj: ExportedObj
+}
+
+const RemoveButton = ({ obj }: RemoveButtonProps) => {
+  const { removeObject } = useContext(EditorContext)
+  const extension = `.${obj.format}`
+
+  function handleClick(e: any) {
+    e.preventDefault()
+    removeObject(obj.id)
+  }
+  return (
+    <button
+      onClick={handleClick}
+      className={
+        'action invisible flex h-7 w-7 items-center justify-center place-self-end hover:!border-destructive hover:!bg-destructive group-hover/item:visible'
+      }
+    >
+      <Trash2 className="drawer-icon" />
+    </button>
   )
 }
 

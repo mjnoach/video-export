@@ -27,7 +27,7 @@ export const Overlay = ({ children, type, isOpen, title }: OverlayPropps) => {
     >
       <div
         className={cn(
-          'relative duration-300 animate-in fade-in zoom-in',
+          'relative select-text duration-300 animate-in fade-in zoom-in',
           'flex flex-col items-center justify-center text-center text-xl'
         )}
       >

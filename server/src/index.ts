@@ -3,12 +3,12 @@ import { InitException, NotFoundException } from './exceptions'
 import { taskManager } from './task-manager'
 
 import { serve } from '@hono/node-server'
+import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
 import { streamText } from 'hono/streaming'
 
 const app = new Hono()
 
-// // @ts-ignore
 // app.onError((err, c) => {
 //   console.log('🚀 ~ app.onError ~ c:', c)
 //   console.log('🚀 ~ app.onError ~ err:', err)
@@ -16,7 +16,6 @@ const app = new Hono()
 //     // Get the custom response
 //     return err.getResponse()
 //   }
-//   //...
 // })
 
 app.get('/', (c) => {
@@ -34,7 +33,7 @@ app.get('/streamText', (c) => {
 
 app.post('/export', async (c) => {
   const data = await c.req.json<Clip>()
-  // console.log('🚀 ~ POST ~ data:', data)
+  console.log('🚀 ~ POST /export ~ data:', data)
   try {
     const { id } = taskManager.initializeTask()
     downloadClip(id, data)
@@ -49,29 +48,33 @@ app.get('/export/:id', (c) =>
     c,
     async (stream) => {
       const id = c.req.param('id')
-      // console.log('🚀 ~ GET ~ id:', id)
+      console.log('🚀 ~ GET /export/:id ~ id:', id)
+      return new Promise<void>((resolve, reject) => {
+        c.header('Access-Control-Allow-Origin', 'https://localhost:3000')
 
-      const task = taskManager.getTask(id)
+        const task = taskManager.getTask(id)
 
-      if (!task) {
-        stream.close()
-        throw NotFoundException(id)
-      }
-
-      task.callbacks = {
-        onProgress: (progress) => {
-          console.log('🚀 ~ progress:', progress)
-          stream.write(progress)
-        },
-        onFinish: (obj) => {
-          stream.write(`data:${JSON.stringify(obj)}`)
+        if (!task) {
           stream.close()
-        },
-        onError: () => {
-          console.log('🚀 ~ Error:')
-          stream.close()
-        },
-      }
+          throw NotFoundException(id)
+        }
+
+        task.callbacks = {
+          onProgress: (progress) => {
+            stream.write(progress)
+          },
+          onFinish: (obj) => {
+            stream.write(`data:${JSON.stringify(obj)}`)
+            stream.close()
+            resolve()
+          },
+          onError: () => {
+            console.log('🚀 ~ Error:')
+            stream.close()
+            reject()
+          },
+        }
+      })
     },
     async (e, stream) => {
       console.log('🚀 ~ e:', e)
@@ -80,17 +83,22 @@ app.get('/export/:id', (c) =>
   )
 )
 
+app.get(
+  `/static/*`,
+  serveStatic({
+    root: './',
+    // rewriteRequestPath: (path) => path.replace(/^\/static/, `/${STATIC_PATH}`),
+  })
+)
+
 serve({
   fetch: app.fetch,
   port: 3001,
+  // hostname: 'localhost',
 })
 
-// const server = serve(
+// serve(
 //   {
-//     fetch: app.fetch,
-//     port: 3001,
-
-//     hostname: 'localhost',
 //     createServer,
 //     serverOptions: {
 //       key: readFileSync(`${process.env.CERT_KEY}`),

@@ -114,13 +114,13 @@
 
 @layer components {
   .drawer-icon {
-    @apply h-4 w-4;
+    @apply h-4 w-4 select-none;
   }
   .overlay-icon {
-    @apply h-16 w-16;
+    @apply h-16 w-16 select-none;
   }
   .slider-controls-icon {
-    @apply h-6 w-6;
+    @apply h-6 w-6 select-none;
   }
 }
 

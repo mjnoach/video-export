@@ -23,3 +23,8 @@ type ExportedObj = TargetClip & {
   url: string
   thumbnail: string | null
 }
+
+type EditorActions = {
+  previewClip: (clip: Clip) => void
+  exportClip: (clip: Clip) => Promise<void>
+}

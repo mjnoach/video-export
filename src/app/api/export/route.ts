@@ -10,7 +10,8 @@ const { API_URL } = process.env
 
 export async function POST(request: Request) {
   const data: Clip = await request.json()
-  console.log('🚀 ~ POST ~ data:', data)
+  console.log('🚀 ~ POST /export ~ data:', data)
+
   try {
     const res = await ky.post(`${API_URL}/export`, {
       json: data,
@@ -29,13 +30,13 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const id = searchParams.get('id')
-  console.log('🚀 ~ GET ~ id:', id)
-
-  if (!id) throw new BadRequest(`Task id must be provided`)
+  console.log('🚀 ~ GET /export ~ id:', id)
 
   try {
+    if (!id) throw new BadRequest(`Task id must be provided`)
     const res = await ky.get(`${API_URL}/export/${id}`)
-    return new NextResponse(res.body)
+    const stream = res.body
+    return new NextResponse(stream)
   } catch (e) {
     if (e instanceof Error) console.error(e.name, e.message, e.cause)
     if (e instanceof BadRequest)

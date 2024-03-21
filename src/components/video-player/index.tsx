@@ -25,15 +25,8 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [sliderValues, setSliderValues] = useState([0, 0, 0])
 
-  const {
-    actions,
-    setActions,
-    isDisabled,
-    setDisabled,
-    storeObject,
-    clip,
-    updateClip,
-  } = useContext(EditorContext)
+  const { setActions, isDisabled, setDisabled, storeObject, clip, updateClip } =
+    useContext(EditorContext)
 
   const { exportRequest, exportProgress } = useExport()
 
@@ -69,10 +62,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
 
   useEffect(() => {
     player && setSliderValues([0, 0, player.getDuration()])
-    setActions({
-      previewClip,
-      exportClip,
-    })
+    setActions(actions)
 
     const internalPlayer = player?.getInternalPlayer()
     if (internalPlayer) {
@@ -87,16 +77,19 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player])
 
-  function previewClip(clip: Clip) {
-    setSlider('Marker', clip.start)
-    player?.seekTo(clip.start)
-    setIsPlaying(true)
-  }
-
-  async function exportClip(clip: Clip) {
-    setDisabled(true)
-    setIsPlaying(false)
-    exportRequest.mutate(clip)
+  const actions: EditorActions = {
+    previewClip: (clip: Clip) => {
+      setSlider('Marker', clip.start)
+      player?.seekTo(clip.start)
+      setIsPlaying(true)
+    },
+    exportClip: async (clip: Clip) => {
+      setSlider('Marker', clip.start)
+      player?.seekTo(clip.start)
+      setDisabled(true)
+      setIsPlaying(false)
+      exportRequest.mutate(clip)
+    },
   }
 
   const hasReachedEnd = () => getSlider('Marker') >= getSlider('End')

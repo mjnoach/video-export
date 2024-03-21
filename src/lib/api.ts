@@ -35,8 +35,8 @@ const api = {
   getExport: async (id: string, setProgress: (progress: string) => void) => {
     const res = await ky.get(`/api/export?id=${id}`)
     const stream = res.body?.pipeThrough(new TextDecoderStream())
-
     const reader = stream?.getReader()
+
     if (!reader) throw new Error('No reader')
 
     let data: ExportedObj | null = null

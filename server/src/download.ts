@@ -10,7 +10,7 @@ export async function downloadClip(
   taskManager.startTask(id)
 
   const fileName = `${id}${extension}`
-  const filePath = `export-data/${fileName}`
+  const filePath = `static/${fileName}`
   const fileFormat = extension.replace(/^./, '')
   const duration = end - start
 
@@ -32,7 +32,7 @@ export async function downloadClip(
   const exportedObj = {
     id,
     ...targetClip,
-    url: fileName,
+    url: `/static/${fileName}`,
     thumbnail,
   }
 
