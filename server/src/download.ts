@@ -7,8 +7,10 @@ export async function downloadClip(
   id: string,
   { sourceVideo, start, end, extension }: Clip
 ): Promise<void> {
+  taskManager.startTask(id)
+
   const fileName = `${id}${extension}`
-  const filePath = `public/${fileName}`
+  const filePath = `export-data/${fileName}`
   const fileFormat = extension.replace(/^./, '')
   const duration = end - start
 
@@ -39,18 +41,18 @@ export async function downloadClip(
 }
 
 async function getSourceStream(sourceVideo: SourceVideo) {
-  const info = await ytdl.getInfo(sourceVideo.url)
-  const format = ytdl.chooseFormat(info.formats, {
-    quality: 'lowest',
-    filter: (format) => format.container === 'mp4',
-  })
-  const stream = ytdl(sourceVideo.url, {
-    format,
-  })
-  const error = stream.errored
-  if (error)
-    throw new Error(
-      `Error downloading video stream. ${error.name} ${error.message}`
-    )
-  return stream
+  try {
+    const info = await ytdl.getInfo(sourceVideo.url)
+    const format = ytdl.chooseFormat(info.formats, {
+      quality: 'lowest',
+      filter: (format) => format.container === 'mp4',
+    })
+    const stream = ytdl(sourceVideo.url, {
+      format,
+    })
+    return stream
+  } catch (e) {
+    console.error(`Error downloading video stream`, e)
+    throw e
+  }
 }

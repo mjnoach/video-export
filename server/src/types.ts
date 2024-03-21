@@ -1,5 +1,3 @@
-type DefaultProps = React.HTMLAttributes<HTMLElement>
-
 type SourceVideo = {
   url: string
   title?: string

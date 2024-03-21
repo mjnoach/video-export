@@ -10,7 +10,7 @@
     "format": "prettier --check --ignore-path .gitignore .",
     "format:fix": "prettier --write --ignore-path .gitignore .",
     "ui:add": "bunx shadcn-ui@latest add",
-    "hono-server": "docker compose -f hono-server/compose.yaml -d watch"
+    "server": "docker compose -f server/compose.yaml watch"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",

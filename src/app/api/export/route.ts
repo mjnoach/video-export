@@ -6,11 +6,13 @@ import ky from 'ky'
 
 export const dynamic = 'force-dynamic'
 
+const { API_URL } = process.env
+
 export async function POST(request: Request) {
   const data: Clip = await request.json()
   console.log('🚀 ~ POST ~ data:', data)
   try {
-    const res = await ky.post('http://localhost:3001/export', {
+    const res = await ky.post(`${API_URL}/export`, {
       json: data,
     })
     const id = await res.json<ExportedObj['id']>()
@@ -18,7 +20,7 @@ export async function POST(request: Request) {
   } catch (e) {
     if (e instanceof Error) console.error(e.name, e.message, e.cause)
     return new NextResponse(
-      `Failed submitting export data for source video ${data.sourceVideo.url}`,
+      `Error initializing export from source ${data.sourceVideo}`,
       { status: 500 }
     )
   }
@@ -32,7 +34,7 @@ export async function GET(request: Request) {
   if (!id) throw new BadRequest(`Task id must be provided`)
 
   try {
-    const res = await ky.get(`http://localhost:3001/export/${id}`)
+    const res = await ky.get(`${API_URL}/export/${id}`)
     return new NextResponse(res.body)
   } catch (e) {
     if (e instanceof Error) console.error(e.name, e.message, e.cause)

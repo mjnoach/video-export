@@ -51,7 +51,7 @@ const api = {
       reading = !done
     }
 
-    if (!data) throw new Error('Error receiving exported data')
+    if (!data) throw new Error(`Streaming export data failed`)
 
     // const source = new EventSource('/api/export')
 

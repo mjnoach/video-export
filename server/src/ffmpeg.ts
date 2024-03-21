@@ -3,8 +3,10 @@ import { taskManager } from './task-manager'
 import ffmpeg from 'fluent-ffmpeg'
 import { Readable } from 'stream'
 
-ffmpeg.setFfmpegPath('/Users/andrzej/ffmpeg/bin/ffmpeg')
-ffmpeg.setFfprobePath('/Users/andrzej/ffmpeg/bin/ffprobe')
+const { FFMPEG_PATH, FFPROBE_PATH } = process.env
+
+ffmpeg.setFfmpegPath(`${FFMPEG_PATH}`)
+ffmpeg.setFfprobePath(`${FFPROBE_PATH}`)
 
 type ProgressData = {
   frames: number

@@ -9,6 +9,7 @@ type ExportCallbacks = {
 type Task = {
   callbacks: ExportCallbacks | null
   obj: ExportedObj | null
+  // status: null | 'started' | 'complete' | 'failed'
 }
 
 const tasks: {
@@ -22,11 +23,17 @@ export const taskManager = {
     tasks[id] = {
       callbacks: null,
       obj: null,
+      // status: null,
     }
     return { id }
   },
+  startTask: (id: string) => {
+    const task = tasks[id]
+    // task.status = 'started'
+  },
   completeTask: (id: string, obj: ExportedObj) => {
     const task = tasks[id]
+    // task.status = 'complete'
     task.callbacks?.onFinish(obj)
     task.obj = obj
   },
