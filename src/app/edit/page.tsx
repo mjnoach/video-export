@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 import { Actions } from '@/components/actions'
 import { EditorProvider } from '@/components/context/editor'
@@ -21,12 +21,14 @@ export default function Edit() {
             <Window title={'video.mp4'}>
               <div className="flex aspect-video grow flex-col items-center justify-center">
                 {!video ? (
-                  <VideoUpload
-                    disabled={!!video}
-                    setVideo={(video: SourceVideo) => {
-                      setVideo(video)
-                    }}
-                  />
+                  <Suspense>
+                    <VideoUpload
+                      disabled={!!video}
+                      setVideo={(video: SourceVideo) => {
+                        setVideo(video)
+                      }}
+                    />
+                  </Suspense>
                 ) : (
                   <VideoPlayer video={video} />
                 )}
