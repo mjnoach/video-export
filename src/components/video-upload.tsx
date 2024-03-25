@@ -49,11 +49,11 @@ const UploadInput = (props: UploadInputProps) => {
         className="center action aspect-video h-64 rounded-lg border-2 border-dashed"
       >
         <UploadIcon />
-        <p className="text-primary-2 mb-2 text-sm">
+        <p className="mb-2 text-sm text-primary-2">
           <span className="font-semibold">Click to upload</span> or drag and
           drop
         </p>
-        <p className="text-primary-3 text-xs">{/* {supportedFormats} */}</p>
+        <p className="text-xs text-primary-3">{/* {supportedFormats} */}</p>
         <input
           onChange={props.onChange}
           id="dropzone-file"
