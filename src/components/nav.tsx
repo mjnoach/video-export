@@ -20,7 +20,7 @@ export const Nav = () => {
         <Image
           src={logo}
           alt="Logo"
-          className="max-w-12 select-none"
+          className="max-w-12 select-none opacity-75"
           priority
         />
       </Link>
