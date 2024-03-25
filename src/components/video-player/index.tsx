@@ -13,6 +13,7 @@ import { PlayerControls } from './player-controls'
 import { SliderControls } from './slider-controls'
 
 import { LucideLink } from 'lucide-react'
+import type { OnProgressProps } from 'react-player/base'
 import ReactPlayer from 'react-player/lazy'
 
 type VideoPlayerProps = DefaultProps & {
@@ -148,8 +149,8 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     })
   }
 
-  function handleProgress({ playedSeconds }: { playedSeconds: number }) {
-    if (isPlaying) setSlider('Marker', playedSeconds)
+  function handleProgress(progress: OnProgressProps) {
+    if (isPlaying) setSlider('Marker', progress.playedSeconds)
   }
 
   function handleReady(player: ReactPlayer) {
@@ -168,6 +169,19 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
   function handlePause() {
     isPlaying && togglePlaying()
   }
+
+  function handleBuffer() {}
+
+  function handleError(
+    error: any,
+    data?: any,
+    hlsInstance?: any,
+    hlsGlobal?: any
+  ) {
+    console.log('🚀 ~ Player Error', error)
+  }
+
+  function handleSeek(seconds: number) {}
 
   return (
     <div className={cn('flex w-full flex-col items-center gap-4')}>
@@ -194,7 +208,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
         {exportRequest.isSuccess && (
           <Overlay type={'success'} title="Export complete!">
             <Link
-              href={exportRequest.data.url}
+              href={`${process.env.NEXT_PUBLIC_API_URL}${exportRequest.data.url}`}
               className="flex items-center gap-2"
               target="_blank"
             >
@@ -215,6 +229,9 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
               },
             },
           }}
+          onSeek={handleSeek}
+          onError={handleError}
+          onBuffer={handleBuffer}
           onPlay={handlePlay}
           onPause={handlePause}
           onProgress={handleProgress}

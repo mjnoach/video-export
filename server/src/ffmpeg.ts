@@ -41,7 +41,9 @@ export async function transcodeVideo(
   target: TargetClip & { start: number }
 ) {
   const task = taskManager.getTask(id)
-  const { path, start, duration, format } = target
+  let { path, start, duration, format } = target
+  if (path.startsWith('/')) path = path.substring(1)
+
   return new Promise((resolve, reject) => {
     ffmpeg()
       .input(source)

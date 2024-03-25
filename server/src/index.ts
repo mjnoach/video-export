@@ -5,10 +5,14 @@ import { taskManager } from './task-manager.js'
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
+import { logger } from 'hono/logger'
 import { streamText } from 'hono/streaming'
 import { AddressInfo } from 'net'
 
+const { EXPORT_DIR } = process.env
+
 const app = new Hono()
+app.use(logger())
 
 // app.onError((err, c) => {
 //   console.log('🚀 ~ app.onError ~ c:', c)
@@ -20,14 +24,7 @@ const app = new Hono()
 // })
 
 app.get('/', (c) => {
-  console.log('🚀 ~ app.get')
   return c.text('Hono!')
-})
-
-app.get('/asd', (c) => {
-  return new Response('Good morning!')
-  console.log('🚀 ~ ASDASDASDASD')
-  return c.text('ASDASDASDASD!')
 })
 
 app.get('/streamText', (c) => {
@@ -40,7 +37,6 @@ app.get('/streamText', (c) => {
 
 app.post('/export', async (c) => {
   const data = await c.req.json<Clip>()
-  console.log('🚀 ~ POST /export ~ data:', data)
   try {
     const { id } = taskManager.initializeTask()
     downloadClip(id, data)
@@ -55,7 +51,6 @@ app.get('/export/:id', (c) =>
     c,
     async (stream) => {
       const id = c.req.param('id')
-      console.log('🚀 ~ GET /export/:id ~ id:', id)
       return new Promise<void>((resolve, reject) => {
         c.header('Access-Control-Allow-Origin', 'https://localhost:3000')
 
@@ -91,10 +86,10 @@ app.get('/export/:id', (c) =>
 )
 
 app.get(
-  `/static/*`,
+  `${EXPORT_DIR}/*`,
   serveStatic({
     root: './',
-    // rewriteRequestPath: (path) => path.replace(/^\/static/, `/${STATIC_PATH}`),
+    rewriteRequestPath: (path) => path.replace(/^\/static/, `${EXPORT_DIR}`),
   })
 )
 
@@ -107,7 +102,7 @@ serve(
     // certFile: process.env.SSL_CERTIFICATE_FILE || './cert.pem',
   },
   (info: AddressInfo) => {
-    console.log(`🚀 Server ready!`)
+    console.log(`🚀 Server ready!\n`)
     console.log(`${info.address}:${info.port}`)
   }
 )

@@ -3,6 +3,8 @@ import { taskManager } from './task-manager.js'
 
 import ytdl from 'ytdl-core'
 
+const { EXPORT_DIR } = process.env
+
 export async function downloadClip(
   id: string,
   { sourceVideo, start, end, extension }: Clip
@@ -10,7 +12,7 @@ export async function downloadClip(
   taskManager.startTask(id)
 
   const fileName = `${id}${extension}`
-  const filePath = `static/${fileName}`
+  const filePath = `${EXPORT_DIR}/${fileName}`
   const fileFormat = extension.replace(/^./, '')
   const duration = end - start
 
@@ -32,7 +34,7 @@ export async function downloadClip(
   const exportedObj = {
     id,
     ...targetClip,
-    url: `/static/${fileName}`,
+    url: `${EXPORT_DIR}/${fileName}`,
     thumbnail,
   }
 
