@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid'
 type ExportCallbacks = {
   onProgress: (progress: string) => void
   onFinish: (obj: ExportedObj) => void
-  onError: (err: any) => void
+  onError: (err: any) => Error
 }
 
 type Task = {

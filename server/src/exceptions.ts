@@ -1,18 +1,24 @@
 import { HTTPException } from 'hono/http-exception'
 
-export const UndefinedException = (e: any) =>
+export const ProcessingException = (e: any) =>
   new HTTPException(500, {
-    message: 'Undefined error occured',
+    message: 'Task processing error',
     cause: e,
   })
 
-export const InitException = (e: any, source: string) =>
+export const StreamingException = (e: any) =>
   new HTTPException(500, {
-    message: `Error initializing export from source ${source}`,
+    message: 'Streaming error occured',
     cause: e,
   })
 
-export const NotFoundException = (id: string) =>
+export const DownloadException = (e: any, source: string) =>
+  new HTTPException(500, {
+    message: `Error downloading video stream from source ${source}`,
+    cause: e,
+  })
+
+export const TaskNotFoundException = (id: string) =>
   new HTTPException(404, {
-    message: `Export '${id}' not initialized properly`,
+    message: `Task for export '${id}' not found`,
   })

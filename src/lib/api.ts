@@ -10,6 +10,14 @@ export const useExport = () => {
     mutationFn: async (data: Clip) => {
       const exportId = await api.postExport(data)
       const exportData = await api.getExport(exportId, setProgress)
+      //   const exportId = await api.postExport(clip).catch((e: any) => {
+      //     throw new Error(msgExportInitError(clip.sourceVideo.url))
+      //   })
+      //   const exportData = await api
+      //     .getExport(exportId, setProgress)
+      //     .catch((e: any) => {
+      //       throw new Error(msgExportStreamingError(exportId))
+      //     })
       return exportData
     },
   })
@@ -25,11 +33,22 @@ export const useExport = () => {
   }
 }
 
+async function parseToFormData(clip: Clip) {
+  const formData = new FormData()
+  formData.append('clip', JSON.stringify(clip))
+  const blob = await (await fetch(clip.url)).blob()
+  formData.append('file', new File([blob], clip.title))
+  return formData
+}
+
 const api = {
   postExport: async (clip: Clip) => {
-    const res = await ky.post('/api/export', {
-      json: clip,
-    })
+    const res = await ky.post(
+      '/api/export',
+      clip.fromLocalSource
+        ? { body: await parseToFormData(clip) }
+        : { json: clip }
+    )
     return res.json<ExportedObj['id']>()
   },
   getExport: async (id: string, setProgress: (progress: string) => void) => {

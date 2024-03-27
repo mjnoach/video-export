@@ -1,7 +1,7 @@
 import { taskManager } from './task-manager.js'
 
 import ffmpeg from 'fluent-ffmpeg'
-import { Readable } from 'stream'
+import type { Readable } from 'stream'
 
 const { FFMPEG_PATH, FFPROBE_PATH } = process.env
 
@@ -38,7 +38,7 @@ const getProgressPercent = (
 export async function transcodeVideo(
   id: string,
   source: string | Readable,
-  target: TargetClip & { start: number }
+  target: ExportTarget & { start: number }
 ) {
   const task = taskManager.getTask(id)
   let { path, start, duration, format } = target
@@ -64,8 +64,9 @@ export async function transcodeVideo(
         resolve(true)
       })
       .on('error', (err) => {
+        console.error('Transcoding error')
         console.error(err)
-        reject(err)
+        task.callbacks?.onError(err)
       })
       .run()
   })

@@ -1,5 +1,5 @@
 import { downloadClip } from './download.js'
-import { InitException, NotFoundException } from './exceptions.js'
+import { ProcessingException, TaskNotFoundException } from './exceptions.js'
 import { taskManager } from './task-manager.js'
 
 import { serve } from '@hono/node-server'
@@ -14,75 +14,50 @@ const { EXPORT_DIR } = process.env
 const app = new Hono()
 app.use(logger())
 
-// app.onError((err, c) => {
-//   console.log('🚀 ~ app.onError ~ c:', c)
-//   console.log('🚀 ~ app.onError ~ err:', err)
-//   if (err instanceof HTTPException) {
-//     // Get the custom response
-//     return err.getResponse()
-//   }
-// })
-
 app.get('/', (c) => {
   return c.text('Hono!')
 })
 
-app.get('/streamText', (c) => {
-  return streamText(c, async (stream) => {
-    await stream.writeln('Hello')
-    await stream.sleep(1000)
-    await stream.write(`Hono!`)
-  })
-})
-
 app.post('/export', async (c) => {
-  const data = await c.req.json<Clip>()
-  try {
-    const { id } = taskManager.initializeTask()
-    downloadClip(id, data)
-    return c.json(id)
-  } catch (e) {
-    throw InitException(e, data.sourceVideo.url)
+  let clip: Clip
+  const formData = await c.req.formData()
+  if (formData) {
+    clip = JSON.parse(formData.get('clip') as string)
+    const file = formData.get('file') as File
+    console.log('🚀 ~ app.post ~ clip:', clip)
+    console.log('🚀 ~ app.post ~ file:', file)
+  } else {
+    clip = await c.req.json<Clip>()
   }
+  const { id } = taskManager.initializeTask()
+  downloadClip(id, clip)
+  return c.json(id)
 })
 
 app.get('/export/:id', (c) =>
-  streamText(
-    c,
-    async (stream) => {
-      const id = c.req.param('id')
-      return new Promise<void>((resolve, reject) => {
-        c.header('Access-Control-Allow-Origin', 'https://localhost:3000')
+  streamText(c, async (stream) => {
+    const id = c.req.param('id')
+    return new Promise<void>((resolve, reject) => {
+      c.header('Access-Control-Allow-Origin', 'https://localhost:3000')
 
-        const task = taskManager.getTask(id)
+      const task = taskManager.getTask(id)
+      if (!task) throw TaskNotFoundException(id)
 
-        if (!task) {
+      task.callbacks = {
+        onProgress: (progress) => {
+          stream.write(progress)
+        },
+        onFinish: (obj) => {
+          stream.write(`data:${JSON.stringify(obj)}`)
           stream.close()
-          throw NotFoundException(id)
-        }
-
-        task.callbacks = {
-          onProgress: (progress) => {
-            stream.write(progress)
-          },
-          onFinish: (obj) => {
-            stream.write(`data:${JSON.stringify(obj)}`)
-            stream.close()
-            resolve()
-          },
-          onError: () => {
-            console.log('🚀 ~ Error:')
-            stream.close()
-            reject()
-          },
-        }
-      })
-    },
-    async (e, stream) => {
-      console.log('🚀 ~ e:', e)
-      // throw UndefinedException(e)
-    }
-  )
+          resolve()
+        },
+        onError: (err) => {
+          throw ProcessingException(err)
+        },
+      }
+    })
+  })
 )
 
 app.get(

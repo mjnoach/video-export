@@ -14,6 +14,7 @@ import { VideoLinkForm } from '@/components/video-link-form'
 
 // Fix: Local file upload
 //  if file is local, process in browser ffmpeg rather than on the server?
+//  or at least send over only selected part, not entire video
 
 export default function Home() {
   return (

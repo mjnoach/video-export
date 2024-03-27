@@ -26,6 +26,7 @@ COPY --from=builder --chown=hono:nodejs /app/node_modules /app/node_modules
 COPY --from=builder --chown=hono:nodejs /app/dist /app/dist
 COPY package.json /app
 
+# initialize EXPORT_DIR
 RUN mkdir -p static && chown -R hono:nodejs static
 
 USER hono

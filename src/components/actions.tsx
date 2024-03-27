@@ -19,7 +19,7 @@ export const Actions = () => {
     <div
       className={cn(
         'mx-auto flex select-none items-center gap-4 rounded-lg bg-zinc-900 p-4 drop-shadow-xl',
-        isDisabled || !clip.sourceVideo ? 'disable' : ''
+        isDisabled || !clip.url ? 'disable' : ''
       )}
     >
       <Button

@@ -4,6 +4,11 @@ import { createContext, useEffect, useState } from 'react'
 
 import { persist, restore } from '@/lib/utils/storage'
 
+export type EditorActions = {
+  previewClip: (clip: Clip) => void
+  exportClip: (clip: Clip) => Promise<void>
+}
+
 const editor = {
   actions: {} as EditorActions,
   setActions: (actions: EditorActions) => {},

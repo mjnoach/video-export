@@ -10,7 +10,7 @@ import { VideoUpload } from '@/components/video-upload'
 import { Window } from '@/components/window'
 
 export default function Edit() {
-  const [video, setVideo] = useState<SourceVideo | null>(null)
+  const [isLoaded, setLoaded] = useState(false)
 
   return (
     <main className="flex h-full w-full flex-row items-start px-8 lg:px-16">
@@ -20,17 +20,12 @@ export default function Edit() {
           <div className="flex w-full flex-col items-stretch justify-center gap-6">
             <Window title={'video.mp4'}>
               <div className="flex aspect-video grow flex-col items-center justify-center">
-                {!video ? (
+                {!isLoaded ? (
                   <Suspense>
-                    <VideoUpload
-                      disabled={!!video}
-                      setVideo={(video: SourceVideo) => {
-                        setVideo(video)
-                      }}
-                    />
+                    <VideoUpload setLoaded={setLoaded} />
                   </Suspense>
                 ) : (
-                  <VideoPlayer video={video} />
+                  <VideoPlayer />
                 )}
               </div>
             </Window>

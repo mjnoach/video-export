@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useExport } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
-import { EditorContext } from '../context/editor'
+import { EditorActions, EditorContext } from '../context/editor'
 import { Overlay } from '../overlay'
 import { Progress } from '../ui/progress'
 import { Slider, Sliders } from '../ui/slider'
@@ -16,11 +16,9 @@ import { LucideLink } from 'lucide-react'
 import type { OnProgressProps } from 'react-player/base'
 import ReactPlayer from 'react-player/lazy'
 
-type VideoPlayerProps = DefaultProps & {
-  video: SourceVideo
-}
+type VideoPlayerProps = DefaultProps & {}
 
-export function VideoPlayer({ video }: VideoPlayerProps) {
+export function VideoPlayer({}: VideoPlayerProps) {
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
   const [isLoadingPlayer, setLoadingPlayer] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -65,15 +63,10 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     player && setSliderValues([0, 0, player.getDuration()])
     setActions(actions)
 
-    const internalPlayer = player?.getInternalPlayer()
-    if (internalPlayer) {
-      const title = internalPlayer.videoTitle
-      updateClip({
-        sourceVideo: {
-          url: video.url,
-          title,
-        },
-      })
+    if (!clip.fromLocalSource) {
+      const internalPlayer = player?.getInternalPlayer()
+      const title = internalPlayer?.videoTitle
+      updateClip({ title })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player])
@@ -178,7 +171,8 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     hlsInstance?: any,
     hlsGlobal?: any
   ) {
-    console.log('🚀 ~ Player Error', error)
+    console.error('Player Error')
+    console.error(error)
   }
 
   function handleSeek(seconds: number) {}
@@ -187,7 +181,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
     <div className={cn('flex w-full flex-col items-center gap-4')}>
       <div
         className={cn(
-          'relative aspect-video w-full select-none',
+          'relative aspect-video max-h-[60vh] w-full select-none',
           !isLoadingPlayer ? 'rounded-md border-4 border-secondary-1' : ''
         )}
       >
@@ -202,7 +196,9 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
         )}
         {exportRequest.isError && (
           <Overlay type={'error'} title="Error">
-            {exportRequest.error.message}
+            <div className="center max-w-[80%]">
+              {exportRequest.error.message}
+            </div>
           </Overlay>
         )}
         {exportRequest.isSuccess && (
@@ -236,7 +232,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
           onPause={handlePause}
           onProgress={handleProgress}
           onReady={handleReady}
-          url={video.url}
+          url={clip.url}
           width="100%"
           height="100%"
           playing={isPlaying}

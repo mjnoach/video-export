@@ -1,34 +1,49 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { useSearchParams } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
 
+import { EditorContext } from './context/editor'
+
 type VideoUploadProps = DefaultProps & {
-  disabled: boolean
-  setVideo: (video: SourceVideo) => void
+  disabled?: boolean
+  setLoaded: (state: boolean) => void
 }
 
-export function VideoUpload({ disabled, setVideo }: VideoUploadProps) {
+export function VideoUpload({ disabled = false, setLoaded }: VideoUploadProps) {
   const searchParams = useSearchParams()
   const videoUrl = searchParams.get('videoUrl') ?? ''
   const [isLoading, setLoading] = useState(false)
 
-  async function handleLoad() {
-    setLoading(true)
-    setVideo({ url: videoUrl })
-    setLoading(false)
+  const { updateClip } = useContext(EditorContext)
+
+  async function handleLoadRemote() {
+    updateClip({ url: videoUrl })
+    setLoaded(true)
   }
 
-  function handleUpload(e: any) {
+  function handleLoadLocal(e: any) {
     const file = e.target.files[0] as File
-    console.log('🚀 ~ handleUpload ~ file:', file)
+    const objectURL = URL.createObjectURL(file)
+    const formData = new FormData()
+    formData.append('file', file)
+    updateClip({
+      fromLocalSource: true,
+      url: objectURL,
+      title: file.name,
+    })
+    setLoaded(true)
   }
 
   return (
     <div className="flex flex-col items-center space-y-10">
-      <UploadInput accept="video/*" onChange={handleUpload} />
-      <Button className="action h-8" onClick={handleLoad} disabled={isLoading}>
+      <UploadInput accept="video/*" onChange={handleLoadLocal} />
+      <Button
+        className="action h-8"
+        onClick={handleLoadRemote}
+        disabled={isLoading}
+      >
         Load Video
       </Button>
     </div>
@@ -41,11 +56,12 @@ type UploadInputProps = DefaultProps & {
 }
 
 const UploadInput = (props: UploadInputProps) => {
-  const supportedFormats = 'SVG, PNG, JPG or GIF (MAX. 800x400px)'
+  // const supportedFormats = 'SVG, PNG, JPG or GIF (MAX. 800x400px)'
+  const supportedFormats = 'MP4,MOV'
   return (
     <div>
       <label
-        htmlFor="dropzone-file"
+        htmlFor="file"
         className="center action aspect-video h-64 rounded-lg border-2 border-dashed"
       >
         <UploadIcon />
@@ -53,11 +69,17 @@ const UploadInput = (props: UploadInputProps) => {
           <span className="font-semibold">Click to upload</span> or drag and
           drop
         </p>
-        <p className="text-xs text-primary-3">{/* {supportedFormats} */}</p>
+        <p className="text-xs text-primary-3">
+          {supportedFormats.replaceAll(',', ', ')}
+        </p>
         <input
           onChange={props.onChange}
-          id="dropzone-file"
+          id="file"
           type="file"
+          accept={supportedFormats
+            .split(',')
+            .map((f) => `.${f}`)
+            .join(',')}
           className="hidden"
         />
       </label>

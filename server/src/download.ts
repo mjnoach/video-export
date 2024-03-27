@@ -1,3 +1,4 @@
+import { DownloadException } from './exceptions.js'
 import { generateThumbnail, transcodeVideo } from './ffmpeg.js'
 import { taskManager } from './task-manager.js'
 
@@ -7,7 +8,7 @@ const { EXPORT_DIR } = process.env
 
 export async function downloadClip(
   id: string,
-  { sourceVideo, start, end, extension }: Clip
+  { url, start, end, extension }: Clip
 ): Promise<void> {
   taskManager.startTask(id)
 
@@ -16,13 +17,13 @@ export async function downloadClip(
   const fileFormat = extension.replace(/^./, '')
   const duration = end - start
 
-  const targetClip: TargetClip = {
+  const targetClip: ExportTarget = {
     path: filePath,
     format: fileFormat,
     duration,
   }
 
-  const stream = await getSourceStream(sourceVideo)
+  const stream = await getSourceStream(url)
   await transcodeVideo(id, stream, { ...targetClip, start })
 
   const withThumbnails = false
@@ -42,19 +43,21 @@ export async function downloadClip(
   return
 }
 
-async function getSourceStream(sourceVideo: SourceVideo) {
+async function getSourceStream(url: string) {
+  // blob: //localhost:3000/f1e08c0b-b067-4e6e-a67a-ac3c9e4f34f8
+  console.log('🚀 ~ getSourceStream ~ url:', url)
+
   try {
-    const info = await ytdl.getInfo(sourceVideo.url)
+    const info = await ytdl.getInfo(url)
     const format = ytdl.chooseFormat(info.formats, {
       quality: 'lowest',
       filter: (format) => format.container === 'mp4',
     })
-    const stream = ytdl(sourceVideo.url, {
+    const stream = ytdl(url, {
       format,
     })
     return stream
   } catch (e) {
-    console.error(`Error downloading video stream`, e)
-    throw e
+    throw DownloadException(e, url)
   }
 }

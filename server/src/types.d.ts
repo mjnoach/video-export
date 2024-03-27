@@ -1,22 +1,19 @@
-type SourceVideo = {
-  url: string
-  title?: string
-}
-
 type Clip = {
+  title: string
   start: number
   end: number
   extension: string
-  sourceVideo: SourceVideo
+  url: string
+  fromLocalSource: boolean
 }
 
-type TargetClip = {
+type ExportTarget = {
   path: string
   duration: number
   format: string
 }
 
-type ExportedObj = TargetClip & {
+type ExportedObj = ExportTarget & {
   id: string
   url: string
   thumbnail: string | null
