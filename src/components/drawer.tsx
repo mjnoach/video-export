@@ -43,7 +43,7 @@ export const Drawer = () => {
           {storage.map((obj, i) => (
             <DrawerItem key={i} obj={obj} />
           ))}
-          {/* <NewItemButton /> */}
+          <NewItemButton />
         </ul>
       </div>
       <div className="flex w-6 items-center">
@@ -54,7 +54,7 @@ export const Drawer = () => {
 }
 
 type DrawerItemProps = {
-  obj: ExportedObj
+  obj: ExportData
 }
 
 const DrawerItem = ({ obj }: DrawerItemProps) => {
@@ -97,7 +97,7 @@ const DrawerItem = ({ obj }: DrawerItemProps) => {
 }
 
 type RemoveButtonProps = {
-  obj: ExportedObj
+  obj: ExportData
 }
 
 const RemoveButton = ({ obj }: RemoveButtonProps) => {

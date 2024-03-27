@@ -63,7 +63,7 @@ export function VideoPlayer({}: VideoPlayerProps) {
     player && setSliderValues([0, 0, player.getDuration()])
     setActions(actions)
 
-    if (!clip.fromLocalSource) {
+    if (!clip.isClientUpload) {
       const internalPlayer = player?.getInternalPlayer()
       const title = internalPlayer?.videoTitle
       updateClip({ title })
@@ -195,17 +195,15 @@ export function VideoPlayer({}: VideoPlayerProps) {
           </Overlay>
         )}
         {exportRequest.isError && (
-          <Overlay type={'error'} title="Error">
-            <div className="center max-w-[80%]">
-              {exportRequest.error.message}
-            </div>
+          <Overlay type={'error'} title={exportRequest.error.name || 'Error'}>
+            <div className="px-10">{exportRequest.error.message}</div>
           </Overlay>
         )}
         {exportRequest.isSuccess && (
           <Overlay type={'success'} title="Export complete!">
             <Link
               href={`${process.env.NEXT_PUBLIC_API_URL}${exportRequest.data.url}`}
-              className="flex items-center gap-2"
+              className="flex gap-2 px-10"
               target="_blank"
             >
               <LucideLink className="w-5 text-primary-2" />

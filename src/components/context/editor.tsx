@@ -14,8 +14,8 @@ const editor = {
   setActions: (actions: EditorActions) => {},
   isDisabled: false,
   setDisabled: (state: boolean) => {},
-  storage: [] as ExportedObj[],
-  storeObject: (obj: ExportedObj) => {},
+  storage: [] as ExportData[],
+  storeObject: (obj: ExportData) => {},
   removeObject: (objId: string) => {},
   clip: {} as Clip,
   updateClip: (clip: Partial<Clip>) => {},
@@ -32,12 +32,12 @@ export const EditorProvider = ({ children }: DefaultProps) => {
   const [clip, setClip] = useState(editor.clip)
 
   useEffect(() => {
-    const restoredStorage = restore(STORAGE_KEY) as ExportedObj[]
+    const restoredStorage = restore(STORAGE_KEY) as ExportData[]
     if (restoredStorage?.length) setStorage(restoredStorage)
   }, [])
 
-  function storeObject(obj: ExportedObj) {
-    const restoredStorage = restore(STORAGE_KEY) as ExportedObj[]
+  function storeObject(obj: ExportData) {
+    const restoredStorage = restore(STORAGE_KEY) as ExportData[]
     const newStorage = [obj, ...restoredStorage]
     setStorage(newStorage)
     persist(STORAGE_KEY, newStorage)

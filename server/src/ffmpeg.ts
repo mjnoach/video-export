@@ -1,4 +1,5 @@
-import { taskManager } from './task-manager.js'
+import { exportManager } from './export-manager.js'
+import { getProgressPercent } from './utils.js'
 
 import ffmpeg from 'fluent-ffmpeg'
 import type { Readable } from 'stream'
@@ -8,42 +9,12 @@ const { FFMPEG_PATH, FFPROBE_PATH } = process.env
 ffmpeg.setFfmpegPath(`${FFMPEG_PATH}`)
 ffmpeg.setFfprobePath(`${FFPROBE_PATH}`)
 
-type ProgressData = {
-  frames: number
-  currentFps: number
-  currentKbps: number
-  targetSize: number
-  timemark: string
-}
-
-function getTotalSeconds(timemark: string): number {
-  if (timemark === 'N/A') return 0
-  let [hours, minutes, seconds] = timemark.split(':').map(parseFloat)
-  seconds = parseInt(seconds.toFixed())
-  const totalSeconds = hours * 3600 + minutes * 60 + seconds
-  return totalSeconds
-}
-
-const getProgressPercent = (
-  { timemark }: ProgressData,
-  start: number,
-  duration: number
-) => {
-  const seconds = getTotalSeconds(timemark)
-  const fraction = seconds / duration
-  const percent = (fraction * 100).toFixed(0)
-  return percent
-}
-
 export async function transcodeVideo(
-  id: string,
   source: string | Readable,
   target: ExportTarget & { start: number }
 ) {
-  const task = taskManager.getTask(id)
-  let { path, start, duration, format } = target
+  let { id, path, start, duration, format } = target
   if (path.startsWith('/')) path = path.substring(1)
-
   return new Promise((resolve, reject) => {
     ffmpeg()
       .input(source)
@@ -52,21 +23,19 @@ export async function transcodeVideo(
       .seekOutput(start)
       .format(format)
       .on('start', () => {
-        console.log('Transcoding started!')
+        console.info('Transcoding started...')
       })
       .on('progress', (progress: ProgressData) => {
         const percent = getProgressPercent(progress, start, duration)
-        task.callbacks?.onProgress(percent)
-        // console.log(`Processing: ${percent}%`)
+        exportManager.update(id, percent)
       })
       .on('end', () => {
-        console.log('Transcoding complete!', path)
+        console.info('Transcoding complete!')
+        console.info(`-> ${path}`)
         resolve(true)
       })
       .on('error', (err) => {
-        console.error('Transcoding error')
-        console.error(err)
-        task.callbacks?.onError(err)
+        reject(new Error('Transcoding failed'))
       })
       .run()
   })
@@ -79,10 +48,10 @@ export async function generateThumbnail(objPath: string, objId: string) {
     ffmpeg()
       .input(objPath)
       .on('filenames', (filenames) => {
-        console.log(`Generating thumbnail for ${objPath}`)
+        console.info(`Generating thumbnail for ${objPath}`)
       })
       .on('end', () => {
-        console.log('Thumbnail generated!')
+        console.info('Thumbnail generated!')
         const path = `${folder}/${objId}${extension}`
         const url = `/${objId}${extension}`
         resolve(url)
@@ -96,7 +65,6 @@ export async function generateThumbnail(objPath: string, objId: string) {
         filename: `${objId}${extension}`,
         timestamps: ['50%'],
         size: '427x240',
-        // size: '320x240',
       })
   })
 }

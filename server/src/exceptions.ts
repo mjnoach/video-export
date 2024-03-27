@@ -1,24 +1,24 @@
-import { HTTPException } from 'hono/http-exception'
+// export const TranscodingException = (e: any) => {
+//   const status = 500
+//   const message = 'Transcoding failed'
+//   return new HTTPException(status, {
+//     message,
+//     cause: e,
+//   })
+// }
 
-export const ProcessingException = (e: any) =>
-  new HTTPException(500, {
-    message: 'Task processing error',
-    cause: e,
-  })
+// export const ExportSourceException = (e: any) => {
+//   const status = 500
+//   return new HTTPException(status, {
+//     message: e.message,
+//     cause: e,
+//   })
+// }
 
-export const StreamingException = (e: any) =>
-  new HTTPException(500, {
-    message: 'Streaming error occured',
-    cause: e,
-  })
-
-export const DownloadException = (e: any, source: string) =>
-  new HTTPException(500, {
-    message: `Error downloading video stream from source ${source}`,
-    cause: e,
-  })
-
-export const TaskNotFoundException = (id: string) =>
-  new HTTPException(404, {
-    message: `Task for export '${id}' not found`,
-  })
+// export const TaskNotFoundException = (id: string) => {
+//   const status = 404
+//   const message = `Task for export '${id}' not found`
+//   return new HTTPException(status, {
+//     message,
+//   })
+// }

@@ -2,10 +2,9 @@ import { NextResponse } from 'next/server'
 
 import type { HTTPError } from 'ky'
 
-export async function handleServerErrors(
-  e: any | HTTPError,
-  message = 'Internal Server Error',
-  status = 500
+export async function errorResponse(
+  { message = 'Internal Server Error', status = 500 },
+  e?: any | HTTPError
 ) {
   if (e instanceof Error) {
     console.error(e.name, e.message)
@@ -19,9 +18,3 @@ export async function handleServerErrors(
   }
   return new NextResponse(message, { status })
 }
-
-export const msgExportInitError = (source: string) =>
-  `Error initializing export from source ${source}`
-
-export const msgExportStreamingError = (id: string) =>
-  `Failed streaming data for export ${id}`

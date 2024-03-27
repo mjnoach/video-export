@@ -1,46 +1,47 @@
 import { NextResponse } from 'next/server'
 
-import {
-  handleServerErrors,
-  msgExportInitError,
-  msgExportStreamingError,
-} from '@/lib/utils/errors'
+import { errorResponse } from '@/lib/utils/errors'
 
-import ky from 'ky'
-
-export const dynamic = 'force-dynamic'
+import ky, { Options } from 'ky'
 
 const { API_URL } = process.env
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: Request) {
-  const formData = await request
-    .clone()
-    .formData()
-    .catch((e) => {})
-  const clip: Clip = await request.json().catch((e) => {})
   try {
-    const res = await ky.post(
-      `${API_URL}/export`,
-      !!formData ? { body: formData } : { json: clip }
-    )
-    const id = await res.json<ExportedObj['id']>()
+    const options = {} as Options
+    if (request.headers.get('Content-Type')?.includes('multipart/form-data')) {
+      const formData = await request.formData()
+      options.body = formData
+    } else {
+      const clip: Clip = await request.json()
+      options.json = clip
+    }
+    const res = await ky.post(`${API_URL}/export`, options)
+    const id = await res.json<ExportData['id']>()
     return NextResponse.json(id)
   } catch (e: any) {
-    return handleServerErrors(e, msgExportInitError(clip.url))
+    return errorResponse(
+      { message: `Error initializing export`, status: 500 },
+      e
+    )
   }
 }
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const id = searchParams.get('id')
-
   try {
-    // todo make this return invalid request intstead of default 500 response
-    if (!id) throw new Error(`Task id must be provided`)
+    if (!id)
+      return errorResponse({ message: `Task id must be provided`, status: 404 })
     const res = await ky.get(`${API_URL}/export/${id}`)
     const stream = res.body
     return new NextResponse(stream)
   } catch (e) {
-    return handleServerErrors(e, msgExportStreamingError(`${id}`))
+    return errorResponse(
+      { message: `Failed streaming data for export ${id}`, status: 500 },
+      e
+    )
   }
 }

@@ -7,7 +7,6 @@ import { VideoLinkForm } from '@/components/video-link-form'
 
 // Improve: Use SSE instead of raw stream?
 // Improve: Unset video buffering screen after player seek or clip export
-// Improve: Update favicon
 // Improve: Configure monorepo with turborepo
 // Improve: Configure secure server with https or/and http2?
 // Improve: Enpodints input validataion
