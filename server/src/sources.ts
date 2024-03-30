@@ -1,3 +1,5 @@
+import { SourceException } from './exceptions.js'
+
 import fs from 'fs'
 import ytdl from 'ytdl-core'
 
@@ -15,7 +17,7 @@ export async function handleRemoteStream(url: string) {
     })
     return stream
   } catch (e) {
-    throw new Error(`Failed downloading stream from source ${url}`)
+    throw new SourceException(`Failed downloading stream from source ${url}`)
   }
 }
 
@@ -27,6 +29,6 @@ export async function handleClientUpload(file: File, targetClip: ExportTarget) {
     await fs.promises.writeFile(path, fileBuffer)
     return path
   } catch (e) {
-    throw new Error('Filed reading/writing file from client upload')
+    throw new SourceException('Filed reading/writing file from client upload')
   }
 }

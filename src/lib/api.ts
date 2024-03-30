@@ -10,14 +10,6 @@ export const useExport = () => {
     mutationFn: async (data: Clip) => {
       const exportId = await api.postExport(data)
       const exportData = await api.getExport(exportId, setProgress)
-      //   const exportId = await api.postExport(clip).catch((e: any) => {
-      //     throw new Error(msgExportInitError(clip.sourceVideo.url))
-      //   })
-      //   const exportData = await api
-      //     .getExport(exportId, setProgress)
-      //     .catch((e: any) => {
-      //       throw new Error(msgExportStreamingError(exportId))
-      //     })
       return exportData
     },
   })
@@ -67,7 +59,7 @@ const api = {
     // let error: ExportError | null = null
     let reading = true
     while (reading) {
-      const { value, done } = await reader.read()
+      let { value, done } = await reader.read()
       // if (value?.startsWith('error:')) {
       //   error = value.replace('error:', '') as ExportError
       //   break
@@ -76,7 +68,10 @@ const api = {
         data = JSON.parse(value.replace('data:', '')) as ExportData
         break
       }
-      if (value) setProgress(value)
+      if (value) {
+        value = parseInt(value) === 100 ? 'Finalizing' : `${value}%`
+        setProgress(value)
+      }
       reading = !done
     }
 

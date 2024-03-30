@@ -1,3 +1,4 @@
+import { ExportException } from './exceptions.js'
 import { exportManager } from './export-manager.js'
 import { getProgressPercent } from './utils.js'
 
@@ -35,7 +36,7 @@ export async function transcodeVideo(
         resolve(true)
       })
       .on('error', (err) => {
-        reject(new Error('Transcoding failed'))
+        reject(new ExportException(id, 'Transcoding failed'))
       })
       .run()
   })

@@ -1,3 +1,4 @@
+import { ExportException, NotFoundException } from './exceptions.js'
 import { exportManager } from './export-manager.js'
 
 import { serve } from '@hono/node-server'
@@ -42,7 +43,7 @@ app.post('/export', async (c) => {
   }
   const { id } = exportManager.init()
   exportManager.start(id, clip)
-  return c.json(id)
+  return c.json(id, 202)
 })
 
 app.get('/export/:id', (c) =>
@@ -54,9 +55,8 @@ app.get('/export/:id', (c) =>
         c.header('Access-Control-Allow-Origin', 'https://localhost:3000')
 
         const task = exportManager.get(id)
-        if (!task) reject(new Error(`Export task '${id}' not found`))
-        if (task.status === 'failed')
-          reject(new Error(`Export task '${id}' has failed`))
+        if (!task) reject(new NotFoundException(id))
+        if (task.status === 'failed') reject(new ExportException(id))
 
         task.onProgress = (percent) => {
           if (task.status === 'failed') reject()
@@ -74,7 +74,6 @@ app.get('/export/:id', (c) =>
     },
     async (err, stream) => {
       // await stream.write(`error:${err.message}`)
-      // stream.close()
     }
   )
 )
@@ -96,8 +95,8 @@ serve(
     // certFile: process.env.SSL_CERTIFICATE_FILE || './cert.pem',
   },
   (info: AddressInfo) => {
-    console.log(`🚀 Server ready!\n`)
-    console.log(`${info.address}:${info.port}`)
+    console.info(`🚀 Server ready!\n`)
+    console.info(`${info.address}:${info.port}`)
   }
 )
 

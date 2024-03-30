@@ -34,7 +34,7 @@ export async function GET(request: Request) {
   const id = searchParams.get('id')
   try {
     if (!id)
-      return errorResponse({ message: `Task id must be provided`, status: 404 })
+      return errorResponse({ message: `Task id must be provided`, status: 400 })
     const res = await ky.get(`${API_URL}/export/${id}`)
     const stream = res.body
     return new NextResponse(stream)

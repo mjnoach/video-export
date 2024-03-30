@@ -3,6 +3,7 @@ import { handleClientUpload, handleRemoteStream } from './sources.js'
 import { clearTempData } from './utils.js'
 
 import { nanoid } from 'nanoid'
+import type { Readable } from 'stream'
 
 const { EXPORT_DIR } = process.env
 
@@ -52,8 +53,9 @@ export const exportManager = {
       duration,
     }
 
+    let source: string | Readable | null = null
     try {
-      const source = isClientUpload
+      source = isClientUpload
         ? await handleClientUpload(file, targetClip)
         : await handleRemoteStream(url)
 
@@ -71,10 +73,11 @@ export const exportManager = {
         thumbnail,
       }
 
-      if (isClientUpload && typeof source === 'string') clearTempData(source)
       exportManager.complete(id, exportData)
     } catch (e: any) {
       exportManager.fail(id, e)
+    } finally {
+      if (isClientUpload && typeof source === 'string') clearTempData(source)
     }
   },
   complete: (id: string, data: ExportData) => {

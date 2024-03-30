@@ -187,7 +187,7 @@ export function VideoPlayer({}: VideoPlayerProps) {
       >
         {exportRequest.isPending && (
           <Overlay type={'loading'} title="Processing...">
-            {exportProgress ? `${exportProgress}%` : 'initializing'}
+            {exportProgress ? exportProgress : 'Initializing'}
             <Progress
               value={Number(exportProgress)}
               className="absolute -bottom-8 h-1 w-[200%]"

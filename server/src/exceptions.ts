@@ -1,24 +1,25 @@
-// export const TranscodingException = (e: any) => {
-//   const status = 500
-//   const message = 'Transcoding failed'
-//   return new HTTPException(status, {
-//     message,
-//     cause: e,
-//   })
-// }
+import { HTTPException } from 'hono/http-exception'
 
-// export const ExportSourceException = (e: any) => {
-//   const status = 500
-//   return new HTTPException(status, {
-//     message: e.message,
-//     cause: e,
-//   })
-// }
+export class SourceException extends HTTPException {
+  constructor(message: string) {
+    super(400, { message })
+  }
+}
 
-// export const TaskNotFoundException = (id: string) => {
-//   const status = 404
-//   const message = `Task for export '${id}' not found`
-//   return new HTTPException(status, {
-//     message,
-//   })
-// }
+export class NotFoundException extends HTTPException {
+  constructor(id: string) {
+    super(404, { message: `Export task '${id}' not found` })
+  }
+}
+
+export class ExportException extends HTTPException {
+  constructor(id: string, message?: string) {
+    super(424, { message: message || `Export task '${id}' has failed` })
+  }
+}
+
+export class UnknownException extends HTTPException {
+  constructor(id: string, message?: string) {
+    super(500, { message: 'Internal server error' })
+  }
+}
