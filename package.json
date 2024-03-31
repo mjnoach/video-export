@@ -2,6 +2,8 @@
   "name": "video-editor",
   "version": "0.1.0",
   "private": true,
+  "author": "mjnoach",
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "next dev --experimental-https",
     "build": "next build",
