@@ -3,11 +3,6 @@ services:
     build: .
     ports:
       - '3001:3001'
-    environment:
-      - FFMPEG_PATH=/usr/bin/ffmpeg
-      - FFPROBE_PATH=/usr/bin/ffprobe
-      - EXPORT_DIR=/static
-      - DATA_DIR=/temp-data
     develop:
       watch:
         - action: rebuild

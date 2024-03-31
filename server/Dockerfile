@@ -18,8 +18,8 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 hono
 
-ARG FFMPEG_PATH=/ffmpeg/bin/ffmpeg
-ARG FFPROBE_PATH=/ffmpeg/bin/ffprobe
+ARG FFMPEG_PATH=/usr/bin/ffmpeg
+ARG FFPROBE_PATH=/usr/bin/ffprobe
 
 RUN apk update
 RUN apk upgrade
