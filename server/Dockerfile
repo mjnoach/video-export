@@ -10,13 +10,16 @@ COPY package*json tsconfig.json src ./
 
 RUN npm i && \
     npm run build && \
-    npm prune --production
+    npm prune --omit=dev
 
 FROM base AS runner
 WORKDIR /app
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 hono
+
+ARG FFMPEG_PATH=/ffmpeg/bin/ffmpeg
+ARG FFPROBE_PATH=/ffmpeg/bin/ffprobe
 
 RUN apk update
 RUN apk upgrade
