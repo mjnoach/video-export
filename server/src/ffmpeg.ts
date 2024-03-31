@@ -16,6 +16,7 @@ export async function transcodeVideo(
 ) {
   let { id, path, start, duration, format } = target
   if (path.startsWith('/')) path = path.substring(1)
+  console.log('🚀 ~ path:', path)
   return new Promise((resolve, reject) => {
     ffmpeg()
       .input(source)
