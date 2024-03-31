@@ -1,4 +1,4 @@
-import { ExportException } from './exceptions.js'
+import { TranscodingException } from './exceptions.js'
 import { exportManager } from './export-manager.js'
 import { getProgressPercent } from './utils.js'
 
@@ -25,19 +25,19 @@ export async function transcodeVideo(
       .seekOutput(start)
       .format(format)
       .on('start', () => {
-        console.info('Transcoding started...')
+        console.info(`Transcoding ${id} started...`)
       })
       .on('progress', (progress: ProgressData) => {
         const percent = getProgressPercent(progress, start, duration)
         exportManager.update(id, percent)
       })
       .on('end', () => {
-        console.info('Transcoding complete!')
-        console.info(`-> ${path}`)
+        console.info(`Transcoding ${id} complete!`)
+        console.info(`-> /${path}`)
         resolve(true)
       })
       .on('error', (err) => {
-        reject(new ExportException(id, 'Transcoding failed', err))
+        reject(new TranscodingException(id, err))
       })
       .run()
   })

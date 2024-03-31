@@ -12,9 +12,15 @@ export class NotFoundException extends HTTPException {
   }
 }
 
+export class TranscodingException extends HTTPException {
+  constructor(id: string, cause?: Error) {
+    super(424, { message: `Transcoding '${id}' failed`, cause })
+  }
+}
+
 export class ExportException extends HTTPException {
-  constructor(id: string, message?: string, cause?: Error) {
-    super(424, { message: message || `Export '${id}' has failed`, cause })
+  constructor(id: string) {
+    super(424, { message: `Exporting '${id}' failed` })
   }
 }
 
