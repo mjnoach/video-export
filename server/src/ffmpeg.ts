@@ -36,7 +36,7 @@ export async function transcodeVideo(
         resolve(true)
       })
       .on('error', (err) => {
-        reject(new ExportException(id, 'Transcoding failed'))
+        reject(new ExportException(id, 'Transcoding failed', err))
       })
       .run()
   })

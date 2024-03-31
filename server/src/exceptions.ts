@@ -8,13 +8,13 @@ export class SourceException extends HTTPException {
 
 export class NotFoundException extends HTTPException {
   constructor(id: string) {
-    super(404, { message: `Export task '${id}' not found` })
+    super(404, { message: `Export '${id}' not found` })
   }
 }
 
 export class ExportException extends HTTPException {
-  constructor(id: string, message?: string) {
-    super(424, { message: message || `Export task '${id}' has failed` })
+  constructor(id: string, message?: string, cause?: Error) {
+    super(424, { message: message || `Export '${id}' has failed`, cause })
   }
 }
 
