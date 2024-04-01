@@ -42,7 +42,6 @@ export const exportManager = {
     task.status = 'started'
 
     const fileName = `${id}${extension}`
-    console.log('🚀 ~ EXPORT_DIR:', EXPORT_DIR)
     const filePath = `${EXPORT_DIR}/${fileName}`
     const fileFormat = extension.replace(/^./, '')
     const duration = end - start

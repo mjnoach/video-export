@@ -14,8 +14,7 @@ export function getProgressPercent(
   duration: number
 ) {
   const seconds = getTotalSeconds(timemark)
-  let fraction = seconds / duration
-  if (fraction > 1) fraction = 1
+  const fraction = Math.min(1, seconds / duration)
   const percent = (fraction * 100).toFixed(0)
   return percent
 }

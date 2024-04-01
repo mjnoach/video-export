@@ -59,8 +59,7 @@ app.get('/export/:id', (c) =>
         if (task.status === 'failed') reject(new ExportException(id))
 
         task.onProgress = (percent) => {
-          if (task.status === 'failed') reject()
-          console.log(`Processing: ${percent}%`)
+          // console.log(`Processing: ${percent}%`)
           stream.write(percent)
         }
         task.onFinish = (obj) => {

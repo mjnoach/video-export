@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import ky from 'ky'
 
 export const useExport = () => {
-  const [progress, setProgress] = useState<null | string>(null)
+  const [progress, setProgress] = useState<null | number>(null)
 
   const mutation = useMutation({
     mutationFn: async (data: Clip) => {
@@ -68,7 +68,7 @@ const api = {
     )
     return res.json<ExportData['id']>()
   },
-  getExport: async (id: string, setProgress: (progress: string) => void) => {
+  getExport: async (id: string, setProgress: (progress: number) => void) => {
     const res = await ky.get(`/api/export?id=${id}`)
     const stream = res.body?.pipeThrough(new TextDecoderStream())
     const reader = stream?.getReader()
@@ -88,10 +88,7 @@ const api = {
         data = JSON.parse(value.replace('data:', '')) as ExportData
         break
       }
-      if (value) {
-        value = parseInt(value) === 100 ? 'Finalizing' : `${value}%`
-        setProgress(value)
-      }
+      if (value) setProgress(parseInt(value))
       reading = !done
     }
 
