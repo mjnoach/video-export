@@ -1,47 +1,60 @@
 import { useEffect, useState } from 'react'
 
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { queryClient } from '@/app/providers'
+import { useMutation } from '@tanstack/react-query'
 import ky from 'ky'
 
-export const useExport = () => {
+export const useExportRequest = () => {
   const [progress, setProgress] = useState<null | number>(null)
+  const [id, setId] = useState<null | string>(null)
+  const [data, setData] = useState<null | ExportData>(null)
+  const [error, setError] = useState<null | Error>(null)
+  const [isPending, setPending] = useState(false)
 
   const mutation = useMutation({
     mutationFn: async (data: Clip) => {
+      setPending(true)
       const exportId = await api.postExport(data)
-      return exportId
+      setId(exportId)
     },
-  })
-
-  const query = useQuery({
-    queryKey: ['todo', 7],
-    queryFn: async () => {
-      const exportId = mutation.data as string
-      const exportData = await api.getExport(exportId, setProgress)
-      return exportData
-    },
-    enabled: false,
   })
 
   useEffect(() => {
-    query.refetch()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mutation.isSuccess])
+    const fetchQuery = async () => {
+      await queryClient
+        .fetchQuery({
+          queryKey: ['export', id],
+          queryFn: async () => {
+            if (!id) throw new Error('Export id is not defined')
+            const exportData = await api.getExport(id, setProgress)
+            setData(exportData)
+          },
+        })
+        .catch((e: any | Error) => {
+          setError(e)
+        })
+      setPending(false)
+    }
+    id && fetchQuery()
+  }, [id])
 
   function reset() {
-    setProgress(null)
     mutation.reset()
+    setId(null)
+    setProgress(null)
+    setError(null)
+    setData(null)
   }
 
   return {
     mutate: mutation.mutate,
     progress,
-    data: query.data,
+    data,
     reset,
-    error: mutation.error || query.error,
-    isSuccess: mutation.isSuccess && query.isSuccess,
-    isError: mutation.isError && query.isError,
-    isPending: mutation.isPending && query.isPending,
+    error: mutation.error ?? error,
+    isSuccess: mutation.isSuccess && !!data,
+    isError: mutation.isError || !!error,
+    isPending,
   }
 }
 

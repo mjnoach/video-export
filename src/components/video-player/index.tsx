@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 
 import Link from 'next/link'
 
-import { useExport } from '@/lib/api'
+import { useExportRequest } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 import { EditorActions, EditorContext } from '../context/editor'
@@ -27,7 +27,7 @@ export function VideoPlayer({}: VideoPlayerProps) {
   const { setActions, isDisabled, setDisabled, storeObject, clip, updateClip } =
     useContext(EditorContext)
 
-  const exportRequest = useExport()
+  const exportRequest = useExportRequest()
 
   useEffect(() => {
     if (exportRequest.isError) {
