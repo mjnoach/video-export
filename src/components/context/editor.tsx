@@ -38,7 +38,7 @@ export const EditorProvider = ({ children }: DefaultProps) => {
 
   function storeObject(obj: ExportData) {
     const restoredStorage = restore(STORAGE_KEY) as ExportData[]
-    const newStorage = [obj, ...restoredStorage]
+    const newStorage = [obj, ...(restoredStorage ?? [])]
     setStorage(newStorage)
     persist(STORAGE_KEY, newStorage)
   }

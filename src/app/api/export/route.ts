@@ -4,9 +4,12 @@ import { errorResponse } from '@/lib/utils/errors'
 
 import ky, { Options } from 'ky'
 
-const { API_URL } = process.env
+const { API_URL, API_RUNTIME } = process.env
 
 export const dynamic = 'force-dynamic'
+export const runtime = 'edge'
+// export const runtime = 'nodejs'
+// export const runtime = API_RUNTIME
 
 export async function POST(request: Request) {
   try {
@@ -22,6 +25,7 @@ export async function POST(request: Request) {
     const id = await res.json<ExportData['id']>()
     return NextResponse.json(id)
   } catch (e: any) {
+    console.error(e)
     return errorResponse(
       { message: `Error initializing export`, status: 500 },
       e
@@ -39,6 +43,7 @@ export async function GET(request: Request) {
     const stream = res.body
     return new NextResponse(stream)
   } catch (e) {
+    console.error(e)
     return errorResponse(
       { message: `Failed streaming data for export ${id}`, status: 500 },
       e

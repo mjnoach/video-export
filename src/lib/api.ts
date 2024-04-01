@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { queryClient } from '@/app/providers'
 import { useMutation } from '@tanstack/react-query'
 import ky from 'ky'
 
@@ -21,18 +20,25 @@ export const useExportRequest = () => {
 
   useEffect(() => {
     const fetchQuery = async () => {
-      await queryClient
-        .fetchQuery({
-          queryKey: ['export', id],
-          queryFn: async () => {
-            if (!id) throw new Error('Export id is not defined')
-            const exportData = await api.getExport(id, setProgress)
-            setData(exportData)
-          },
-        })
+      if (!id) throw new Error('Export id is not defined')
+      const exportData = await api
+        .getExport(id, setProgress)
         .catch((e: any | Error) => {
           setError(e)
         })
+      exportData && setData(exportData)
+      // await queryClient
+      //   .fetchQuery({
+      //     queryKey: ['export', id],
+      //     queryFn: async () => {
+      //       if (!id) throw new Error('Export id is not defined')
+      //       const exportData = await api.getExport(id, setProgress)
+      //       setData(exportData)
+      //     },
+      //   })
+      //   .catch((e: any | Error) => {
+      //     setError(e)
+      //   })
       setPending(false)
     }
     id && fetchQuery()
@@ -89,23 +95,22 @@ const api = {
     if (!reader) throw new Error('No reader')
 
     let data: ExportData | null = null
-    // let error: ExportError | null = null
     let reading = true
+
     while (reading) {
       let { value, done } = await reader.read()
-      // if (value?.startsWith('error:')) {
-      //   error = value.replace('error:', '') as ExportError
-      //   break
-      // }
-      if (value?.startsWith('data:')) {
-        data = JSON.parse(value.replace('data:', '')) as ExportData
+      const dataKey = 'data:'
+      if (value?.includes(dataKey)) {
+        const dataStr = value.substring(
+          value?.indexOf(dataKey) + dataKey.length
+        )
+        data = JSON.parse(dataStr) as ExportData
         break
       }
       if (value) setProgress(parseInt(value))
       reading = !done
     }
 
-    // if (error) throw new Error(error)
     if (!data) throw new Error(`Streaming response data failed`)
 
     return data

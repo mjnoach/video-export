@@ -11,8 +11,8 @@ import { AddressInfo } from 'net'
 const { EXPORT_DIR } = process.env
 
 // TODO
-
 // Improve: Error handling: throw exceptions and handle them globally
+// Fix: Set a timeout between progress responses to prevent it from getting stuck?
 
 const app = new Hono()
 
@@ -43,7 +43,9 @@ app.post('/export', async (c) => {
   }
   const { id } = exportManager.init()
   exportManager.start(id, clip)
-  return c.json(id, 202)
+  return c.json(id, 200)
+  // TODO
+  // return c.json(id, 202)
 })
 
 app.get('/export/:id', (c) =>
@@ -59,11 +61,11 @@ app.get('/export/:id', (c) =>
         if (task.status === 'failed') reject(new ExportException(id))
 
         task.onProgress = (percent) => {
-          // console.log(`Processing: ${percent}%`)
-          stream.write(percent)
+          console.log(`Processing ${id} ${percent}%`)
+          stream.writeln(percent)
         }
         task.onFinish = (obj) => {
-          stream.write(`data:${JSON.stringify(obj)}`)
+          stream.writeln(`data:${JSON.stringify(obj)}`)
           resolve()
         }
         task.onError = (err) => {

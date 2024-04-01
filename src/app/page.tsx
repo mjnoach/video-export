@@ -1,16 +1,14 @@
 import { VideoLinkForm } from '@/components/video-link-form'
 
 // TODO
-
+// Feature: Name input at the top of the window
 // Feature: Multiple slider ranges for exporting a video combined of multiple clips
 // Feature: Add a cropping frame that will only capture the selected area for a given slider range
-
 // Improve: Use SSE instead of raw stream?
 // Improve: Unset video buffering screen after player seek or clip export
 // Improve: Configure monorepo with turborepo
 // Improve: Configure secure server with https or/and http2?
 // Improve: Enpodints input validataion
-
 // Fix: Local file upload
 //  if file is local, process in browser ffmpeg rather than on the server?
 //  or at least send over only selected part, not entire video
