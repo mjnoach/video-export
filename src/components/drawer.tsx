@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
 import { getReadableDuration } from '@/lib/utils/time'
@@ -143,8 +144,16 @@ const PinButton = ({ isPinned, setPinned, className }: PinButtonProps) => {
   )
 }
 
-const NewItemButton = () => (
-  <li className="action center aspect-video w-32">
-    <Plus />
-  </li>
-)
+const NewItemButton = () => {
+  const router = useRouter()
+
+  function handleClick() {
+    router.push(`/`)
+  }
+
+  return (
+    <li onClick={handleClick} className="action center aspect-video w-32">
+      <Plus />
+    </li>
+  )
+}
