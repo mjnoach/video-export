@@ -30,16 +30,6 @@ export function VideoPlayer({}: VideoPlayerProps) {
   const exportRequest = useExportRequest()
 
   useEffect(() => {
-    if (exportRequest.isError) {
-      setTimeout(() => {
-        exportRequest.reset()
-        setDisabled(false)
-      }, 5000)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exportRequest.isError])
-
-  useEffect(() => {
     if (exportRequest.data) {
       storeObject(exportRequest.data)
       setTimeout(() => {
@@ -163,8 +153,6 @@ export function VideoPlayer({}: VideoPlayerProps) {
     isPlaying && togglePlaying()
   }
 
-  function handleBuffer() {}
-
   function handleError(
     error: any,
     data?: any,
@@ -176,6 +164,11 @@ export function VideoPlayer({}: VideoPlayerProps) {
   }
 
   function handleSeek(seconds: number) {}
+
+  function reset() {
+    exportRequest.reset()
+    setDisabled(false)
+  }
 
   return (
     <div className={cn('flex w-full flex-col items-center gap-4')}>
@@ -200,8 +193,12 @@ export function VideoPlayer({}: VideoPlayerProps) {
           </Overlay>
         )}
         {exportRequest.error && (
-          <Overlay type={'error'} title={exportRequest.error.name || 'Error'}>
-            <div className="px-10">{exportRequest.error.message}</div>
+          <Overlay
+            type={'error'}
+            title={exportRequest.error?.name || 'Error'}
+            onDismiss={reset}
+          >
+            <div className="px-10">{exportRequest.error?.message}</div>
           </Overlay>
         )}
         {exportRequest.data && (
@@ -230,7 +227,6 @@ export function VideoPlayer({}: VideoPlayerProps) {
           }}
           onSeek={handleSeek}
           onError={handleError}
-          onBuffer={handleBuffer}
           onPlay={handlePlay}
           onPause={handlePause}
           onProgress={handleProgress}
