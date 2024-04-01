@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import ky from 'ky'
 
 export const useExport = () => {
@@ -9,10 +9,24 @@ export const useExport = () => {
   const mutation = useMutation({
     mutationFn: async (data: Clip) => {
       const exportId = await api.postExport(data)
+      return exportId
+    },
+  })
+
+  const query = useQuery({
+    queryKey: ['todo', 7],
+    queryFn: async () => {
+      const exportId = mutation.data as string
       const exportData = await api.getExport(exportId, setProgress)
       return exportData
     },
+    enabled: false,
   })
+
+  useEffect(() => {
+    query.refetch()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mutation.isSuccess])
 
   function reset() {
     setProgress(null)
@@ -20,8 +34,14 @@ export const useExport = () => {
   }
 
   return {
-    exportRequest: { ...mutation, reset },
-    exportProgress: progress,
+    mutate: mutation.mutate,
+    progress,
+    data: query.data,
+    reset,
+    error: mutation.error || query.error,
+    isSuccess: mutation.isSuccess && query.isSuccess,
+    isError: mutation.isError && query.isError,
+    isPending: mutation.isPending && query.isPending,
   }
 }
 

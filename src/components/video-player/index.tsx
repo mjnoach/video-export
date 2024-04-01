@@ -27,7 +27,7 @@ export function VideoPlayer({}: VideoPlayerProps) {
   const { setActions, isDisabled, setDisabled, storeObject, clip, updateClip } =
     useContext(EditorContext)
 
-  const { exportRequest, exportProgress } = useExport()
+  const exportRequest = useExport()
 
   useEffect(() => {
     if (exportRequest.isError) {
@@ -40,7 +40,7 @@ export function VideoPlayer({}: VideoPlayerProps) {
   }, [exportRequest.isError])
 
   useEffect(() => {
-    if (exportRequest.isSuccess) {
+    if (exportRequest.data) {
       storeObject(exportRequest.data)
       setTimeout(() => {
         exportRequest.reset()
@@ -187,19 +187,19 @@ export function VideoPlayer({}: VideoPlayerProps) {
       >
         {exportRequest.isPending && (
           <Overlay type={'loading'} title="Processing...">
-            {exportProgress ? exportProgress : 'Initializing'}
+            {exportRequest.progress ? exportRequest.progress : 'Initializing'}
             <Progress
-              value={Number(exportProgress)}
+              value={Number(exportRequest.progress)}
               className="absolute -bottom-8 h-1 w-[200%]"
             />
           </Overlay>
         )}
-        {exportRequest.isError && (
+        {exportRequest.error && (
           <Overlay type={'error'} title={exportRequest.error.name || 'Error'}>
             <div className="px-10">{exportRequest.error.message}</div>
           </Overlay>
         )}
-        {exportRequest.isSuccess && (
+        {exportRequest.data && (
           <Overlay type={'success'} title="Export complete!">
             <Link
               href={`${process.env.NEXT_PUBLIC_API_URL}${exportRequest.data.url}`}
