@@ -146,9 +146,11 @@ const PinButton = ({ isPinned, setPinned, className }: PinButtonProps) => {
 
 const NewItemButton = () => {
   const router = useRouter()
+  const { updateClip } = useContext(EditorContext)
 
   function handleClick() {
-    router.push(`/`)
+    updateClip({})
+    router.replace(`/`)
   }
 
   return (

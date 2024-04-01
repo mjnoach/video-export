@@ -1,4 +1,11 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+
+import { useRouter } from 'next/navigation'
+
 import { VideoLinkForm } from '@/components/video-link-form'
+import { VideoUpload } from '@/components/video-upload'
 
 // TODO
 // Feature: Name input at the top of the window
@@ -9,17 +16,29 @@ import { VideoLinkForm } from '@/components/video-link-form'
 // Improve: Configure monorepo with turborepo
 // Improve: Configure secure server with https or/and http2?
 // Improve: Enpodints input validataion
+// Improve: Update logo with brand color
+// Improve: Add processing exports to drawer
 // Fix: Local file upload
 //  if file is local, process in browser ffmpeg rather than on the server?
 //  or at least send over only selected part, not entire video
+// Fix: Unset processing/loading behind the error overlay
 
 export default function Home() {
+  const [isLoaded, setLoaded] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    isLoaded && router.push(`/edit`)
+  }, [isLoaded, router])
+
   return (
     <main>
-      <div className="mt-40">
-        <VideoLinkForm />
+      <div className="mt-20 grid gap-8">
+        <VideoLinkForm setLoaded={setLoaded} />
+        <div className="flex aspect-video grow flex-col items-center justify-center">
+          <VideoUpload setLoaded={setLoaded} />
+        </div>
       </div>
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left"></div>
     </main>
   )
 }

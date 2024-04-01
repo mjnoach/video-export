@@ -13,6 +13,7 @@ const { EXPORT_DIR } = process.env
 // TODO
 // Improve: Error handling: throw exceptions and handle them globally
 // Fix: Set a timeout between progress responses to prevent it from getting stuck?
+// Fix: Choose video formats/sizes
 
 const app = new Hono()
 

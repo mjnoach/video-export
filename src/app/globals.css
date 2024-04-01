@@ -137,7 +137,7 @@
   }
   .panel {
     @apply rounded-lg border border-transparent transition-colors;
-    @apply hover:border-neutral-700 hover:bg-neutral-800/30;
+    @apply hover:border-secondary-2 hover:bg-secondary-1/30;
     @apply disabled:pointer-events-none disabled:opacity-50;
   }
   .disable {

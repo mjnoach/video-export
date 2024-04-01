@@ -1,9 +1,5 @@
 import { useContext, useState } from 'react'
 
-import { useSearchParams } from 'next/navigation'
-
-import { Button } from '@/components/ui/button'
-
 import { EditorContext } from './context/editor'
 
 type VideoUploadProps = DefaultProps & {
@@ -12,16 +8,8 @@ type VideoUploadProps = DefaultProps & {
 }
 
 export function VideoUpload({ disabled = false, setLoaded }: VideoUploadProps) {
-  const searchParams = useSearchParams()
-  const videoUrl = searchParams.get('videoUrl') ?? ''
   const [isLoading, setLoading] = useState(false)
-
   const { updateClip } = useContext(EditorContext)
-
-  async function handleLoadRemote() {
-    updateClip({ url: videoUrl })
-    setLoaded(true)
-  }
 
   function handleLoadLocal(e: any) {
     const file = e.target.files[0] as File
@@ -36,18 +24,7 @@ export function VideoUpload({ disabled = false, setLoaded }: VideoUploadProps) {
     setLoaded(true)
   }
 
-  return (
-    <div className="flex flex-col items-center space-y-10">
-      <UploadInput accept="video/*" onChange={handleLoadLocal} />
-      <Button
-        className="action h-8"
-        onClick={handleLoadRemote}
-        disabled={isLoading}
-      >
-        Load Video
-      </Button>
-    </div>
-  )
+  return <UploadInput accept="video/*" onChange={handleLoadLocal} />
 }
 
 type UploadInputProps = DefaultProps & {
@@ -62,7 +39,7 @@ const UploadInput = (props: UploadInputProps) => {
     <div>
       <label
         htmlFor="file"
-        className="center action aspect-video h-64 rounded-lg border-2 border-dashed"
+        className="center panel aspect-video h-64 rounded-lg border-dashed !border-secondary-2"
       >
         <UploadIcon />
         <p className="mb-2 text-sm text-primary-2">

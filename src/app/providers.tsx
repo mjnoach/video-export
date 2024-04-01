@@ -1,5 +1,7 @@
 'use client'
 
+import { EditorProvider } from '@/components/context/editor'
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider } from 'next-themes'
 
@@ -14,7 +16,7 @@ export function Providers({ children }: DefaultProps) {
         enableSystem
         disableTransitionOnChange
       >
-        {children}
+        <EditorProvider>{children}</EditorProvider>
       </ThemeProvider>
     </QueryClientProvider>
   )

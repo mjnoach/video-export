@@ -1,29 +1,36 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useContext } from 'react'
 
 import { cn } from '@/lib/utils'
+
+import { EditorContext } from './context/editor'
 
 import { useForm } from 'react-hook-form'
 
 const YOUTUBE_URL_REGEX =
   /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/gm
 
-type FormData = {
+type FormInputs = {
   videoUrl: string
 }
 
-export function VideoLinkForm() {
+export function VideoLinkForm({
+  setLoaded,
+}: {
+  setLoaded: (state: boolean) => void
+}) {
   const {
     register,
     formState: { errors },
     handleSubmit,
     setFocus,
-  } = useForm<FormData>()
-  const router = useRouter()
+  } = useForm<FormInputs>()
+  const { updateClip } = useContext(EditorContext)
 
-  const onSubmit = (data: FormData) => {
-    router.push(`/edit?videoUrl=${data.videoUrl}`)
+  const onSubmit = (data: FormInputs) => {
+    updateClip({ url: data.videoUrl })
+    setLoaded(true)
   }
 
   return (
