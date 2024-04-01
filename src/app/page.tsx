@@ -9,6 +9,7 @@ import { VideoUpload } from '@/components/video-upload'
 
 // TODO
 // Feature: Name input at the top of the window
+// Feature: Option to attach auto-generated captions?
 // Feature: Multiple slider ranges for exporting a video combined of multiple clips
 // Feature: Add a cropping frame that will only capture the selected area for a given slider range
 // Improve: Use SSE instead of raw stream?
