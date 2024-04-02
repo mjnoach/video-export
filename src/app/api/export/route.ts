@@ -6,10 +6,10 @@ import ky, { Options } from 'ky'
 
 const { API_URL, API_RUNTIME } = process.env
 
-export const dynamic = 'force-dynamic'
+// Set 'edge' runtime for production deployment with Vercel Functions
+// Set 'nodejs' runtime for development
 export const runtime = 'edge'
-// export const runtime = 'nodejs'
-// export const runtime = API_RUNTIME
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: Request) {
   try {

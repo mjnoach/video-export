@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
+import { Drawer } from '@/components/drawer'
 import { VideoLinkForm } from '@/components/video-link-form'
 import { VideoUpload } from '@/components/video-upload'
 
 // TODO
 // Feature: Name input at the top of the window
+// Feature: Choose video formats/sizes
 // Feature: Option to attach auto-generated captions?
 // Feature: Multiple slider ranges for exporting a video combined of multiple clips
 // Feature: Add a cropping frame that will only capture the selected area for a given slider range
@@ -17,7 +19,6 @@ import { VideoUpload } from '@/components/video-upload'
 // Improve: Configure monorepo with turborepo
 // Improve: Configure secure server with https or/and http2?
 // Improve: Enpodints input validataion
-// Improve: Update logo with brand color
 // Improve: Add processing exports to drawer
 // Fix: Local file upload
 //  if file is local, process in browser ffmpeg rather than on the server?
@@ -34,6 +35,7 @@ export default function Home() {
 
   return (
     <main>
+      <Drawer />
       <div className="mt-20 grid gap-8">
         <VideoLinkForm setLoaded={setLoaded} />
         <div className="flex aspect-video grow flex-col items-center justify-center">

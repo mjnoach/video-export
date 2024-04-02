@@ -10,11 +10,6 @@ import { AddressInfo } from 'net'
 
 const { EXPORT_DIR } = process.env
 
-// TODO
-// Improve: Error handling: throw exceptions and handle them globally
-// Fix: Set a timeout between progress responses to prevent it from getting stuck?
-// Fix: Choose video formats/sizes
-
 const app = new Hono()
 
 app.use(logger())
@@ -45,8 +40,6 @@ app.post('/export', async (c) => {
   const { id } = exportManager.init()
   exportManager.start(id, clip)
   return c.json(id, 200)
-  // TODO
-  // return c.json(id, 202)
 })
 
 app.get('/export/:id', (c) =>
