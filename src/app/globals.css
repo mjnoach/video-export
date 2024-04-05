@@ -116,6 +116,9 @@
   .drawer-icon {
     @apply h-4 w-4 select-none;
   }
+  .drawer-item {
+    @apply aspect-video w-44 rounded-lg border border-secondary-2;
+  }
   .overlay-icon {
     @apply h-16 w-16 select-none;
   }
@@ -130,9 +133,13 @@
     @apply bg-secondary-1/50 hover:!bg-secondary-1/70;
     @apply rounded-md border border-secondary-2;
     @apply disabled:pointer-events-none disabled:opacity-50;
+    @apply select-none;
 
-    &.brand {
+    &.action-brand {
       @apply !border-brand !bg-brand/50 hover:!bg-brand/60;
+    }
+    &.action-destructive {
+      @apply hover:!border-destructive hover:!bg-destructive;
     }
   }
   .panel {

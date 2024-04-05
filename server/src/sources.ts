@@ -8,10 +8,22 @@ const { DATA_DIR } = process.env
 export async function handleRemoteStream(url: string) {
   try {
     const info = await ytdl.getInfo(url)
+    // console.log(
+    //   '🚀 ~ handleRemoteStream ~ info.formats:',
+    //   info.formats.map((f) => ({
+    //     // 1: f.mimeType,
+    //     quality: f.quality,
+    //     qualityLabel: f.qualityLabel,
+    //     width: f.width,
+    //     height: f.height,
+    //     container: f.container,
+    //   }))
+    // )
     const format = ytdl.chooseFormat(info.formats, {
-      quality: 'lowest',
+      // quality: 'highest',
       filter: (format) => format.container === 'mp4',
     })
+    // console.log('🚀 ~ handleRemoteStream ~ format:', format)
     const stream = ytdl(url, {
       format,
     })

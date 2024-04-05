@@ -9,21 +9,13 @@ import { VideoLinkForm } from '@/components/video-link-form'
 import { VideoUpload } from '@/components/video-upload'
 
 // TODO
-// Feature: Name input at the top of the window
 // Feature: Choose video formats/sizes
 // Feature: Option to attach auto-generated captions?
 // Feature: Multiple slider ranges for exporting a video combined of multiple clips
 // Feature: Add a cropping frame that will only capture the selected area for a given slider range
-// Improve: Use SSE instead of raw stream?
-// Improve: Unset video buffering screen after player seek or clip export
-// Improve: Configure monorepo with turborepo
-// Improve: Configure secure server with https or/and http2?
-// Improve: Enpodints input validataion
-// Improve: Add processing exports to drawer
-// Fix: Local file upload
-//  if file is local, process in browser ffmpeg rather than on the server?
-//  or at least send over only selected part, not entire video
-// Fix: Unset processing/loading behind the error overlay
+
+// Improve: Process local uploads on the client with wasm ffmpeg?
+// Improve: Clip local uploads on the client, not to stream irrelevant data to the server
 
 export default function Home() {
   const [isLoaded, setLoaded] = useState(false)
@@ -34,13 +26,14 @@ export default function Home() {
   }, [isLoaded, router])
 
   return (
-    <main>
+    <main className="mt-12">
       <Drawer />
-      <div className="mt-20 grid gap-8">
+      <div className="grid gap-8">
+        <h1 className={`mb-6 text-center text-5xl font-semibold`}>
+          Paste & Go
+        </h1>
         <VideoLinkForm setLoaded={setLoaded} />
-        <div className="flex aspect-video grow flex-col items-center justify-center">
-          <VideoUpload setLoaded={setLoaded} />
-        </div>
+        <VideoUpload setLoaded={setLoaded} />
       </div>
     </main>
   )

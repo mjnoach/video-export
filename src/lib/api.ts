@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { queryClient } from '@/app/providers'
 import { useMutation } from '@tanstack/react-query'
 import ky from 'ky'
 
@@ -19,29 +20,34 @@ export const useExportRequest = () => {
   })
 
   useEffect(() => {
-    const fetchQuery = async () => {
-      if (!id) throw new Error('Export id is not defined')
-      const exportData = await api
-        .getExport(id, setProgress)
+    // const fetchQuery = async () => {
+    //   if (!id) throw new Error('Export id is not defined')
+    //   const exportData = await api
+    //     .getExport(id, setProgress)
+    //     .catch((e: any | Error) => {
+    //       setError(e)
+    //     })
+    //   exportData && setData(exportData)
+    //   setPending(false)
+    // }
+    // id && fetchQuery()
+    if (id) {
+      queryClient
+        .fetchQuery({
+          queryKey: ['export', id],
+          queryFn: async () => {
+            if (!id) throw new Error('Export id is not defined')
+            const exportData = await api.getExport(id, setProgress)
+            setData(exportData)
+          },
+        })
         .catch((e: any | Error) => {
           setError(e)
         })
-      exportData && setData(exportData)
-      // await queryClient
-      //   .fetchQuery({
-      //     queryKey: ['export', id],
-      //     queryFn: async () => {
-      //       if (!id) throw new Error('Export id is not defined')
-      //       const exportData = await api.getExport(id, setProgress)
-      //       setData(exportData)
-      //     },
-      //   })
-      //   .catch((e: any | Error) => {
-      //     setError(e)
-      //   })
-      setPending(false)
+        .finally(() => {
+          setPending(false)
+        })
     }
-    id && fetchQuery()
   }, [id])
 
   function reset() {
@@ -50,6 +56,7 @@ export const useExportRequest = () => {
     setProgress(null)
     setError(null)
     setData(null)
+    setPending(false)
   }
 
   return {

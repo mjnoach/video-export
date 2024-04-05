@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -8,25 +8,20 @@ import { getReadableDuration } from '@/lib/utils/time'
 
 import { EditorContext } from './context/editor'
 import { Nav } from './nav'
+import { Progress } from './ui/progress'
 
-import { GripVertical, Pin, PinOff, Plus, Trash2 } from 'lucide-react'
+import { GripVertical, Loader2, Pin, PinOff, Plus, Trash2 } from 'lucide-react'
 
 export const Drawer = () => {
-  const [isPinned, setPinned] = useState(false)
-  const { storage } = useContext(EditorContext)
-
-  useEffect(() => {
-    setPinned(false)
-  }, [])
+  const editor = useContext(EditorContext)
 
   return (
     <div
       className={cn(
-        !storage.length
+        !editor.data.length
           ? '-translate-x-[100%]'
           : '-translate-x-[calc(100%-1.5rem)]',
-        'fixed left-0 top-0 z-40 flex h-screen border-r border-secondary-1 bg-black bg-opacity-70 backdrop-blur-md transition-transform hover:-translate-x-0',
-        isPinned ? '-translate-x-0' : ''
+        'fixed left-0 top-0 z-50 flex h-screen border-r border-secondary-1 bg-black bg-opacity-60 backdrop-blur-md transition-transform hover:-translate-x-0'
       )}
     >
       <div className="overflow-y-auto">
@@ -34,17 +29,23 @@ export const Drawer = () => {
           <div className="invisible">
             <Nav />
           </div>
-          <PinButton
-            className="absolute right-0 top-12"
-            isPinned={isPinned}
-            setPinned={setPinned}
-          />
         </div>
         <ul className="my-12 mb-24 ml-6 flex w-44 flex-col items-center gap-4">
-          {storage.map((obj, i) => (
-            <DrawerItem key={i} obj={obj} />
+          {/* <PendingItem
+            obj={clip}
+            // obj={{
+            //   id: 'test',
+            //   path: '',
+            //   duration: 0,
+            //   format: 'mp4',
+            //   url: '',
+            //   thumbnail: null,
+            // }}
+          /> */}
+          {editor.data.map((obj, i) => (
+            <Item key={i} obj={obj} />
           ))}
-          <NewItemButton />
+          <NewItem />
         </ul>
       </div>
       <div className="flex w-6 items-center">
@@ -54,43 +55,76 @@ export const Drawer = () => {
   )
 }
 
-type DrawerItemProps = {
+type PendingItemProps = {
   obj: ExportData
 }
 
-const DrawerItem = ({ obj }: DrawerItemProps) => {
-  const { removeObject } = useContext(EditorContext)
+const PendingItem = ({ obj }: PendingItemProps) => {
   const extension = `.${obj.format}`
 
-  function handleClick(e: any) {
-    e.preventDefault()
-    removeObject(obj.id)
-  }
-
-  const href = `${process.env.NEXT_PUBLIC_API_URL}${obj.url}`
   return (
     <li
       style={{
         backgroundImage: obj.thumbnail ? `url(${obj.thumbnail})` : '',
       }}
       className={cn(
-        'group/item flex aspect-video w-44 cursor-pointer select-none rounded-lg border border-secondary-2 bg-black transition',
-        'bg-black',
+        'drawer-item relative flex overflow-hidden',
+        obj.thumbnail ? 'bg-contain bg-center bg-no-repeat' : 'bg-black'
+      )}
+    >
+      {/* <div className="absolute inset-0 z-50 rounded-lg bg-black/60"></div> */}
+      <div className="grid h-full w-full grid-cols-3 content-between p-1">
+        <div className="col-span-2 w-fit select-none text-primary-2">
+          {getReadableDuration(obj.duration)}
+        </div>
+        <div
+          className={
+            'z-50 flex h-7 w-7 select-none items-center justify-center place-self-end'
+          }
+        >
+          <Loader2 className={'h-6 w-6 animate-spin self-end'} />
+        </div>
+        <div className="col-span-2 w-fit max-w-full truncate whitespace-nowrap">
+          {obj.id}
+        </div>
+        <div className="w-fit place-self-end text-player">{extension}</div>
+      </div>
+      <Progress
+        value={50}
+        className="rounded-lg/ /bg-red-500 absolute bottom-0 z-50 h-1 w-full"
+      />
+    </li>
+  )
+}
+
+type ItemProps = {
+  obj: ExportData
+}
+
+const Item = ({ obj }: ItemProps) => {
+  const extension = `.${obj.format}`
+  const href = `${process.env.NEXT_PUBLIC_API_URL}${obj.url}`
+
+  return (
+    <li
+      style={{
+        backgroundImage: obj.thumbnail ? `url(${obj.thumbnail})` : '',
+      }}
+      className={cn(
+        'group/item drawer-item flex cursor-pointer transition',
         obj.thumbnail ? 'bg-contain bg-center bg-no-repeat' : 'bg-black'
       )}
     >
       <Link href={href} className="w-full" target="_blank">
         <div className="grid h-full grid-cols-3 content-between p-1">
-          <div className="bg-black/ px-1.5/ col-span-2 w-fit text-primary-2">
+          <div className="col-span-2 w-fit select-none text-primary-2">
             {getReadableDuration(obj.duration)}
           </div>
           <RemoveButton obj={obj} />
-          <div className="bg-black/ px-1.5/ col-span-2 w-fit max-w-full truncate whitespace-nowrap">
-            {obj.id}R
+          <div className="col-span-2 w-fit max-w-full truncate whitespace-nowrap">
+            {obj.id}
           </div>
-          <div className="bg-black/ px-1.5/ w-fit place-self-end text-player">
-            {extension}
-          </div>
+          <div className="w-fit place-self-end text-player">{extension}</div>
         </div>
       </Link>
     </li>
@@ -102,18 +136,17 @@ type RemoveButtonProps = {
 }
 
 const RemoveButton = ({ obj }: RemoveButtonProps) => {
-  const { removeObject } = useContext(EditorContext)
-  const extension = `.${obj.format}`
+  const editor = useContext(EditorContext)
 
   function handleClick(e: any) {
     e.preventDefault()
-    removeObject(obj.id)
+    editor.removeItem(obj.id)
   }
   return (
     <button
       onClick={handleClick}
       className={
-        'action invisible flex h-7 w-7 items-center justify-center place-self-end hover:!border-destructive hover:!bg-destructive group-hover/item:visible'
+        'action action-destructive invisible flex h-7 w-7 select-none items-center justify-center place-self-end group-hover/item:visible'
       }
     >
       <Trash2 className="drawer-icon" />
@@ -144,17 +177,16 @@ const PinButton = ({ isPinned, setPinned, className }: PinButtonProps) => {
   )
 }
 
-const NewItemButton = () => {
+const NewItem = () => {
   const router = useRouter()
-  const { updateClip } = useContext(EditorContext)
+  const editor = useContext(EditorContext)
 
   function handleClick() {
-    updateClip({})
     router.replace(`/`)
   }
 
   return (
-    <li onClick={handleClick} className="action center aspect-video w-32">
+    <li onClick={handleClick} className="action center drawer-item w-32">
       <Plus />
     </li>
   )

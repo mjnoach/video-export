@@ -9,16 +9,22 @@ export type EditorActions = {
   exportClip: (clip: Clip) => Promise<void>
 }
 
+// type EditorData = ExportData & {
+//   status: 'started' | 'failed' | 'complete'
+//   progress?: number
+// }
+
 const editor = {
   actions: {} as EditorActions,
   setActions: (actions: EditorActions) => {},
   isDisabled: false,
   setDisabled: (state: boolean) => {},
-  storage: [] as ExportData[],
-  storeObject: (obj: ExportData) => {},
-  removeObject: (objId: string) => {},
+  data: [] as ExportData[],
+  storeItem: (item: ExportData) => {},
+  removeItem: (id: string) => {},
   clip: {} as Clip,
   updateClip: (clip: Partial<Clip>) => {},
+  reset: () => {},
 }
 
 export const EditorContext = createContext(editor)
@@ -28,25 +34,29 @@ const STORAGE_KEY = 'editor-storage'
 export const EditorProvider = ({ children }: DefaultProps) => {
   const [actions, setActions] = useState(editor.actions)
   const [isDisabled, setDisabled] = useState(editor.isDisabled)
-  const [storage, setStorage] = useState(editor.storage)
+  const [data, setData] = useState(editor.data)
   const [clip, setClip] = useState(editor.clip)
+  // const [progress, setProgress] = useState(
+  //   {} as { [id: ExportData['id']]: string }
+  // )
 
   useEffect(() => {
     const restoredStorage = restore(STORAGE_KEY) as ExportData[]
-    if (restoredStorage?.length) setStorage(restoredStorage)
+    if (restoredStorage?.length) setData(restoredStorage)
   }, [])
 
-  function storeObject(obj: ExportData) {
+  function storeItem(item: ExportData) {
     const restoredStorage = restore(STORAGE_KEY) as ExportData[]
-    const newStorage = [obj, ...(restoredStorage ?? [])]
-    setStorage(newStorage)
+    const newStorage = [item, ...(restoredStorage ?? [])]
+    setData(newStorage)
     persist(STORAGE_KEY, newStorage)
   }
 
-  function removeObject(id: string) {
-    const newStorage = storage.filter((obj) => obj.id !== id)
-    setStorage(newStorage)
+  function removeItem(id: string) {
+    const newStorage = data.filter((item) => item.id !== id)
+    setData(newStorage)
     persist(STORAGE_KEY, newStorage)
+    setData(newStorage)
   }
 
   function updateClip(clipData: Partial<Clip>) {
@@ -57,6 +67,11 @@ export const EditorProvider = ({ children }: DefaultProps) => {
     setClip(newClip as Clip)
   }
 
+  function reset() {
+    setDisabled(false)
+    setClip({} as Clip)
+  }
+
   return (
     <EditorContext.Provider
       value={{
@@ -64,11 +79,12 @@ export const EditorProvider = ({ children }: DefaultProps) => {
         setActions,
         isDisabled,
         setDisabled,
-        storage,
-        storeObject,
-        removeObject,
+        data,
+        storeItem,
+        removeItem,
         clip,
         updateClip,
+        reset,
       }}
     >
       {children}

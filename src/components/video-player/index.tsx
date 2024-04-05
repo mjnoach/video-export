@@ -5,12 +5,13 @@ import Link from 'next/link'
 import { useExportRequest } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
+import { Actions } from '../actions'
 import { EditorActions, EditorContext } from '../context/editor'
 import { Overlay } from '../overlay'
 import { Progress } from '../ui/progress'
 import { Slider, Sliders } from '../ui/slider'
+import { ClipInfo } from './clip-info'
 import { PlayerControls } from './player-controls'
-import { SliderControls } from './slider-controls'
 
 import { LucideLink } from 'lucide-react'
 import type { OnProgressProps } from 'react-player/base'
@@ -23,18 +24,15 @@ export function VideoPlayer({}: VideoPlayerProps) {
   const [isLoadingPlayer, setLoadingPlayer] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [sliderValues, setSliderValues] = useState([0, 0, 0])
-
-  const { setActions, isDisabled, setDisabled, storeObject, clip, updateClip } =
-    useContext(EditorContext)
-
+  const { clip, ...editor } = useContext(EditorContext)
   const exportRequest = useExportRequest()
 
   useEffect(() => {
     if (exportRequest.data) {
-      storeObject(exportRequest.data)
+      editor.storeItem(exportRequest.data)
       setTimeout(() => {
         exportRequest.reset()
-        setDisabled(false)
+        editor.setDisabled(false)
       }, 5000)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,7 +40,7 @@ export function VideoPlayer({}: VideoPlayerProps) {
 
   useEffect(() => {
     if (hasReachedEnd()) setIsPlaying(false)
-    updateClip({
+    editor.updateClip({
       start: getSlider('Start'),
       end: getSlider('End'),
     })
@@ -51,12 +49,12 @@ export function VideoPlayer({}: VideoPlayerProps) {
 
   useEffect(() => {
     player && setSliderValues([0, 0, player.getDuration()])
-    setActions(actions)
+    editor.setActions(actions)
 
     if (!clip.isClientUpload) {
       const internalPlayer = player?.getInternalPlayer()
       const title = internalPlayer?.videoTitle
-      updateClip({ title })
+      editor.updateClip({ title })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player])
@@ -70,7 +68,7 @@ export function VideoPlayer({}: VideoPlayerProps) {
     exportClip: async (clip: Clip) => {
       setSlider('Marker', clip.start)
       player?.seekTo(clip.start)
-      setDisabled(true)
+      editor.setDisabled(true)
       setIsPlaying(false)
       exportRequest.mutate(clip)
     },
@@ -165,19 +163,9 @@ export function VideoPlayer({}: VideoPlayerProps) {
 
   function handleSeek(seconds: number) {}
 
-  function reset() {
-    exportRequest.reset()
-    setDisabled(false)
-  }
-
   return (
-    <div className={cn('flex w-full flex-col items-center gap-4')}>
-      <div
-        className={cn(
-          'relative aspect-video max-h-[60vh] w-full select-none',
-          !isLoadingPlayer ? 'rounded-md border-4 border-secondary-1' : ''
-        )}
-      >
+    <div className="flex w-full flex-col items-center gap-4">
+      <div className="relative aspect-video max-h-[60vh] w-full select-none rounded-md border-4 border-secondary-1">
         {exportRequest.isPending && (
           <Overlay type={'loading'} title="Processing...">
             {(() => {
@@ -196,7 +184,10 @@ export function VideoPlayer({}: VideoPlayerProps) {
           <Overlay
             type={'error'}
             title={exportRequest.error?.name || 'Error'}
-            onDismiss={reset}
+            onDismiss={() => {
+              exportRequest.reset()
+              editor.setDisabled(false)
+            }}
           >
             <div className="px-10">{exportRequest.error?.message}</div>
           </Overlay>
@@ -241,17 +232,19 @@ export function VideoPlayer({}: VideoPlayerProps) {
         <div
           className={cn(
             'flex w-full flex-col items-center gap-10',
-            isDisabled ? 'disable' : ''
+            editor.isDisabled ? 'disable' : ''
           )}
         >
-          <div className="relative flex h-32 w-full justify-center">
-            <SliderControls
-              disabled={isDisabled}
-              moveSlider={moveSlider}
-              getSlider={getSlider}
-            />
+          <div className="/flex-col relative flex h-[7.5rem] w-full justify-center md:flex-row">
+            <div className="hidden md:block">
+              <ClipInfo
+                disabled={editor.isDisabled}
+                moveSlider={moveSlider}
+                getSlider={getSlider}
+              />
+            </div>
             <PlayerControls
-              disabled={isDisabled}
+              disabled={editor.isDisabled}
               player={player}
               handleSkipTo={handleSkipTo}
               getSlider={getSlider}
@@ -260,7 +253,7 @@ export function VideoPlayer({}: VideoPlayerProps) {
             />
           </div>
           <Slider
-            disabled={isDisabled}
+            disabled={editor.isDisabled}
             max={player.getDuration()}
             step={1}
             value={sliderValues}
@@ -269,6 +262,7 @@ export function VideoPlayer({}: VideoPlayerProps) {
             onValueChange={handleSliderChange}
             onValueCommit={handleSliderCommit}
           />
+          <Actions />
         </div>
       )}
     </div>

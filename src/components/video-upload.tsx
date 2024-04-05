@@ -9,14 +9,14 @@ type VideoUploadProps = DefaultProps & {
 
 export function VideoUpload({ disabled = false, setLoaded }: VideoUploadProps) {
   const [isLoading, setLoading] = useState(false)
-  const { updateClip } = useContext(EditorContext)
+  const editor = useContext(EditorContext)
 
   function handleLoadLocal(e: any) {
     const file = e.target.files[0] as File
     const objectURL = URL.createObjectURL(file)
     const formData = new FormData()
     formData.append('file', file)
-    updateClip({
+    editor.updateClip({
       isClientUpload: true,
       url: objectURL,
       title: file.name,

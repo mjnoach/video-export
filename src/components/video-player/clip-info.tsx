@@ -6,24 +6,24 @@ import { Sliders } from '../ui/slider'
 
 import { useLongPress } from '@uidotdev/usehooks'
 
-type SliderControlsProps = DefaultProps & {
+type ClipInfoProps = DefaultProps & {
   moveSlider: (step: number, sliderKey: keyof typeof Sliders) => void
   getSlider(key: keyof typeof Sliders): number
   disabled: boolean
 }
 
-export const SliderControls = ({
+export const ClipInfo = ({
   moveSlider,
   getSlider,
   disabled,
-}: SliderControlsProps) => {
+}: ClipInfoProps) => {
   return (
-    <div className="absolute left-0 mt-2 grid grid-cols-3 items-center gap-x-2 gap-y-1">
+    <div className="absolute left-0 top-2 grid grid-cols-3 items-center gap-x-2 gap-y-1">
       <div>start:</div>
       <div className="justify-self-center font-mono">
         {getReadableTimestamp(getSlider('Start'))}
       </div>
-      <SliderControlsButtons
+      <Buttons
         disabled={disabled}
         moveSlider={moveSlider}
         sliderKey={'Start'}
@@ -32,11 +32,7 @@ export const SliderControls = ({
       <div className="justify-self-center font-mono">
         {getReadableTimestamp(getSlider('End'))}
       </div>
-      <SliderControlsButtons
-        disabled={disabled}
-        moveSlider={moveSlider}
-        sliderKey={'End'}
-      />
+      <Buttons disabled={disabled} moveSlider={moveSlider} sliderKey={'End'} />
       <div>duration:</div>
       <div className="justify-self-center font-mono">
         {getReadableTimestamp(getSlider('End') - getSlider('Start'))}
@@ -45,17 +41,13 @@ export const SliderControls = ({
   )
 }
 
-type SliderControlsButtonsProps = {
+type ButtonsProps = {
   moveSlider: (step: number, sliderKey: keyof typeof Sliders) => void
   sliderKey: keyof typeof Sliders
   disabled: boolean
 }
 
-const SliderControlsButtons = ({
-  moveSlider,
-  sliderKey,
-  disabled,
-}: SliderControlsButtonsProps) => {
+const Buttons = ({ moveSlider, sliderKey, disabled }: ButtonsProps) => {
   const pressThreshold = 500
   const pressInterval = 50
   const step = 1

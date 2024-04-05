@@ -30,7 +30,7 @@ export const Overlay = ({
     <div
       className={cn(
         // /backdrop-blur-sm /bg-opacity-70
-        'absolute z-50 flex h-full w-full flex-col items-center justify-center bg-black'
+        'absolute z-10 flex h-full w-full flex-col items-center justify-center bg-black'
       )}
     >
       <div
@@ -45,8 +45,7 @@ export const Overlay = ({
       </div>
       {onDismiss && (
         <Button
-          className="/action absolute right-8 top-8 aspect-square h-8 p-0"
-          variant="destructive"
+          className="action action-destructive absolute right-8 top-8 aspect-square h-8 p-0 "
           onClick={onDismiss}
         >
           <Cross />
