@@ -1,14 +1,30 @@
+import { useEffect, useState } from 'react'
+
 import { cn } from '@/lib/utils'
 
 import { Button } from './ui/button'
 
-import { AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react'
+import {
+  AlertCircle,
+  AlertTriangle,
+  CheckCircle2,
+  Loader2,
+  Plus,
+} from 'lucide-react'
+
+const Icon = {
+  loading: <Loader2 className={'overlay-icon animate-spin'} />,
+  error: <AlertTriangle className={'overlay-icon text-destructive'} />,
+  success: <CheckCircle2 className={'overlay-icon text-primary-2'} />,
+  warning: <AlertCircle className={'overlay-icon text-primary-2'} />,
+}
 
 type OverlayPropps = DefaultProps & {
-  type: 'loading' | 'error' | 'success'
+  type: keyof typeof Icon
   isOpen?: boolean
-  onDismiss?: () => void
   title?: string
+  onDismiss?: () => void
+  timeout?: number
 }
 
 export const Overlay = ({
@@ -17,58 +33,47 @@ export const Overlay = ({
   isOpen,
   title,
   onDismiss,
+  timeout,
 }: OverlayPropps) => {
-  const Icon = {
-    loading: <Loader2 className={'overlay-icon animate-spin'} />,
-    error: <AlertTriangle className={'overlay-icon text-destructive'} />,
-    success: (
-      <CheckCircle2 className={'overlay-icon /text-success text-primary-2'} />
-    ),
-  }[type]
+  const [animation, setAnimation] = useState('animate-in fade-in zoom-in')
+
+  useEffect(() => {
+    if (timeout) {
+      setTimeout(() => {
+        setAnimation('animate-out fade-out zoom-out')
+      }, timeout - 300)
+      onDismiss &&
+        setTimeout(() => {
+          onDismiss()
+        }, timeout)
+    }
+  }, [timeout, onDismiss])
 
   return (
-    <div
-      className={cn(
-        // /backdrop-blur-sm /bg-opacity-70
-        'absolute z-10 flex h-full w-full flex-col items-center justify-center bg-black'
-      )}
-    >
+    <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-black">
       <div
         className={cn(
-          'relative select-text duration-300 animate-in fade-in zoom-in',
-          'flex flex-col items-center justify-center text-center text-xl'
+          'relative flex select-text flex-col items-center justify-center text-center text-xl',
+          'duration-300',
+          animation
         )}
       >
-        {Icon}
-        {title && <div className="my-4 text-2xl">{title}</div>}
+        {Icon[type]}
+        {title ? (
+          <div className="my-4 text-2xl">{title}</div>
+        ) : (
+          <div className="my-4"></div>
+        )}
         {children}
       </div>
-      {onDismiss && (
+      {!timeout && onDismiss && (
         <Button
           className="action action-destructive absolute right-8 top-8 aspect-square h-8 p-0 "
           onClick={onDismiss}
         >
-          <Cross />
+          <Plus className="rotate-45" />
         </Button>
       )}
     </div>
   )
 }
-
-const Cross = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="lucide lucide-x h-4 w-4"
-  >
-    <path d="M18 6 6 18"></path>
-    <path d="m6 6 12 12"></path>
-  </svg>
-)

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { assertMaxDuration } from './validation'
+
 import { queryClient } from '@/app/providers'
 import { useMutation } from '@tanstack/react-query'
 import ky from 'ky'
@@ -10,9 +12,16 @@ export const useExportRequest = () => {
   const [data, setData] = useState<null | ExportData>(null)
   const [error, setError] = useState<null | Error>(null)
   const [isPending, setPending] = useState(false)
+  const [warning, setWarning] = useState<null | string>(null)
 
   const mutation = useMutation({
     mutationFn: async (data: Clip) => {
+      const maxDuration = Number(process.env.NEXT_PUBLIC_MAX_CLIP_DURATION)
+      try {
+        assertMaxDuration(data, maxDuration)
+      } catch (e) {
+        setWarning(`Clip duration cannot exceed ${maxDuration} seconds`)
+      }
       setPending(true)
       const exportId = await api.postExport(data)
       setId(exportId)
@@ -57,6 +66,7 @@ export const useExportRequest = () => {
     setError(null)
     setData(null)
     setPending(false)
+    setWarning(null)
   }
 
   return {
@@ -68,6 +78,7 @@ export const useExportRequest = () => {
     isSuccess: mutation.isSuccess && !!data,
     isError: mutation.isError || !!error,
     isPending,
+    warning,
   }
 }
 

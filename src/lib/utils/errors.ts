@@ -11,10 +11,7 @@ export async function errorResponse(
     console.error(e.cause)
   }
   if (e.name === 'HTTPError') {
-    const text = await e.response.text()
-    message = text ? text : message
     console.error(message)
-    return new NextResponse(message, { status })
   }
   return new NextResponse(message, { status })
 }

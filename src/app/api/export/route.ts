@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
 
 import { errorResponse } from '@/lib/utils/errors'
+import { assertMaxDuration } from '@/lib/validation'
 
 import ky, { Options } from 'ky'
 
-const { API_URL, API_RUNTIME } = process.env
+const { API_URL, API_RUNTIME, MAX_CLIP_DURATION } = process.env
 
 // Set 'edge' runtime for production deployment with Vercel Functions
 // Set 'nodejs' runtime for development
@@ -14,11 +15,18 @@ export const dynamic = 'force-dynamic'
 export async function POST(request: Request) {
   try {
     const options = {} as Options
-    if (request.headers.get('Content-Type')?.includes('multipart/form-data')) {
+    let clip: Clip
+    const isClientUpload = request.headers
+      .get('Content-Type')
+      ?.includes('multipart/form-data')
+    if (isClientUpload) {
       const formData = await request.formData()
+      clip = JSON.parse(formData.get('clip') as string) as Clip
+      assertMaxDuration(clip, Number(MAX_CLIP_DURATION))
       options.body = formData
     } else {
       const clip: Clip = await request.json()
+      assertMaxDuration(clip, Number(MAX_CLIP_DURATION))
       options.json = clip
     }
     const res = await ky.post(`${API_URL}/export`, options)

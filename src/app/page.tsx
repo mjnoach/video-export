@@ -17,6 +17,8 @@ import { VideoUpload } from '@/components/video-upload'
 // Improve: Process local uploads on the client with wasm ffmpeg?
 // Improve: Clip local uploads on the client, not to stream irrelevant data to the server
 
+// Fix: Implement a queue?
+
 export default function Home() {
   const [isLoaded, setLoaded] = useState(false)
   const router = useRouter()

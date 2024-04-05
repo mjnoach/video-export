@@ -17,26 +17,13 @@ import { LucideLink } from 'lucide-react'
 import type { OnProgressProps } from 'react-player/base'
 import ReactPlayer from 'react-player/lazy'
 
-type VideoPlayerProps = DefaultProps & {}
-
-export function VideoPlayer({}: VideoPlayerProps) {
+export function VideoPlayer() {
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
   const [isLoadingPlayer, setLoadingPlayer] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [sliderValues, setSliderValues] = useState([0, 0, 0])
   const { clip, ...editor } = useContext(EditorContext)
   const exportRequest = useExportRequest()
-
-  useEffect(() => {
-    if (exportRequest.data) {
-      editor.storeItem(exportRequest.data)
-      setTimeout(() => {
-        exportRequest.reset()
-        editor.setDisabled(false)
-      }, 5000)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exportRequest.isSuccess])
 
   useEffect(() => {
     if (hasReachedEnd()) setIsPlaying(false)
@@ -48,7 +35,7 @@ export function VideoPlayer({}: VideoPlayerProps) {
   }, [sliderValues])
 
   useEffect(() => {
-    player && setSliderValues([0, 0, player.getDuration()])
+    if (player) setSliderValues([0, 0, player.getDuration()])
     editor.setActions(actions)
 
     if (!clip.isClientUpload) {
@@ -74,11 +61,19 @@ export function VideoPlayer({}: VideoPlayerProps) {
     },
   }
 
+  function handleExportComplete() {
+    if (exportRequest.data) {
+      editor.storeItem(exportRequest.data)
+      exportRequest.reset()
+      editor.setDisabled(false)
+    }
+  }
+
   const hasReachedEnd = () => getSlider('Marker') >= getSlider('End')
 
   const togglePlaying = () => setIsPlaying(!isPlaying)
 
-  function getSlider(key: keyof typeof Sliders) {
+  const getSlider = (key: keyof typeof Sliders) => {
     return sliderValues[Sliders[key]]
   }
 
@@ -192,8 +187,27 @@ export function VideoPlayer({}: VideoPlayerProps) {
             <div className="px-10">{exportRequest.error?.message}</div>
           </Overlay>
         )}
+        {exportRequest.warning && (
+          <Overlay
+            type={'warning'}
+            timeout={3000}
+            onDismiss={() => {
+              exportRequest.reset()
+              editor.setDisabled(false)
+            }}
+          >
+            <div className="px-10">{exportRequest.warning}</div>
+          </Overlay>
+        )}
         {exportRequest.data && (
-          <Overlay type={'success'} title="Export complete!">
+          <Overlay
+            type={'success'}
+            title="Export complete!"
+            timeout={5000}
+            onDismiss={() => {
+              handleExportComplete()
+            }}
+          >
             <Link
               href={`${process.env.NEXT_PUBLIC_API_URL}${exportRequest.data.url}`}
               className="flex gap-2 px-10"
