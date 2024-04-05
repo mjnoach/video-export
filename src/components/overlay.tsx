@@ -59,11 +59,8 @@ export const Overlay = ({
         )}
       >
         {Icon[type]}
-        {title ? (
-          <div className="my-4 text-2xl">{title}</div>
-        ) : (
-          <div className="my-4"></div>
-        )}
+        {title && <div className="my-4 text-2xl">{title}</div>}
+        {children && <div className="my-4"></div>}
         {children}
       </div>
       {!timeout && onDismiss && (

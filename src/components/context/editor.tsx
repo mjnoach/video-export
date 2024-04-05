@@ -14,6 +14,8 @@ export type EditorActions = {
 //   progress?: number
 // }
 
+const STORAGE_KEY = 'editor-storage'
+
 const editor = {
   actions: {} as EditorActions,
   setActions: (actions: EditorActions) => {},
@@ -24,12 +26,9 @@ const editor = {
   removeItem: (id: string) => {},
   clip: {} as Clip,
   updateClip: (clip: Partial<Clip>) => {},
-  reset: () => {},
 }
 
 export const EditorContext = createContext(editor)
-
-const STORAGE_KEY = 'editor-storage'
 
 export const EditorProvider = ({ children }: DefaultProps) => {
   const [actions, setActions] = useState(editor.actions)
@@ -53,21 +52,19 @@ export const EditorProvider = ({ children }: DefaultProps) => {
     const newStorage = data.filter((item) => item.id !== id)
     setData(newStorage)
     persist(STORAGE_KEY, newStorage)
-    setData(newStorage)
   }
 
   function updateClip(clipData: Partial<Clip>) {
-    const newClip = {
+    setClip((clip) => ({
       ...clip,
       ...clipData,
-    }
-    setClip(newClip as Clip)
+    }))
   }
 
-  function reset() {
-    setDisabled(false)
-    setClip({} as Clip)
-  }
+  // function reset() {
+  //   setDisabled(false)
+  //   setClip(editor.clip)
+  // }
 
   return (
     <EditorContext.Provider
@@ -81,7 +78,6 @@ export const EditorProvider = ({ children }: DefaultProps) => {
         removeItem,
         clip,
         updateClip,
-        reset,
       }}
     >
       {children}

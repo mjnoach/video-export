@@ -249,7 +249,7 @@ export function VideoPlayer() {
             editor.isDisabled ? 'disable' : ''
           )}
         >
-          <div className="/flex-col relative flex h-[7.5rem] w-full justify-center md:flex-row">
+          <div className="relative flex h-[5.1rem] w-full justify-center md:h-[7.5rem] md:flex-row">
             <div className="hidden md:block">
               <ClipInfo
                 disabled={editor.isDisabled}

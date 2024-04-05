@@ -36,10 +36,7 @@ export const Actions = () => {
       >
         Export
       </Button>
-      <ExtensionSelector
-        disabled={editor.isDisabled}
-        onValueChange={(value) => editor.updateClip({ extension: value })}
-      />
+      <ExtensionSelector disabled={editor.isDisabled} />
     </div>
   )
 }

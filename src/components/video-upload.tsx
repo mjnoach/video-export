@@ -7,6 +7,8 @@ type VideoUploadProps = DefaultProps & {
   setLoaded: (state: boolean) => void
 }
 
+const UPLOAD_FORMATS = ['MP4', 'MOV']
+
 export function VideoUpload({ disabled = false, setLoaded }: VideoUploadProps) {
   const [isLoading, setLoading] = useState(false)
   const editor = useContext(EditorContext)
@@ -34,7 +36,6 @@ type UploadInputProps = DefaultProps & {
 
 const UploadInput = (props: UploadInputProps) => {
   // const supportedFormats = 'SVG, PNG, JPG or GIF (MAX. 800x400px)'
-  const supportedFormats = 'MP4,MOV'
   return (
     <div>
       <label
@@ -46,17 +47,12 @@ const UploadInput = (props: UploadInputProps) => {
           <span className="font-semibold">Click to upload</span> or drag and
           drop
         </p>
-        <p className="text-xs text-primary-3">
-          {supportedFormats.replaceAll(',', ', ')}
-        </p>
+        <p className="text-xs text-primary-3">{UPLOAD_FORMATS.join(', ')}</p>
         <input
           onChange={props.onChange}
           id="file"
           type="file"
-          accept={supportedFormats
-            .split(',')
-            .map((f) => `.${f}`)
-            .join(',')}
+          accept={UPLOAD_FORMATS.map((f) => `.${f}`).join(',')}
           className="hidden"
         />
       </label>
