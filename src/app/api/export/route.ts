@@ -5,7 +5,7 @@ import { assertMaxDuration } from '@/lib/validation'
 
 import ky, { Options } from 'ky'
 
-const { API_URL, API_RUNTIME, MAX_CLIP_DURATION } = process.env
+const { NEXT_PUBLIC_API_URL, NEXT_PUBLIC_MAX_CLIP_DURATION } = process.env
 
 // Set 'edge' runtime for production deployment with Vercel Functions
 // Set 'nodejs' runtime for development
@@ -22,14 +22,14 @@ export async function POST(request: Request) {
     if (isClientUpload) {
       const formData = await request.formData()
       clip = JSON.parse(formData.get('clip') as string) as Clip
-      assertMaxDuration(clip, Number(MAX_CLIP_DURATION))
+      assertMaxDuration(clip, Number(NEXT_PUBLIC_MAX_CLIP_DURATION))
       options.body = formData
     } else {
       const clip: Clip = await request.json()
-      assertMaxDuration(clip, Number(MAX_CLIP_DURATION))
+      assertMaxDuration(clip, Number(NEXT_PUBLIC_MAX_CLIP_DURATION))
       options.json = clip
     }
-    const res = await ky.post(`${API_URL}/export`, options)
+    const res = await ky.post(`${NEXT_PUBLIC_API_URL}/export`, options)
     const id = await res.json<ExportData['id']>()
     return NextResponse.json(id)
   } catch (e: any) {
@@ -47,7 +47,7 @@ export async function GET(request: Request) {
   try {
     if (!id)
       return errorResponse({ message: `Task id must be provided`, status: 400 })
-    const res = await ky.get(`${API_URL}/export/${id}`)
+    const res = await ky.get(`${NEXT_PUBLIC_API_URL}/export/${id}`)
     const stream = res.body
     return new NextResponse(stream)
   } catch (e) {
