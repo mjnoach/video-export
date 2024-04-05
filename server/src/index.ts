@@ -1,5 +1,5 @@
 import { ExportException, NotFoundException } from './exceptions.js'
-import { exportManager } from './export-manager.js'
+import { exportService } from './export-service.js'
 
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
@@ -37,8 +37,8 @@ app.post('/export', async (c) => {
   } else {
     clip = await c.req.json<Clip>()
   }
-  const { id } = exportManager.init()
-  exportManager.start(id, clip)
+  const { id } = exportService.init()
+  exportService.start(id, clip)
   return c.json(id, 200)
 })
 
@@ -50,7 +50,7 @@ app.get('/export/:id', (c) =>
       return new Promise<void>(async (resolve, reject) => {
         c.header('Access-Control-Allow-Origin', 'https://localhost:3000')
 
-        const task = exportManager.get(id)
+        const task = exportService.get(id)
         if (!task) reject(new NotFoundException(id))
         if (task.status === 'failed') reject(new ExportException(id))
 

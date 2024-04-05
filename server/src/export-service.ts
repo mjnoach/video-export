@@ -24,7 +24,7 @@ const initialState: Task = {
   status: null,
 }
 
-export const exportManager = {
+export const exportService = {
   init: () => {
     const OBJ_ID_LENGTH = 8
     const id = nanoid(OBJ_ID_LENGTH)
@@ -43,7 +43,7 @@ export const exportManager = {
 
     const fileName = `${id}${extension}`
     const filePath = `${EXPORT_DIR}/${fileName}`
-    const fileFormat = extension.replace(/^./, '')
+    const fileFormat = extension.replace('.', '')
     const duration = end - start
 
     const targetClip: ExportTarget = {
@@ -73,9 +73,9 @@ export const exportManager = {
         thumbnail,
       }
 
-      exportManager.complete(id, exportData)
+      exportService.complete(id, exportData)
     } catch (e: any) {
-      exportManager.fail(id, e)
+      exportService.fail(id, e)
     } finally {
       if (isClientUpload && typeof source === 'string') clearTempData(source)
     }

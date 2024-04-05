@@ -1,5 +1,5 @@
 import { TranscodingException } from './exceptions.js'
-import { exportManager } from './export-manager.js'
+import { exportService } from './export-service.js'
 import { getProgressPercent } from './utils.js'
 
 import ffmpeg from 'fluent-ffmpeg'
@@ -28,7 +28,7 @@ export async function transcodeVideo(
       })
       .on('progress', (progress: ProgressData) => {
         const percent = getProgressPercent(progress, start, duration)
-        exportManager.update(id, percent)
+        exportService.update(id, percent)
       })
       .on('end', () => {
         console.info(`Transcoding ${id} complete!`)

@@ -9,7 +9,7 @@ export type EditorActions = {
   exportClip: (clip: Clip) => Promise<void>
 }
 
-// type EditorData = ExportData & {
+// type ExportItem = ExportData & {
 //   status: 'started' | 'failed' | 'complete'
 //   progress?: number
 // }
@@ -36,9 +36,6 @@ export const EditorProvider = ({ children }: DefaultProps) => {
   const [isDisabled, setDisabled] = useState(editor.isDisabled)
   const [data, setData] = useState(editor.data)
   const [clip, setClip] = useState(editor.clip)
-  // const [progress, setProgress] = useState(
-  //   {} as { [id: ExportData['id']]: string }
-  // )
 
   useEffect(() => {
     const restoredStorage = restore(STORAGE_KEY) as ExportData[]
