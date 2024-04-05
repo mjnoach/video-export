@@ -249,8 +249,8 @@ export function VideoPlayer() {
             editor.isDisabled ? 'disable' : ''
           )}
         >
-          <div className="relative flex h-[5.1rem] w-full justify-center md:h-[7.5rem] md:flex-row">
-            <div className="hidden md:block">
+          <div className="relative flex h-[5.1rem] w-full justify-center sm:h-[7.5rem] sm:flex-row">
+            <div className="hidden sm:block">
               <ClipInfo
                 disabled={editor.isDisabled}
                 moveSlider={moveSlider}

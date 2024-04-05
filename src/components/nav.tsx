@@ -9,11 +9,10 @@ export const Nav = () => {
   return (
     <div
       className={cn(
-        'container flex flex-col from-white via-white dark:from-black dark:via-black',
-        // mobile
-        '/h-48 items-center justify-end bg-gradient-to-t pb-6 pt-12',
-        // , desktop
-        'lg:items-start lg:bg-gradient-to-b lg:pb-0 lg:pl-24 lg:pt-12'
+        // 'from-white via-white dark:from-black dark:via-black',
+        'container flex flex-col bg-transparent',
+        '/bg-gradient-to-t items-center justify-end pb-6 pt-12',
+        '/sm:bg-gradient-to-b sm:items-start sm:pb-0 sm:pl-24 sm:pt-12'
       )}
     >
       <Link href="/">
