@@ -1,9 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
-import { useRouter } from 'next/navigation'
-
 import { Drawer } from '@/components/drawer'
 import { VideoLinkForm } from '@/components/video-link-form'
 import { VideoUpload } from '@/components/video-upload'
@@ -20,13 +16,6 @@ import { VideoUpload } from '@/components/video-upload'
 // Fix: Implement a queue?
 
 export default function Home() {
-  const [isLoaded, setLoaded] = useState(false)
-  const router = useRouter()
-
-  useEffect(() => {
-    isLoaded && router.push(`/edit`)
-  }, [isLoaded, router])
-
   return (
     <main className="mt-12">
       <Drawer />
@@ -34,8 +23,8 @@ export default function Home() {
         <h1 className={`mb-6 text-center text-5xl font-semibold`}>
           Paste & Go
         </h1>
-        <VideoLinkForm setLoaded={setLoaded} />
-        <VideoUpload setLoaded={setLoaded} />
+        <VideoLinkForm />
+        <VideoUpload />
       </div>
     </main>
   )

@@ -2,6 +2,8 @@
 
 import { useContext } from 'react'
 
+import { useRouter } from 'next/navigation'
+
 import { cn } from '@/lib/utils'
 
 import { EditorContext } from '../context/editor'
@@ -16,11 +18,7 @@ type FormInputs = {
   videoUrl: string
 }
 
-export function VideoLinkForm({
-  setLoaded,
-}: {
-  setLoaded: (state: boolean) => void
-}) {
+export function VideoLinkForm() {
   const {
     register,
     formState: { errors },
@@ -28,10 +26,11 @@ export function VideoLinkForm({
     setFocus,
   } = useForm<FormInputs>()
   const editor = useContext(EditorContext)
+  const router = useRouter()
 
   const onSubmit = (data: FormInputs) => {
-    editor.updateClip({ url: data.videoUrl })
-    setLoaded(true)
+    editor.setClip({ url: data.videoUrl } as Clip)
+    router.push(`/edit`)
   }
 
   return (
@@ -64,7 +63,6 @@ export function VideoLinkForm({
                   'w-full rounded-lg border border-secondary-2 bg-transparent p-2.5 text-sm',
                   errors.videoUrl && 'border-red-500'
                 )}
-                // placeholder="Video link"
               />
               <button className="flex" type="submit">
                 <ArrowRight className="absolute right-3 cursor-pointer select-none self-center transition-transform group-hover/input:translate-x-1 motion-reduce:transform-none" />

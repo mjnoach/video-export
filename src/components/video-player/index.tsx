@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import { useExportRequest } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -21,9 +22,19 @@ export function VideoPlayer() {
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
   const [isLoadingPlayer, setLoadingPlayer] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [sliderValues, setSliderValues] = useState([0, 0, 0])
-  const { clip, ...editor } = useContext(EditorContext)
+  const editor = useContext(EditorContext)
+  const [sliderValues, setSliderValues] = useState([
+    editor.clip.start ?? 0,
+    editor.clip.start ?? 0,
+    editor.clip.end ?? 0,
+  ])
   const exportRequest = useExportRequest()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!editor.clip.url) router.replace('/')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router])
 
   useEffect(() => {
     if (hasReachedEnd()) setIsPlaying(false)
@@ -35,14 +46,16 @@ export function VideoPlayer() {
   }, [sliderValues])
 
   useEffect(() => {
-    if (player) setSliderValues([0, 0, player.getDuration()])
-    editor.setActions(actions)
-
+    const clip = editor.clip
+    if (player && clip.end === 0) {
+      setSlider('End', player.getDuration())
+    }
     if (!clip.isClientUpload) {
       const internalPlayer = player?.getInternalPlayer()
       const title = internalPlayer?.videoTitle
       editor.updateClip({ title })
     }
+    editor.setActions(actions)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player])
 
@@ -236,7 +249,7 @@ export function VideoPlayer() {
           onPause={handlePause}
           onProgress={handleProgress}
           onReady={handleReady}
-          url={clip.url}
+          url={editor.clip.url}
           width="100%"
           height="100%"
           playing={isPlaying}

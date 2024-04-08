@@ -1,29 +1,31 @@
 import { useContext, useState } from 'react'
 
+import { useRouter } from 'next/navigation'
+
 import { EditorContext } from '../context/editor'
 
 type VideoUploadProps = DefaultProps & {
   disabled?: boolean
-  setLoaded: (state: boolean) => void
 }
 
 const UPLOAD_FORMATS = ['MP4', 'MOV']
 
-export function VideoUpload({ disabled = false, setLoaded }: VideoUploadProps) {
+export function VideoUpload({ disabled = false }: VideoUploadProps) {
   const [isLoading, setLoading] = useState(false)
   const editor = useContext(EditorContext)
+  const router = useRouter()
 
   function handleLoadLocal(e: any) {
     const file = e.target.files[0] as File
     const objectURL = URL.createObjectURL(file)
     const formData = new FormData()
     formData.append('file', file)
-    editor.updateClip({
+    editor.setClip({
       isClientUpload: true,
       url: objectURL,
       title: file.name,
-    })
-    setLoaded(true)
+    } as Clip)
+    router.push(`/edit`)
   }
 
   return <UploadInput accept="video/*" onChange={handleLoadLocal} />
