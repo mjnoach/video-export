@@ -19,16 +19,14 @@ const tasks: {
   [id: string]: Task
 } = {}
 
-const initialState: Task = {
-  data: null,
-  status: null,
-}
-
 export const exportService = {
   init: () => {
     const OBJ_ID_LENGTH = 8
     const id = nanoid(OBJ_ID_LENGTH)
-    tasks[id] = initialState
+    tasks[id] = {
+      data: null,
+      status: null,
+    }
     return { id }
   },
   get: (id: string) => {
