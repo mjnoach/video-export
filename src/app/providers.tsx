@@ -1,7 +1,6 @@
 'use client'
 
-import { EditorProvider } from '@/components/context/editor'
-
+import { EditorProvider } from '@/context/editor'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider } from 'next-themes'
 

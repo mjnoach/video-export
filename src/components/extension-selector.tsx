@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react'
 
-import { EditorContext } from './context/editor'
+import { EditorContext } from '../context/editor'
 import {
   Select,
   SelectContent,

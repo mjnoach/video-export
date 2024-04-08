@@ -4,9 +4,10 @@ import { useContext, useEffect } from 'react'
 
 import { useRouter } from 'next/navigation'
 
-import { EditorContext } from '@/components/context/editor'
 import { Drawer } from '@/components/drawer'
 import { VideoPlayer } from '@/components/video-player'
+
+import { EditorContext } from '@/context/editor'
 
 export default function Edit() {
   const { clip } = useContext(EditorContext)

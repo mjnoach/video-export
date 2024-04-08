@@ -2,7 +2,7 @@ import { useContext } from 'react'
 
 import { cn } from '@/lib/utils'
 
-import { EditorContext } from './context/editor'
+import { EditorContext } from '../context/editor'
 import { ExtensionSelector } from './extension-selector'
 import { Button } from './ui/button'
 

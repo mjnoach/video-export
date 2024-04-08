@@ -4,7 +4,7 @@ import { useContext } from 'react'
 
 import { cn } from '@/lib/utils'
 
-import { EditorContext } from './context/editor'
+import { EditorContext } from '../context/editor'
 
 import { ArrowRight } from 'lucide-react'
 import { useForm } from 'react-hook-form'

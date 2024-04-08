@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { getReadableDuration } from '@/lib/utils/time'
 
-import { EditorContext } from './context/editor'
+import { EditorContext } from '../context/editor'
 import { Nav } from './nav'
 import { Progress } from './ui/progress'
 
@@ -18,7 +18,7 @@ export const Drawer = () => {
   return (
     <div
       className={cn(
-        !editor.data.length
+        !editor.exports.length
           ? '-translate-x-[100%]'
           : '-translate-x-[calc(100%-1.5rem)]',
         'fixed left-0 top-0 z-50 flex h-screen border-r border-secondary-1 bg-black bg-opacity-60 backdrop-blur-md transition-transform hover:-translate-x-0'
@@ -42,7 +42,7 @@ export const Drawer = () => {
             //   thumbnail: null,
             // }}
           /> */}
-          {editor.data.map((obj, i) => (
+          {editor.exports.map((obj, i) => (
             <Item key={i} obj={obj} />
           ))}
           <NewItem />
@@ -140,7 +140,7 @@ const RemoveButton = ({ obj }: RemoveButtonProps) => {
 
   function handleClick(e: any) {
     e.preventDefault()
-    editor.removeItem(obj.id)
+    editor.removeExport(obj.id)
   }
   return (
     <button

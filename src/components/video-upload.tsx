@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 
-import { EditorContext } from './context/editor'
+import { EditorContext } from '../context/editor'
 
 type VideoUploadProps = DefaultProps & {
   disabled?: boolean

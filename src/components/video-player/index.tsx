@@ -5,8 +5,8 @@ import Link from 'next/link'
 import { useExportRequest } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
+import { EditorActions, EditorContext } from '../../context/editor'
 import { Actions } from '../actions'
-import { EditorActions, EditorContext } from '../context/editor'
 import { Overlay } from '../overlay'
 import { Progress } from '../ui/progress'
 import { Slider, Sliders } from '../ui/slider'
@@ -63,7 +63,7 @@ export function VideoPlayer() {
 
   function handleExportComplete() {
     if (exportRequest.data) {
-      editor.storeItem(exportRequest.data)
+      editor.storeExport(exportRequest.data)
       exportRequest.reset()
       editor.setDisabled(false)
     }
