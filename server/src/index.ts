@@ -39,7 +39,7 @@ app.post('/export', async (c) => {
   }
   const { id } = exportService.init()
   exportService.start(id, clip)
-  return c.json(id, 200)
+  return c.json(id, 202)
 })
 
 app.get('/export/:id', (c) =>
