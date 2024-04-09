@@ -18,7 +18,7 @@ export const Drawer = () => {
   return (
     <div
       className={cn(
-        !editor.exports.length
+        !editor.data.length
           ? '-translate-x-[100%]'
           : '-translate-x-[calc(100%-1.5rem)]',
         'fixed left-0 top-0 z-50 flex h-screen border-r border-secondary-1 bg-black bg-opacity-60 backdrop-blur-md transition-transform hover:-translate-x-0'
@@ -42,7 +42,7 @@ export const Drawer = () => {
             //   thumbnail: null,
             // }}
           /> */}
-          {editor.exports.map((obj, i) => (
+          {editor.data.map((obj, i) => (
             <Item key={i} obj={obj} />
           ))}
           <NewItem />

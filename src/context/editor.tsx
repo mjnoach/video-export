@@ -15,8 +15,8 @@ const editor = {
   setActions: (actions: EditorActions) => {},
   isDisabled: false,
   setDisabled: (state: boolean) => {},
-  exports: [] as ExportData[],
-  storeExport: (item: ExportData) => {},
+  data: [] as ExportData[],
+  storeExport: (obj: ExportData) => {},
   removeExport: (id: string) => {},
   clip: {
     start: 0,
@@ -32,17 +32,14 @@ export const EditorProvider = ({ children }: DefaultProps) => {
   const [actions, setActions] = useState({} as EditorActions)
   const [isDisabled, setDisabled] = useState(false)
   const [clip, setClip, updateClip] = useSessionState<Clip>('clip', editor.clip)
-  const [exports, setExports] = usePersistentState<ExportData[]>(
-    'exports',
-    editor.exports
-  )
+  const [data, setData] = usePersistentState<ExportData[]>('data', editor.data)
 
-  const storeExport = (item: ExportData) => {
-    setExports([item, ...exports])
+  const storeExport = (obj: ExportData) => {
+    setData([obj, ...data])
   }
 
   const removeExport = (id: string) => {
-    setExports(exports.filter((i) => i.id !== id))
+    setData(data.filter((obj) => obj.id !== id))
   }
 
   return (
@@ -52,7 +49,7 @@ export const EditorProvider = ({ children }: DefaultProps) => {
         setActions,
         isDisabled,
         setDisabled,
-        exports,
+        data,
         storeExport,
         removeExport,
         clip,

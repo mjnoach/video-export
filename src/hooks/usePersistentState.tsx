@@ -13,7 +13,7 @@ export function usePersistentState<T>(
   }, [])
 
   const getStorage = () => {
-    const value = sessionStorage.getItem(key)
+    const value = localStorage.getItem(key)
     const storage = value ? (JSON.parse(value) as T) : null
     return storage
   }
