@@ -3,7 +3,7 @@ import { handleClientUpload, handleRemoteStream } from './sources.js'
 import { clearTempData } from './utils.js'
 
 import { nanoid } from 'nanoid'
-import type { Readable } from 'stream'
+import { Readable } from 'stream'
 
 const { EXPORT_DIR } = process.env
 
@@ -32,12 +32,8 @@ export const exportService = {
   get: (id: string) => {
     return tasks[id]
   },
-  start: async (
-    id: string,
-    { url, start, end, extension, isClientUpload, file }: Clip
-  ) => {
-    const task = tasks[id]
-    task.status = 'started'
+  start: async (id: string, clip: Clip) => {
+    const { url, start, end, extension, isClientUpload, file } = clip
 
     const fileName = `${id}${extension}`
     const filePath = `${EXPORT_DIR}/${fileName}`
@@ -57,7 +53,10 @@ export const exportService = {
         ? await handleClientUpload(file, targetClip)
         : await handleRemoteStream(url)
 
-      await transcodeVideo(source, { ...targetClip, start })
+      await transcodeVideo({
+        source,
+        target: { ...targetClip, start },
+      })
 
       const withThumbnails = false
       const thumbnail =

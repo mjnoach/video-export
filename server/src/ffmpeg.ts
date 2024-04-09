@@ -10,13 +10,15 @@ const { FFMPEG_PATH, FFPROBE_PATH } = process.env
 ffmpeg.setFfmpegPath(`${FFMPEG_PATH}`)
 ffmpeg.setFfprobePath(`${FFPROBE_PATH}`)
 
-export async function transcodeVideo(
-  source: string | Readable,
+export type Transcoding = {
+  source: string | Readable
   target: ExportTarget & { start: number }
-) {
+}
+
+export async function transcodeVideo({ source, target }: Transcoding) {
   let { id, path, start, duration, format } = target
   if (path.startsWith('/')) path = path.substring(1)
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     ffmpeg()
       .input(source)
       .setDuration(duration)
@@ -33,7 +35,7 @@ export async function transcodeVideo(
       .on('end', () => {
         console.info(`Transcoding ${id} complete!`)
         console.info(`-> /${path}`)
-        resolve(true)
+        resolve()
       })
       .on('error', (err) => {
         reject(new TranscodingException(id, err))

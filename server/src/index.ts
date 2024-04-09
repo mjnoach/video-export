@@ -37,8 +37,10 @@ app.post('/export', async (c) => {
   } else {
     clip = await c.req.json<Clip>()
   }
+
   const { id } = exportService.init()
   exportService.start(id, clip)
+
   return c.json(id, 202)
 })
 
