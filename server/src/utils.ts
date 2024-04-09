@@ -1,5 +1,7 @@
 import fs from 'fs'
 
+const { DATA_DIR } = process.env
+
 export function getTotalSeconds(timemark: string): number {
   if (timemark === 'N/A') return 0
   let [hours, minutes, seconds] = timemark.split(':').map(parseFloat)
@@ -19,8 +21,12 @@ export function getProgressPercent(
   return percent
 }
 
-export function clearTempData(path: string) {
+export function clearTempData(id: string) {
+  const path = `${DATA_DIR}/${id}.mp4`
   fs.promises.unlink(path).catch((err) => {
     console.error(err)
   })
 }
+
+export const getAbsolutePath = (path: string) =>
+  new URL(path, import.meta.url).pathname

@@ -14,6 +14,7 @@ import { VideoUpload } from '@/components/video-upload'
 // Improve: Clip local uploads on the client, not to stream irrelevant data to the server
 
 // Fix: Implement a queue?
+// Fix: Implement timeout within the export progress stream
 
 export default function Home() {
   return (

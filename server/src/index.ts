@@ -1,5 +1,7 @@
 import { ExportException, NotFoundException } from './exceptions.js'
 import { exportService } from './export-service.js'
+import { clearTempData } from './utils.js'
+import { workerPool } from './worker-pool.js'
 
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
@@ -38,8 +40,25 @@ app.post('/export', async (c) => {
     clip = await c.req.json<Clip>()
   }
 
-  const { id } = exportService.init()
-  exportService.start(id, clip)
+  const { id } = await exportService.init(clip)
+  workerPool
+    .exec('start', [id, JSON.stringify(clip), clip.file], {
+      transfer: clip.isClientUpload
+        ? [await clip.file?.arrayBuffer()]
+        : undefined,
+      on: (percent) => exportService.report(id, percent),
+    })
+    .then((exportData) => {
+      exportService.complete(id, exportData)
+    })
+    .catch((e) => {
+      exportService.fail(id, e)
+    })
+    .always(() => {
+      if (clip.isClientUpload) clearTempData(id)
+      return workerPool.terminate()
+    })
+  exportService.get(id).status = 'started'
 
   return c.json(id, 202)
 })
@@ -57,7 +76,6 @@ app.get('/export/:id', (c) =>
         if (task.status === 'failed') reject(new ExportException(id))
 
         task.onProgress = (percent) => {
-          console.log(`Processing ${id} ${percent}%`)
           stream.writeln(percent)
         }
         task.onFinish = (obj) => {
@@ -76,10 +94,10 @@ app.get('/export/:id', (c) =>
 )
 
 app.get(
-  `${EXPORT_DIR}/*`,
+  `/${EXPORT_DIR}/*`,
   serveStatic({
     root: './',
-    rewriteRequestPath: (path) => path.replace(/^\/static/, `${EXPORT_DIR}`),
+    rewriteRequestPath: (path) => path.replace(/^\/static/, `/${EXPORT_DIR}`),
   })
 )
 

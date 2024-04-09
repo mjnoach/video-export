@@ -103,7 +103,7 @@ type ItemProps = {
 
 const Item = ({ obj }: ItemProps) => {
   const extension = `.${obj.format}`
-  const href = `${process.env.NEXT_PUBLIC_API_URL}${obj.url}`
+  const href = `${process.env.NEXT_PUBLIC_API_URL}/${obj.url}`
 
   return (
     <li

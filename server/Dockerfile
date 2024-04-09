@@ -29,11 +29,11 @@ COPY --from=builder --chown=hono:nodejs /app/node_modules /app/node_modules
 COPY --from=builder --chown=hono:nodejs /app/dist /app/dist
 COPY package.json /app
 
-ARG EXPORT_DIR=/static
-ARG DATA_DIR=/temp-data
+ARG EXPORT_DIR=static
+ARG DATA_DIR=data
 
-RUN mkdir -p /app${EXPORT_DIR} && chown -R hono:nodejs /app${EXPORT_DIR}
-RUN mkdir -p /app${DATA_DIR} && chown -R hono:nodejs /app${DATA_DIR}
+RUN mkdir -p /app/${EXPORT_DIR} && chown -R hono:nodejs /app/${EXPORT_DIR}
+RUN mkdir -p /app/${DATA_DIR} && chown -R hono:nodejs /app/${DATA_DIR}
 
 USER hono
 EXPOSE 3001

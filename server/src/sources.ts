@@ -28,19 +28,23 @@ export async function handleRemoteStream(url: string) {
       format,
     })
     return stream
-  } catch (e) {
-    throw new SourceException(`Failed downloading stream from source ${url}`)
+  } catch (e: any) {
+    throw new SourceException(`Failed downloading stream from source ${url}`, e)
   }
 }
 
 export async function handleClientUpload(file: File, targetClip: ExportTarget) {
+  // TODO
+  // try streaming data without writing tmep file
   try {
-    let path = `${DATA_DIR}/${targetClip.id}.mp4`
-    if (path.startsWith('/')) path = path.substring(1)
+    const path = `${DATA_DIR}/${targetClip.id}.mp4`
     const fileBuffer = Buffer.from(await file.arrayBuffer())
     await fs.promises.writeFile(path, fileBuffer)
     return path
-  } catch (e) {
-    throw new SourceException('Filed reading/writing file from client upload')
+  } catch (e: any) {
+    throw new SourceException(
+      'Filed reading/writing file from client upload',
+      e
+    )
   }
 }

@@ -33,6 +33,11 @@ export async function POST(request: Request) {
     const id = await res.json<ExportData['id']>()
     return NextResponse.json(id)
   } catch (e: any) {
+    console.info(
+      `Make sure that the route runtime setting is set properly:`,
+      `\n\t'nodejs' for development`,
+      `\n\t'edge' for production`
+    )
     console.error(e)
     return errorResponse(
       { message: `Error initializing export`, status: 500 },
