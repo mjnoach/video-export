@@ -10,7 +10,7 @@ import { logger } from 'hono/logger'
 import { streamText } from 'hono/streaming'
 import { AddressInfo } from 'net'
 
-const { EXPORT_DIR } = process.env
+const { EXPORT_DIR, CLIENT_URL } = process.env
 
 const app = new Hono()
 
@@ -26,6 +26,7 @@ app.use(logger())
 // })
 
 app.get('/', (c) => {
+  c.header('Access-Control-Allow-Origin', CLIENT_URL)
   return c.text('Hono!')
 })
 
@@ -69,7 +70,7 @@ app.get('/export/:id', (c) =>
     async (stream) => {
       const id = c.req.param('id')
       return new Promise<void>(async (resolve, reject) => {
-        c.header('Access-Control-Allow-Origin', 'https://localhost:3000')
+        c.header('Access-Control-Allow-Origin', CLIENT_URL)
 
         const task = exportService.get(id)
         if (!task) reject(new NotFoundException(id))

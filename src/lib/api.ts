@@ -82,6 +82,12 @@ export const useExportRequest = () => {
   }
 }
 
+export async function useWakeUpServer() {
+  useEffect(() => {
+    ky.get(`${process.env.NEXT_PUBLIC_API_URL}`).catch((e) => {})
+  }, [])
+}
+
 async function parseToFormData(clip: Clip) {
   const formData = new FormData()
   formData.append('clip', JSON.stringify(clip))
