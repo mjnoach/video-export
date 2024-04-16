@@ -50,7 +50,7 @@ export const useExportRequest = () => {
             setData(exportData)
           },
         })
-        .catch((e: any | Error) => {
+        .catch((e: any) => {
           setError(e)
         })
         .finally(() => {
@@ -113,10 +113,18 @@ const api = {
     if (!reader) throw new Error('No reader')
 
     let data: ExportData | null = null
+    let error: string | null = null
     let reading = true
 
     while (reading) {
       let { value, done } = await reader.read()
+
+      const errorKey = 'error:'
+      if (value?.includes(errorKey)) {
+        error = value.substring(value?.indexOf(errorKey) + errorKey.length)
+        break
+      }
+
       const dataKey = 'data:'
       if (value?.includes(dataKey)) {
         const dataStr = value.substring(
@@ -125,11 +133,13 @@ const api = {
         data = JSON.parse(dataStr) as ExportData
         break
       }
+
       if (value) setProgress(parseInt(value))
       reading = !done
     }
 
-    if (!data) throw new Error(`Streaming response data failed`)
+    if (error) throw new Error(error)
+    if (!data) throw new Error(`Export failed`)
 
     return data
   },

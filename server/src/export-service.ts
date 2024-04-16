@@ -1,5 +1,5 @@
 import { generateThumbnail, transcodeVideo } from './ffmpeg.js'
-import { handleClientUpload, handleRemoteStream } from './sources.js'
+import { handleClientSource, handleRemoteSource } from './sources.js'
 
 import { nanoid } from 'nanoid'
 import { Readable } from 'stream'
@@ -49,8 +49,8 @@ export const exportService = {
 
     let source: string | Readable | null = null
     source = isClientUpload
-      ? await handleClientUpload(file, targetClip)
-      : await handleRemoteStream(url)
+      ? await handleClientSource(file, targetClip)
+      : await handleRemoteSource(url)
 
     await transcodeVideo({
       source,

@@ -5,16 +5,17 @@ import { VideoLinkForm } from '@/components/video-link-form'
 import { VideoUpload } from '@/components/video-upload'
 
 // TODO
-// Feature: Choose video formats/sizes
-// Feature: Option to attach auto-generated captions?
+// Feature: Option to choose export quality?
+// Feature: Option to add auto-generated captions?
 // Feature: Multiple slider ranges for exporting a video combined of multiple clips
 // Feature: Add a cropping frame that will only capture the selected area for a given slider range
+// Feature: Add watermarks
 
-// Improve: Process local uploads on the client with wasm ffmpeg?
-// Improve: Clip local uploads on the client, not to stream irrelevant data to the server
+// Improve: Client souces: Only upload relevant part of the video to the server
+// Improve: Remote souces: Only download relevant part of the video on the server
 
-// Fix: Implement a queue?
-// Fix: Implement timeout within the export progress stream
+// Improve: Client souces: Process local uploads on the client with wasm ffmpeg
+// Improve: Remote souces: Download video on the server and stream it back to the client for local processing with wasm ffmpeg
 
 export default function Home() {
   return (

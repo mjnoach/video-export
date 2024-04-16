@@ -5,11 +5,11 @@ import ytdl from 'ytdl-core'
 
 const { DATA_DIR } = process.env
 
-export async function handleRemoteStream(url: string) {
+export async function handleRemoteSource(url: string) {
   try {
     const info = await ytdl.getInfo(url)
     // console.log(
-    //   '🚀 ~ handleRemoteStream ~ info.formats:',
+    //   '🚀 ~ handleRemoteSource ~ info.formats:',
     //   info.formats.map((f) => ({
     //     // 1: f.mimeType,
     //     quality: f.quality,
@@ -20,10 +20,11 @@ export async function handleRemoteStream(url: string) {
     //   }))
     // )
     const format = ytdl.chooseFormat(info.formats, {
-      // quality: 'highest',
-      filter: (format) => format.container === 'mp4',
+      // quality: 'lowest',
+      filter: (format) =>
+        format.container === 'webm' && format.qualityLabel === '480p',
     })
-    // console.log('🚀 ~ handleRemoteStream ~ format:', format)
+    // console.log('🚀 ~ handleRemoteSource ~ format:', format)
     const stream = ytdl(url, {
       format,
     })
@@ -33,7 +34,7 @@ export async function handleRemoteStream(url: string) {
   }
 }
 
-export async function handleClientUpload(file: File, targetClip: ExportTarget) {
+export async function handleClientSource(file: File, targetClip: ExportTarget) {
   // TODO
   // try streaming data without writing tmep file
   try {

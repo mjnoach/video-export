@@ -30,7 +30,7 @@ COPY --from=builder --chown=hono:nodejs /app/dist /app/dist
 COPY package.json /app
 
 ARG EXPORT_DIR=static
-ARG DATA_DIR=data
+ARG DATA_DIR=tmp
 
 RUN mkdir -p /app/${EXPORT_DIR} && chown -R hono:nodejs /app/${EXPORT_DIR}
 RUN mkdir -p /app/${DATA_DIR} && chown -R hono:nodejs /app/${DATA_DIR}
