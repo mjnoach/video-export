@@ -20,7 +20,9 @@ export async function handleRemoteSource(url: string) {
     //   }))
     // )
     const format = ytdl.chooseFormat(info.formats, {
-      // quality: 'lowest',
+      // TODO
+      // remove this limitation after server resouces have been increased
+      quality: 'lowest',
       filter: (format) =>
         format.container === 'webm' && format.qualityLabel === '480p',
     })

@@ -57,7 +57,7 @@ export function VideoLinkForm() {
                   },
                 })}
                 aria-invalid={errors.videoUrl ? 'true' : 'false'}
-                type="url"
+                type="text"
                 id="videoUrl"
                 className={cn(
                   'w-full rounded-lg border border-secondary-2 bg-transparent p-2.5 text-sm',
