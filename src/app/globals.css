@@ -108,7 +108,7 @@
       rgb(var(--background-start-rgb));
   }
   main {
-    @apply flex grow flex-col items-center py-12;
+    @apply mx-auto flex grow flex-col items-center py-12;
   }
 }
 
@@ -151,7 +151,7 @@
     @apply pointer-events-none cursor-default select-none opacity-50;
   }
   .center {
-    @apply flex flex-col items-center justify-center;
+    @apply mx-auto flex flex-col items-center justify-center;
   }
   .autofill-bg {
     @apply shadow-[inset_0_0_0px_1000px_rgb(var(--secondary-2))];

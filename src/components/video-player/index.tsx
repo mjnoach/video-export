@@ -258,18 +258,16 @@ export function VideoPlayer() {
       {!isLoadingPlayer && player && (
         <div
           className={cn(
-            'flex w-full flex-col items-center gap-10',
+            'flex w-full flex-col items-center gap-10 px-2',
             editor.isDisabled ? 'disable' : ''
           )}
         >
-          <div className="relative flex h-[5.1rem] w-full justify-center sm:h-[7.5rem] sm:flex-row">
-            <div className="hidden sm:block">
-              <ClipInfo
-                disabled={editor.isDisabled}
-                moveSlider={moveSlider}
-                getSlider={getSlider}
-              />
-            </div>
+          <div className="relative flex h-[7.5rem] w-full justify-center sm:flex-row">
+            <ClipInfo
+              disabled={editor.isDisabled}
+              moveSlider={moveSlider}
+              getSlider={getSlider}
+            />
             <PlayerControls
               disabled={editor.isDisabled}
               player={player}

@@ -39,26 +39,23 @@ type UploadInputProps = DefaultProps & {
 const UploadInput = (props: UploadInputProps) => {
   // const supportedFormats = 'SVG, PNG, JPG or GIF (MAX. 800x400px)'
   return (
-    <div>
-      <label
-        htmlFor="file"
-        className="center panel aspect-video h-64 rounded-lg border-dashed !border-secondary-2"
-      >
-        <UploadIcon />
-        <p className="mb-2 text-sm text-primary-2">
-          <span className="font-semibold">Click to upload</span> or drag and
-          drop
-        </p>
-        <p className="text-xs text-primary-3">{UPLOAD_FORMATS.join(', ')}</p>
-        <input
-          onChange={props.onChange}
-          id="file"
-          type="file"
-          accept={UPLOAD_FORMATS.map((f) => `.${f}`).join(',')}
-          className="hidden"
-        />
-      </label>
-    </div>
+    <label
+      htmlFor="file"
+      className="center panel aspect-video w-full rounded-lg border-dashed !border-secondary-2"
+    >
+      <UploadIcon />
+      <p className="mb-2 text-sm text-primary-2">
+        <span className="font-semibold">Click to upload</span> or drag and drop
+      </p>
+      <p className="text-xs text-primary-3">{UPLOAD_FORMATS.join(', ')}</p>
+      <input
+        onChange={props.onChange}
+        id="file"
+        type="file"
+        accept={UPLOAD_FORMATS.map((f) => `.${f}`).join(',')}
+        className="hidden"
+      />
+    </label>
   )
 }
 

@@ -72,7 +72,7 @@ const Marker = () => {
 
 const MarkerIcon = ({ className }: DefaultProps) => (
   <svg
-    className={cn(className, 'relative inset-y-1 w-4 fill-player')}
+    className={cn(className, 'relative inset-y-1.5 w-4 fill-player')}
     viewBox="0 0 384 379"
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
