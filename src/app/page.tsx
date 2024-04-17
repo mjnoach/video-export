@@ -19,6 +19,8 @@ import { useWakeUpServer } from '@/lib/api'
 // Improve: Client souces: Process local uploads on the client with wasm ffmpeg
 // Improve: Remote souces: Download video on the server and stream it back to the client for local processing with wasm ffmpeg
 
+// Optimise: cpu, memory, bandwidth, disk
+
 export default function Home() {
   // TODO
   // remove this after the server has been upgraded to a non-sleeping instance
