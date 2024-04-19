@@ -10,6 +10,7 @@ import { logger } from 'hono/logger'
 import { streamText } from 'hono/streaming'
 import { AddressInfo } from 'net'
 import { Piscina as Pool } from 'piscina'
+import { TransferListItem } from 'worker_threads'
 
 const { EXPORT_DIR, CLIENT_URL } = process.env
 
@@ -48,9 +49,13 @@ app.post('/export', async (c) => {
 
   const { id } = await exportService.init(clip)
 
+  const { port1, port2 } = new MessageChannel()
+  port1.onmessage = (percent) => exportService.report(id, percent.data)
+
   pool
-    .on('message', (percent) => exportService.report(id, percent))
-    .run({ id, clip })
+    .run([id, clip, port2], {
+      transferList: [port2 as unknown as TransferListItem],
+    })
     .catch((e) => {
       exportService.fail(id, e)
     })

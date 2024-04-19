@@ -31,7 +31,7 @@ export const exportService = {
   get: (id: string) => {
     return tasks[id]
   },
-  start: async (id: string, clip: Clip) => {
+  start: async (id: string, clip: Clip, port: MessagePort) => {
     const { url, start, end, extension } = clip
 
     const fileName = `${id}${extension}`
@@ -51,10 +51,13 @@ export const exportService = {
       ? await handleClientSource(clip.file, targetClip)
       : await handleRemoteSource(url)
 
-    await transcodeVideo({
-      source,
-      target: { ...targetClip, start },
-    })
+    await transcodeVideo(
+      {
+        source,
+        target: { ...targetClip, start },
+      },
+      port
+    )
 
     const withThumbnails = false
     const thumbnail =

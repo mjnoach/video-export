@@ -3,7 +3,6 @@ import { getProgressPercent } from './utils.js'
 
 import ffmpeg from 'fluent-ffmpeg'
 import type { Readable } from 'stream'
-import { parentPort } from 'worker_threads'
 
 const { FFMPEG_PATH, FFPROBE_PATH } = process.env
 
@@ -15,7 +14,10 @@ export type Transcoding = {
   target: ExportTarget & { start: number }
 }
 
-export async function transcodeVideo({ source, target }: Transcoding) {
+export async function transcodeVideo(
+  { source, target }: Transcoding,
+  port: MessagePort
+) {
   let { id, path, start, duration, format } = target
   if (path.startsWith('/')) path = path.substring(1)
   return new Promise<void>((resolve, reject) => {
@@ -30,7 +32,7 @@ export async function transcodeVideo({ source, target }: Transcoding) {
       })
       .on('progress', (progress: ProgressData) => {
         const percent = getProgressPercent(progress, start, duration)
-        parentPort?.postMessage(percent)
+        port.postMessage(percent)
       })
       .on('end', () => {
         console.info(`Transcoding ${id} complete!`)

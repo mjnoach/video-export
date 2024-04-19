@@ -4,6 +4,8 @@ import { fileURLToPath } from 'url'
 
 export const workerPath = fileURLToPath(import.meta.url)
 
-export default async function start({ id, clip }: any) {
-  return exportService.start(id, clip)
+type Data = Parameters<typeof exportService.start>
+
+export default async function start([id, clip, port]: Data) {
+  return exportService.start(id, clip, port)
 }
