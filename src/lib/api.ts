@@ -82,7 +82,7 @@ export const useExportRequest = () => {
   }
 }
 
-export async function useWakeUpServer() {
+export function useWakeUpServer() {
   useEffect(() => {
     ky.get(`${process.env.NEXT_PUBLIC_API_URL}`).catch((e) => {})
   }, [])

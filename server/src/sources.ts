@@ -11,22 +11,20 @@ export async function handleRemoteSource(url: string) {
     // console.log(
     //   '🚀 ~ handleRemoteSource ~ info.formats:',
     //   info.formats.map((f) => ({
-    //     // 1: f.mimeType,
+    //     container: f.container,
+    //     mimeType: f.mimeType,
     //     quality: f.quality,
     //     qualityLabel: f.qualityLabel,
-    //     width: f.width,
-    //     height: f.height,
-    //     container: f.container,
     //   }))
     // )
     const format = ytdl.chooseFormat(info.formats, {
       // TODO
-      // remove this limitation after server resouces have been increased
-      quality: 'lowest',
-      filter: (format) =>
-        format.container === 'webm' && format.qualityLabel === '480p',
+      // remove quality limitations after server resouces have been increased
+      filter: (f) =>
+        ['webm', 'mp4'].includes(f.container) &&
+        f.qualityLabel === '360p' &&
+        f.hasAudio,
     })
-    // console.log('🚀 ~ handleRemoteSource ~ format:', format)
     const stream = ytdl(url, {
       format,
     })
