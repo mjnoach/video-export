@@ -3,7 +3,7 @@ import { getProgressPercent } from './utils.js'
 
 import ffmpeg from 'fluent-ffmpeg'
 import type { Readable } from 'stream'
-import workerpool from 'workerpool'
+import { parentPort } from 'worker_threads'
 
 const { FFMPEG_PATH, FFPROBE_PATH } = process.env
 
@@ -30,7 +30,7 @@ export async function transcodeVideo({ source, target }: Transcoding) {
       })
       .on('progress', (progress: ProgressData) => {
         const percent = getProgressPercent(progress, start, duration)
-        workerpool.workerEmit(percent)
+        parentPort?.postMessage(percent)
       })
       .on('end', () => {
         console.info(`Transcoding ${id} complete!`)

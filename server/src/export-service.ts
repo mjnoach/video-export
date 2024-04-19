@@ -31,9 +31,8 @@ export const exportService = {
   get: (id: string) => {
     return tasks[id]
   },
-  start: async (id: string, clip: Clip | string, file: File) => {
-    if (typeof clip === 'string') clip = JSON.parse(clip) as Clip
-    const { url, start, end, extension, isClientUpload } = clip
+  start: async (id: string, clip: Clip) => {
+    const { url, start, end, extension } = clip
 
     const fileName = `${id}${extension}`
     const filePath = `${EXPORT_DIR}/${fileName}`
@@ -48,8 +47,8 @@ export const exportService = {
     }
 
     let source: string | Readable | null = null
-    source = isClientUpload
-      ? await handleClientSource(file, targetClip)
+    source = clip.isClientUpload
+      ? await handleClientSource(clip.file, targetClip)
       : await handleRemoteSource(url)
 
     await transcodeVideo({

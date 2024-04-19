@@ -1,7 +1,9 @@
 import { exportService } from './export-service.js'
 
-import workerpool from 'workerpool'
+import { fileURLToPath } from 'url'
 
-workerpool.worker({
-  start: exportService.start,
-})
+export const workerPath = fileURLToPath(import.meta.url)
+
+export default async function start({ id, clip }: any) {
+  return exportService.start(id, clip)
+}

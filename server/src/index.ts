@@ -1,7 +1,7 @@
 import { ExportException, NotFoundException } from './exceptions.js'
 import { exportService } from './export-service.js'
 import { clearTempData } from './utils.js'
-import { workerPool } from './worker-pool.js'
+import { workerPath } from './worker.js'
 
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
@@ -9,8 +9,13 @@ import { Hono } from 'hono'
 import { logger } from 'hono/logger'
 import { streamText } from 'hono/streaming'
 import { AddressInfo } from 'net'
+import { Piscina as Pool } from 'piscina'
 
 const { EXPORT_DIR, CLIENT_URL } = process.env
+
+export const pool = new Pool({
+  filename: workerPath,
+})
 
 const app = new Hono()
 
@@ -42,23 +47,20 @@ app.post('/export', async (c) => {
   }
 
   const { id } = await exportService.init(clip)
-  workerPool
-    .exec('start', [id, JSON.stringify(clip), clip.file], {
-      transfer: clip.isClientUpload
-        ? [await clip.file?.arrayBuffer()]
-        : undefined,
-      on: (percent) => exportService.report(id, percent),
+
+  pool
+    .on('message', (percent) => exportService.report(id, percent))
+    .run({ id, clip })
+    .catch((e) => {
+      exportService.fail(id, e)
     })
     .then((exportData) => {
       exportService.complete(id, exportData)
     })
-    .catch((e) => {
-      exportService.fail(id, e)
-    })
-    .always(() => {
+    .finally(() => {
       if (clip.isClientUpload) clearTempData(id)
-      return workerPool.terminate()
     })
+
   exportService.get(id).status = 'started'
 
   return c.json(id, 202)

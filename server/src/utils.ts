@@ -28,5 +28,4 @@ export function clearTempData(id: string) {
   })
 }
 
-export const getAbsolutePath = (path: string) =>
-  new URL(path, import.meta.url).pathname
+export const getFileUrl = (path: string) => new URL(path, import.meta.url)
