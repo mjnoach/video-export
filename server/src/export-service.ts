@@ -32,12 +32,11 @@ export const exportService = {
     return tasks[id]
   },
   start: async (id: string, clip: Clip, port: MessagePort) => {
-    const { url, start, end, extension } = clip
+    const { url, start, duration, extension } = clip
 
     const fileName = `${id}${extension}`
     const filePath = `${EXPORT_DIR}/${fileName}`
     const fileFormat = extension.replace('.', '')
-    const duration = end - start
 
     const targetClip: ExportTarget = {
       id,

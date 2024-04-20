@@ -20,7 +20,7 @@ const editor = {
   removeExport: (id: string) => {},
   clip: {
     start: 0,
-    end: 0,
+    duration: 0,
   } as Clip,
   setClip: (clip: Clip) => {},
   updateClip: (data: Partial<Clip>) => {},

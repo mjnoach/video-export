@@ -12,6 +12,7 @@ import { useWakeUpServer } from '@/lib/api'
 // Feature: Multiple slider ranges for exporting a video combined of multiple clips
 // Feature: Add a cropping frame that will only capture the selected area for a given slider range
 // Feature: Add watermarks
+// Feature: Add play/pause functionality on video itself
 
 // Improve: Client souces: Only upload relevant part of the video to the server
 // Improve: Remote souces: Only download relevant part of the video on the server

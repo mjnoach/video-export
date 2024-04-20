@@ -1,7 +1,7 @@
 type Clip = {
   title: string
   start: number
-  end: number
+  duration: number
   extension: string
   url: string
   isClientUpload: boolean

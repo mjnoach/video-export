@@ -26,7 +26,7 @@ export function VideoPlayer() {
   const [sliderValues, setSliderValues] = useState([
     editor.clip.start ?? 0,
     editor.clip.start ?? 0,
-    editor.clip.end ?? 0,
+    editor.clip.duration ?? 0,
   ])
   const exportRequest = useExportRequest()
   const router = useRouter()
@@ -40,14 +40,14 @@ export function VideoPlayer() {
     if (hasReachedEnd()) setIsPlaying(false)
     editor.updateClip({
       start: getSlider('Start'),
-      end: getSlider('End'),
+      duration: getSlider('End') - getSlider('Start'),
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sliderValues])
 
   useEffect(() => {
     const clip = editor.clip
-    if (player && clip.end === 0) {
+    if (player && clip.duration === 0) {
       setSlider('End', player.getDuration())
     }
     if (!clip.isClientUpload) {
