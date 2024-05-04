@@ -169,11 +169,17 @@ export function VideoPlayer() {
     console.error(error)
   }
 
-  function handleSeek(seconds: number) {}
+  function handleVideoFrameClick() {
+    if (!editor.clip.isClientUpload) return
+    togglePlaying()
+  }
 
   return (
     <div className="flex w-full flex-col items-center gap-4">
-      <div className="relative aspect-video max-h-[60vh] w-full select-none rounded-md border-4 border-secondary-1">
+      <div
+        onClick={handleVideoFrameClick}
+        className="relative aspect-video max-h-[60vh] w-full select-none rounded-md border-4 border-secondary-1"
+      >
         {exportRequest.isPending && (
           <Overlay type={'loading'} title="Processing...">
             {(() => {
@@ -243,7 +249,6 @@ export function VideoPlayer() {
               },
             },
           }}
-          onSeek={handleSeek}
           onError={handleError}
           onPlay={handlePlay}
           onPause={handlePause}
