@@ -30,7 +30,7 @@ export function VideoLinkForm() {
 
   const onSubmit = (data: FormInputs) => {
     editor.setClip({ url: data.videoUrl } as Clip)
-    router.push(`/edit`)
+    router.push(`/edit/remote`)
   }
 
   return (
