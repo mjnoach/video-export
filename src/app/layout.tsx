@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <div className="flex min-w-[670px] grow flex-col-reverse sm:flex-col">
+          <div className="flex min-w-[770px] grow flex-col">
             <Nav />
             {children}
           </div>

@@ -21,7 +21,7 @@ export const Drawer = () => {
         !editor.data.length
           ? '-translate-x-[100%]'
           : '-translate-x-[calc(100%-1.5rem)]',
-        'fixed left-0 top-0 z-50 flex h-screen border-r border-secondary-1 bg-black bg-opacity-60 backdrop-blur-md transition-transform hover:-translate-x-0'
+        'fixed left-0 top-0 z-50 flex h-screen border-r border-secondary-1 bg-black bg-opacity-75 backdrop-blur-md transition-transform hover:-translate-x-0'
       )}
     >
       <div className="overflow-y-auto">

@@ -49,7 +49,7 @@ const Thumb = ({ value }: { value: number }) => {
   return (
     <SliderPrimitive.Thumb>
       <button className="group absolute bottom-full flex -translate-x-1/2 cursor-grab flex-col items-center">
-        <div className="duration-400 mb-1 bg-background opacity-0 transition ease-in-out group-hover:opacity-100">
+        <div className="duration-400 mb-1 bg-background font-mono opacity-0 transition ease-in-out group-hover:opacity-100">
           {getReadableTimestamp(value)}
         </div>
         <MarkerIcon className="!fill-white" />

@@ -49,7 +49,7 @@ export const PlayerControls = ({
           handleSkipTo={handleSkipTo}
         />
       </div>
-      <div className={'text-player'}>
+      <div className={'center font-mono text-player'}>
         {getReadableTimestamp(getSlider('Marker'))}
       </div>
     </div>

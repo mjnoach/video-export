@@ -249,6 +249,7 @@ export function VideoPlayer() {
               },
             },
           }}
+          progressInterval={100}
           onError={handleError}
           onPlay={handlePlay}
           onPause={handlePause}
@@ -269,6 +270,7 @@ export function VideoPlayer() {
         >
           <div className="relative flex h-[7.5rem] w-full justify-center sm:flex-row">
             <ClipInfo
+              videoDuration={player.getDuration()}
               disabled={editor.isDisabled}
               moveSlider={moveSlider}
               getSlider={getSlider}
@@ -285,7 +287,7 @@ export function VideoPlayer() {
           <Slider
             disabled={editor.isDisabled}
             max={player.getDuration()}
-            step={1}
+            step={0.1}
             value={sliderValues}
             sliderValues={sliderValues}
             minStepsBetweenThumbs={0}

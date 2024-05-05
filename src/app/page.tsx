@@ -13,8 +13,6 @@ import { useWakeUpServer } from '@/lib/api'
 // Feature: Add a cropping frame that will only capture the selected area for a given slider range
 // Feature: Add watermarks
 
-// Improve: Sliders should have millisecond precission
-
 // Improve: For client sources (video uploads), use wasm ffmpeg and do local processing on the client
 //          Security: your users' data only lives inside their browser, no need to worry about any data leakage or network latency.
 
