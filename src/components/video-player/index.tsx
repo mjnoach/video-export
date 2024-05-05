@@ -169,8 +169,11 @@ export function VideoPlayer() {
     console.error(error)
   }
 
+  const responseOverlay =
+    exportRequest.isPending || exportRequest.warning || exportRequest.data
+
   function handleVideoFrameClick() {
-    if (!editor.clip.isClientUpload) return
+    if (!editor.clip.isClientUpload || responseOverlay) return
     togglePlaying()
   }
 

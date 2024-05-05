@@ -9,6 +9,7 @@ import { NoSSR } from '@/components/no-ssr'
 import { VideoPlayer } from '@/components/video-player'
 
 import { useWakeUpServer } from '@/lib/api'
+import { cn } from '@/lib/utils'
 
 import { EditorContext } from '@/context/editor'
 
@@ -24,7 +25,12 @@ export default function Edit() {
   }, [router])
 
   return (
-    <main className="flex h-full w-full flex-row items-start px-8 lg:px-16">
+    <main
+      className={cn(
+        'flex h-full w-full flex-row items-start px-8 lg:px-16',
+        editor.data.length ? 'pl-[3.5rem]' : ''
+      )}
+    >
       <Drawer />
       <div className="center flex w-full max-w-4xl flex-col items-stretch justify-center gap-6">
         <NoSSR>
