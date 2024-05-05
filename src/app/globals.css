@@ -153,7 +153,7 @@
   .center {
     @apply mx-auto flex flex-col items-center justify-center;
   }
-  .autofill-bg {
+  /* .autofill-bg {
     @apply shadow-[inset_0_0_0px_1000px_rgb(var(--secondary-2))];
-  }
+  } */
 }
