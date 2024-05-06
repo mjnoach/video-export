@@ -7,6 +7,7 @@ import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import dotenv from 'dotenv'
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import { streamText } from 'hono/streaming'
 import { AddressInfo } from 'net'
@@ -23,6 +24,13 @@ export const pool = new Pool({
 const app = new Hono()
 
 app.use(logger())
+
+app.use(
+  '*',
+  cors({
+    origin: `${CLIENT_URL}`,
+  })
+)
 
 // app.onError((err, c) => {
 //   console.log('🚀 ~ app.onError ~ err:', err)
@@ -78,8 +86,6 @@ app.get('/export/:id', (c) =>
     async (stream) => {
       const id = c.req.param('id')
       return new Promise<void>(async (resolve, reject) => {
-        c.header('Access-Control-Allow-Origin', CLIENT_URL)
-
         const task = exportService.get(id)
         if (!task) reject(new NotFoundException(id))
         if (task.status === 'failed') reject(new ExportException(id))
