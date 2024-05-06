@@ -5,6 +5,7 @@ import { workerPath } from './worker.js'
 
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
+import dotenv from 'dotenv'
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
 import { streamText } from 'hono/streaming'
@@ -12,7 +13,8 @@ import { AddressInfo } from 'net'
 import { Piscina as Pool } from 'piscina'
 import { TransferListItem } from 'worker_threads'
 
-const { EXPORT_DIR, CLIENT_URL } = process.env
+dotenv.config()
+const { CLIENT_URL, EXPORT_DIR } = process.env
 
 export const pool = new Pool({
   filename: workerPath,
@@ -32,7 +34,6 @@ app.use(logger())
 // })
 
 app.get('/', (c) => {
-  c.header('Access-Control-Allow-Origin', CLIENT_URL)
   return c.text('Hono!')
 })
 
@@ -119,7 +120,7 @@ serve(
   },
   (info: AddressInfo) => {
     console.info(`🚀 Server ready!\n`)
-    console.info(`${info.address}:${info.port}`)
+    console.info(`http://localhost:${info.port}`, '\n')
   }
 )
 
