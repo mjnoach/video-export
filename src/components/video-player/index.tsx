@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import { useExportRequest } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 import { EditorActions, EditorContext } from '../../context/editor'
@@ -18,7 +17,11 @@ import { LucideLink } from 'lucide-react'
 import type { OnProgressProps } from 'react-player/base'
 import ReactPlayer from 'react-player/lazy'
 
-export function VideoPlayer() {
+type VideoPlayerProps = {
+  exportService: ExportService
+}
+
+export function VideoPlayer({ exportService }: VideoPlayerProps) {
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
   const [isLoadingPlayer, setLoadingPlayer] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -28,7 +31,6 @@ export function VideoPlayer() {
     editor.clip.start ?? 0,
     editor.clip.duration ?? 0,
   ])
-  const exportRequest = useExportRequest()
   const router = useRouter()
 
   useEffect(() => {
@@ -70,14 +72,14 @@ export function VideoPlayer() {
       player?.seekTo(clip.start)
       editor.setDisabled(true)
       setIsPlaying(false)
-      exportRequest.mutate(clip)
+      exportService.exportClip(clip)
     },
   }
 
   function handleExportComplete() {
-    if (exportRequest.data) {
-      editor.storeExport(exportRequest.data)
-      exportRequest.reset()
+    if (exportService.data) {
+      editor.storeExport(exportService.data)
+      exportService.reset()
       editor.setDisabled(false)
     }
   }
@@ -170,7 +172,7 @@ export function VideoPlayer() {
   }
 
   const responseOverlay =
-    exportRequest.isPending || exportRequest.warning || exportRequest.data
+    exportService.isPending || exportService.warning || exportService.data
 
   function handleVideoFrameClick() {
     if (!editor.clip.isClientUpload || responseOverlay) return
@@ -183,45 +185,45 @@ export function VideoPlayer() {
         onClick={handleVideoFrameClick}
         className="relative aspect-video max-h-[60vh] w-full select-none rounded-md border-4 border-secondary-1"
       >
-        {exportRequest.isPending && (
+        {exportService.isPending && (
           <Overlay type={'loading'} title="Processing...">
             {(() => {
-              const { progress } = exportRequest
+              const { progress } = exportService
               if (progress === null) return 'Initializing'
               if (progress === 100) return 'Finalizing'
               return `${progress}%`
             })()}
             <Progress
-              value={exportRequest.progress}
+              value={exportService.progress}
               className="absolute -bottom-8 h-1 w-[200%]"
             />
           </Overlay>
         )}
-        {exportRequest.error && (
+        {exportService.error && (
           <Overlay
             type={'error'}
-            title={exportRequest.error?.name || 'Error'}
+            title={exportService.error?.name || 'Error'}
             onDismiss={() => {
-              exportRequest.reset()
+              exportService.reset()
               editor.setDisabled(false)
             }}
           >
-            <div className="px-10">{exportRequest.error?.message}</div>
+            <div className="px-10">{exportService.error?.message}</div>
           </Overlay>
         )}
-        {exportRequest.warning && (
+        {exportService.warning && (
           <Overlay
             type={'warning'}
             timeout={3000}
             onDismiss={() => {
-              exportRequest.reset()
+              exportService.reset()
               editor.setDisabled(false)
             }}
           >
-            <div className="px-10">{exportRequest.warning}</div>
+            <div className="px-10">{exportService.warning}</div>
           </Overlay>
         )}
-        {exportRequest.data && (
+        {exportService.data && (
           <Overlay
             type={'success'}
             title="Export complete!"
@@ -231,16 +233,16 @@ export function VideoPlayer() {
             }}
           >
             <Link
-              href={`${process.env.NEXT_PUBLIC_API_URL}/${exportRequest.data.url}`}
+              href={`${process.env.NEXT_PUBLIC_API_URL}/${exportService.data.url}`}
               className="flex gap-2 px-10"
               target="_blank"
             >
               <LucideLink className="w-5 text-primary-2" />
-              {`${exportRequest.data.id}.${exportRequest.data.format}`}
+              {`${exportService.data.id}.${exportService.data.format}`}
             </Link>
           </Overlay>
         )}
-        {isLoadingPlayer && <Overlay type={'loading'}></Overlay>}
+        {/* {isLoadingPlayer && <Overlay type={'loading'}></Overlay>} */}
         <ReactPlayer
           config={{
             youtube: {

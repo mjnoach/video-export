@@ -25,7 +25,7 @@ export function VideoUpload({ disabled = false }: VideoUploadProps) {
       url: objectURL,
       title: file.name,
     } as Clip)
-    router.push(`/edit/client`)
+    router.push(`/edit`)
   }
 
   return <UploadInput accept="video/*" onChange={handleLoadLocal} />

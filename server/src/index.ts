@@ -32,15 +32,6 @@ app.use(
   })
 )
 
-// app.onError((err, c) => {
-//   console.log('🚀 ~ app.onError ~ err:', err)
-//   return c.text('Custom Error Message', 500)
-// })
-
-// app.notFound((c) => {
-//   return c.text('Custom 404 Message', 404)
-// })
-
 app.get('/', (c) => {
   return c.text('Hono!')
 })

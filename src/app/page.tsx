@@ -4,7 +4,7 @@ import { Drawer } from '@/components/drawer'
 import { VideoLinkForm } from '@/components/video-link-form'
 import { VideoUpload } from '@/components/video-upload'
 
-import { useWakeUpServer } from '@/lib/api'
+import { useWakeUpServer } from '@/hooks/useWakeUpServer'
 
 // TODO
 // Feature: Option to choose export quality?
@@ -12,6 +12,10 @@ import { useWakeUpServer } from '@/lib/api'
 // Feature: Multiple slider ranges for exporting a video combined of multiple clips
 // Feature: Add a cropping frame that will only capture the selected area for a given slider range
 // Feature: Add watermarks
+
+// Fix: For remote sources, dowsnload the video on the server and stream it to the client for local processing.
+
+// Improve: Review upload and export file formats
 
 // Improve: For client sources (video uploads), use wasm ffmpeg and do local processing on the client
 //          Security: your users' data only lives inside their browser, no need to worry about any data leakage or network latency.

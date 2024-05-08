@@ -6,7 +6,10 @@
   "license": "UNLICENSED",
   "scripts": {
     "dev": "next dev",
+    "dev:https": "next dev --experimental-https",
     "build": "next build",
+    "compile": "next experimental-compile",
+    "generate": "next experimental-generate",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --check --ignore-path .gitignore .",
@@ -38,6 +41,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@ffmpeg/core-mt": "^0.12.6",
     "@ffmpeg/types": "^0.12.2",
     "@tanstack/eslint-plugin-query": "^5.27.7",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
