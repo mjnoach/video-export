@@ -22,7 +22,7 @@ export function VideoUpload({ disabled = false }: VideoUploadProps) {
     // const formData = new FormData()
     // formData.append('file', file)
     editor.setClip({
-      isClientUpload: true,
+      isLocal: true,
       url: objectURL,
       title: file.name,
     } as Clip)

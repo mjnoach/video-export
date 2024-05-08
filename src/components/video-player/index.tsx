@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
+import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 import { EditorActions, EditorContext } from '../../context/editor'
@@ -31,7 +32,19 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
     editor.clip.start ?? 0,
     editor.clip.duration ?? 0,
   ])
+  const [isDownloading, setDownloading] = useState(!editor.clip.isLocal)
   const router = useRouter()
+
+  useEffect(() => {
+    if (!editor.clip.isLocal) {
+      api.downloadClip(editor.clip).then((blob) => {
+        const url = URL.createObjectURL(blob)
+        editor.updateClip({ url })
+        setDownloading(false)
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (!editor.clip.url) router.replace('/')
@@ -48,14 +61,8 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
   }, [sliderValues])
 
   useEffect(() => {
-    const clip = editor.clip
-    if (player && clip.duration === 0) {
+    if (player && editor.clip.duration === 0) {
       setSlider('End', player.getDuration())
-    }
-    if (!clip.isClientUpload) {
-      const internalPlayer = player?.getInternalPlayer()
-      const title = internalPlayer?.videoTitle
-      editor.updateClip({ title })
     }
     editor.setActions(actions)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -175,7 +182,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
     exportService.isPending || exportService.warning || exportService.data
 
   function handleVideoFrameClick() {
-    if (!editor.clip.isClientUpload || responseOverlay) return
+    if (!editor.clip.isLocal || responseOverlay) return
     togglePlaying()
   }
 
@@ -243,29 +250,32 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
             </Link>
           </Overlay>
         )}
-        {/* {isLoadingPlayer && <Overlay type={'loading'}></Overlay>} */}
-        <ReactPlayer
-          config={{
-            youtube: {
-              playerVars: {
-                modestbranding: 1,
-                controls: 0,
-                rel: 0,
-                autoplay: Number(isPlaying),
+        {isLoadingPlayer && <Overlay type={'loading'}>Loading...</Overlay>}
+        {isDownloading && <Overlay type={'loading'}>Downloading...</Overlay>}
+        {!isDownloading && (
+          <ReactPlayer
+            config={{
+              youtube: {
+                playerVars: {
+                  modestbranding: 1,
+                  controls: 0,
+                  rel: 0,
+                  autoplay: Number(isPlaying),
+                },
               },
-            },
-          }}
-          progressInterval={100}
-          onError={handleError}
-          onPlay={handlePlay}
-          onPause={handlePause}
-          onProgress={handleProgress}
-          onReady={handleReady}
-          url={editor.clip.url}
-          width="100%"
-          height="100%"
-          playing={isPlaying}
-        />
+            }}
+            progressInterval={100}
+            onError={handleError}
+            onPlay={handlePlay}
+            onPause={handlePause}
+            onProgress={handleProgress}
+            onReady={handleReady}
+            url={editor.clip.url}
+            width="100%"
+            height="100%"
+            playing={isPlaying}
+          />
+        )}
       </div>
       {!isLoadingPlayer && player && (
         <div

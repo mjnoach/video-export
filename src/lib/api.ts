@@ -1,12 +1,14 @@
 import ky from 'ky'
 
 export const api = {
+  downloadClip: async (clip: Clip) => {
+    const res = await ky.get(`/api/download?url=${clip.url}`)
+    return await res.blob()
+  },
   postExport: async (clip: Clip) => {
     const res = await ky.post(
       '/api/export',
-      clip.isClientUpload
-        ? { body: await parseToFormData(clip) }
-        : { json: clip }
+      clip.isLocal ? { body: await parseToFormData(clip) } : { json: clip }
     )
     return res.json<ExportData['id']>()
   },

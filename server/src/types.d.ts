@@ -4,10 +4,16 @@ type Clip = {
   duration: number
   extension: string
   url: string
-  isClientUpload: boolean
-} & {
-  isClientUpload: true
+} & (ClientClip | RemoteClip)
+
+type ClientClip = {
+  isLocal: true
   file: File
+}
+
+type RemoteClip = {
+  isLocal: false
+  file: Blob
 }
 
 type ExportTarget = {

@@ -46,7 +46,7 @@ export const exportService = {
     }
 
     let source: string | Readable | null = null
-    source = clip.isClientUpload
+    source = clip.isLocal
       ? await handleClientSource(clip.file, targetClip)
       : await handleRemoteSource(url)
 

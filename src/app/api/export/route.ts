@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 import { errorResponse } from '@/lib/utils/errors'
 import { assertMaxDuration } from '@/lib/validation'
@@ -12,14 +12,14 @@ const { NEXT_PUBLIC_API_URL, NEXT_PUBLIC_MAX_CLIP_DURATION } = process.env
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const options = {} as Options
     let clip: Clip
-    const isClientUpload = request.headers
+    const isLocal = request.headers
       .get('Content-Type')
       ?.includes('multipart/form-data')
-    if (isClientUpload) {
+    if (isLocal) {
       const formData = await request.formData()
       clip = JSON.parse(formData.get('clip') as string) as Clip
       assertMaxDuration(clip, Number(NEXT_PUBLIC_MAX_CLIP_DURATION))
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const id = searchParams.get('id')
   try {

@@ -63,7 +63,7 @@ app.post('/export', async (c) => {
       exportService.complete(id, exportData)
     })
     .finally(() => {
-      if (clip.isClientUpload) clearTempData(id)
+      if (clip.isLocal) clearTempData(id)
     })
 
   exportService.get(id).status = 'started'

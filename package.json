@@ -39,7 +39,8 @@
     "react-hook-form": "^7.50.1",
     "react-player": "^2.14.1",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "ytdl-core": "^4.11.5"
   },
   "devDependencies": {
     "@ffmpeg/core-mt": "^0.12.6",
