@@ -54,7 +54,6 @@ export default function Test() {
       )
     )
     await ffmpegRef.current.exec(['-i', 'input.webm', 'output.mp4'])
-    // await ffmpegRef.current.exec(['-i', 'test.mp4', 'output.mp4'])
     const data = await ffmpegRef.current.readFile('output.mp4')
     videoRef.current.src = URL.createObjectURL(
       new Blob([data.buffer], { type: 'video/mp4' })

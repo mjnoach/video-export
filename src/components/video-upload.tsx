@@ -18,8 +18,9 @@ export function VideoUpload({ disabled = false }: VideoUploadProps) {
   function handleLoadLocal(e: any) {
     const file = e.target.files[0] as File
     const objectURL = URL.createObjectURL(file)
-    const formData = new FormData()
-    formData.append('file', file)
+    // ???
+    // const formData = new FormData()
+    // formData.append('file', file)
     editor.setClip({
       isClientUpload: true,
       url: objectURL,

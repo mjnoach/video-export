@@ -233,7 +233,8 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
             }}
           >
             <Link
-              href={`${process.env.NEXT_PUBLIC_API_URL}/${exportService.data.url}`}
+              href={`${exportService.data.url}`}
+              // href={`${process.env.NEXT_PUBLIC_API_URL}/${exportService.data.url}`}
               className="flex gap-2 px-10"
               target="_blank"
             >
