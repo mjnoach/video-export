@@ -12,11 +12,8 @@ import { cn } from '@/lib/utils'
 
 import { EditorContext } from '@/context/editor'
 import { useClientExport } from '@/hooks/useClientExport'
-import { useWakeUpServer } from '@/hooks/useWakeUpServer'
 
 export default function Edit() {
-  useWakeUpServer()
-
   const router = useRouter()
   const editor = useContext(EditorContext)
   const exportService = useClientExport()

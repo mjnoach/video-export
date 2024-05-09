@@ -4,8 +4,6 @@ import { Drawer } from '@/components/drawer'
 import { VideoLinkForm } from '@/components/video-link-form'
 import { VideoUpload } from '@/components/video-upload'
 
-import { useWakeUpServer } from '@/hooks/useWakeUpServer'
-
 // TODO
 // Feature: Option to choose export quality?
 // Feature: Option to add auto-generated captions?
@@ -33,10 +31,6 @@ import { useWakeUpServer } from '@/hooks/useWakeUpServer'
 // Optimise: cpu, memory, bandwidth, disk
 
 export default function Home() {
-  // TODO
-  // remove this after the server has been upgraded to a non-sleeping instance
-  useWakeUpServer()
-
   return (
     <main className="mt-12 w-full">
       <Drawer />
