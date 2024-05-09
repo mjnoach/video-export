@@ -36,6 +36,10 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
   const router = useRouter()
 
   useEffect(() => {
+    if (player && exportService.isReady) setLoadingPlayer(false)
+  }, [player, exportService.isReady])
+
+  useEffect(() => {
     if (!editor.clip.isLocal) {
       api.downloadClip(editor.clip).then((blob) => {
         const url = URL.createObjectURL(blob)
@@ -153,7 +157,6 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
 
   function handleReady(player: ReactPlayer) {
     setPlayer(player)
-    setLoadingPlayer(false)
   }
 
   function handlePlay() {
@@ -250,9 +253,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
             </Link>
           </Overlay>
         )}
-        {isLoadingPlayer && !exportService.isReady && (
-          <Overlay type={'loading'}>Loading...</Overlay>
-        )}
+        {isLoadingPlayer && <Overlay type={'loading'}>Loading...</Overlay>}
         {isDownloading && <Overlay type={'loading'}>Downloading...</Overlay>}
         {!isDownloading && (
           <ReactPlayer
@@ -279,7 +280,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
           />
         )}
       </div>
-      {!isLoadingPlayer && player && exportService.isReady && (
+      {!isLoadingPlayer && player && (
         <div
           className={cn(
             'flex w-full flex-col items-center gap-10 px-2',
