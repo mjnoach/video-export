@@ -13,7 +13,6 @@ import { VideoUpload } from '@/components/video-upload'
 //          Your users' data only lives inside their browser, no need to worry about any data leakage or network latency.
 // Feature: Show download progress on the client
 
-// Fix: Finalising at the start of second export
 // Fix: Abort export when user leaves the editor
 // Fix: Handle errors
 //      When page reloaded, ERR_FILE_NOT_FOUND

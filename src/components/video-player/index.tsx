@@ -193,9 +193,10 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
         {exportService.isPending && (
           <Overlay type={'loading'} title="Processing...">
             {(() => {
-              if (exportService.progress === null) return 'Initializing'
-              if (exportService.progress === 100) return 'Finalizing'
-              return `${exportService.progress}%`
+              const progress = exportService.progress
+              if (progress === null || 100 - progress < 0) return 'Initializing'
+              if (progress >= 100) return 'Finalizing'
+              return `${progress}%`
             })()}
             <Progress
               value={exportService.progress}

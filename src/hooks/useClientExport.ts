@@ -80,10 +80,7 @@ export const useClientExport = () => {
 
     const progressCallback = ({ progress, time }: Progress) => {
       const relativeProgress = (progress * clip.videoLength) / clip.duration
-      const percent = Math.min(
-        parseInt((relativeProgress * 100).toFixed(0)),
-        100
-      )
+      const percent = parseInt((relativeProgress * 100).toFixed(0))
       console.info(`* Processing ${id} ${percent}%`)
       setProgress(percent)
     }
@@ -111,15 +108,14 @@ export const useClientExport = () => {
       setError(e)
     } finally {
       ffmpegRef.current!.off('progress', progressCallback)
+      setProgress(null)
       setPending(false)
     }
   }
 
-  function reset() {
-    setProgress(null)
+  const reset = () => {
     setError(null)
     setData(null)
-    setPending(false)
     setWarning(null)
   }
 
