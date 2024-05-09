@@ -1,6 +1,5 @@
 'use client'
 
-import { Drawer } from '@/components/drawer'
 import { VideoLinkForm } from '@/components/video-link-form'
 import { VideoUpload } from '@/components/video-upload'
 
@@ -14,8 +13,6 @@ import { VideoUpload } from '@/components/video-upload'
 //          Your users' data only lives inside their browser, no need to worry about any data leakage or network latency.
 // Feature: Show download progress on the client
 
-// TO DO: Disable the Drawer component due to exported data not being persistent on the client nor the server
-
 // Improve: Review upload and export file formats
 
 // Optimise: cpu, memory, bandwidth, disk
@@ -23,7 +20,7 @@ import { VideoUpload } from '@/components/video-upload'
 export default function Home() {
   return (
     <main className="mt-12 w-full">
-      <Drawer />
+      {/* <Drawer /> */}
       <div className="min-w-sm grid w-full max-w-lg gap-8">
         <h1 className={`mb-6 text-center text-5xl font-semibold`}>
           Paste & Go
