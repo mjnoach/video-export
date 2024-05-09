@@ -67,6 +67,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
   useEffect(() => {
     if (player) {
       const duration = player.getDuration()
+      editor.updateClip({ videoLength: duration })
       player.seekTo(duration / 2)
       setSlider('Marker', duration / 2)
       setSlider('End', duration)
@@ -202,7 +203,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
             {(() => {
               const { progress } = exportService
               if (progress === null) return 'Initializing'
-              if (progress === 100) return 'Finalizing'
+              if (progress >= 100) return 'Finalizing'
               return `${progress}%`
             })()}
             <Progress

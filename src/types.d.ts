@@ -19,6 +19,7 @@ type Clip = {
   duration: number
   extension: string
   url: string
+  videoLength: number
 } & (ClientClip | RemoteClip)
 
 type ClientClip = {

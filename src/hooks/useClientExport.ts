@@ -92,13 +92,13 @@ export const useClientExport = () => {
     }
 
     ffmpegRef.current!.on('progress', ({ progress, time }: Progress) => {
-      // TODO
-      // progress is relative to the entire duration of the original video
-      // it actually shows at which part of the original video the process is at
-      console.log('🚀 ~ ffmpegRef.current!.on ~ progress:', progress)
-      const percent = (progress * 100).toFixed(0)
+      const relativeProgress = (progress * clip.videoLength) / clip.duration
+      const percent = Math.min(
+        parseInt((relativeProgress * 100).toFixed(0)),
+        100
+      )
       console.info(`* Processing ${id} ${percent}%`)
-      setProgress(parseInt(percent))
+      setProgress(percent)
     })
 
     try {
