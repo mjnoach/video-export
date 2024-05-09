@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { FFmpeg } from '@ffmpeg/ffmpeg'
-import { Log, Progress } from '@ffmpeg/types'
+import { Progress } from '@ffmpeg/types'
 import { fetchFile } from '@ffmpeg/util'
 import { nanoid } from 'nanoid'
+
+const OBJ_ID_LENGTH = 8
 
 export const useClientExport = () => {
   const [progress, setProgress] = useState<null | number>(null)
@@ -30,9 +32,6 @@ export const useClientExport = () => {
       workerURL: `/ffmpeg/esm/ffmpeg-core.worker.js`,
     })
     console.log('FFmpeg loaded!')
-    ffmpegRef.current!.on('log', ({ type, message }: Log) => {
-      // console.log('log:', message)
-    })
     setReady(true)
   }
 
@@ -40,8 +39,8 @@ export const useClientExport = () => {
     source,
     target,
   }: {
-    source: string | File | Blob
-    target: ExportTarget & { start: number }
+    source: ExportSource
+    target: ExportTarget
   }) => {
     let { id, path, start, duration, format } = target
     console.info(`Transcoding ${id} started...`)
@@ -65,33 +64,21 @@ export const useClientExport = () => {
     console.info(`Transcoding ${id} complete!`)
   }
 
-  const OBJ_ID_LENGTH = 8
-
   const exportClip = async (clip: Clip) => {
     setPending(true)
-
-    // const maxDuration = Number(process.env.NEXT_PUBLIC_MAX_CLIP_DURATION)
-    // try {
-    //   assertMaxDuration(clip, maxDuration)
-    // } catch (e) {
-    //   setWarning(`Clip duration cannot exceed ${maxDuration} seconds`)
-    // }
 
     const id = nanoid(OBJ_ID_LENGTH)
     const { url, start, duration, extension } = clip
 
-    const fileName = `${id}${extension}`
-    const filePath = `${fileName}`
-    const fileFormat = extension.replace('.', '')
-
     const targetClip: ExportTarget = {
-      id: id as string,
-      path: filePath,
-      format: fileFormat,
+      id,
+      path: `${id}${extension}`,
+      format: extension.replace('.', ''),
       duration,
+      start,
     }
 
-    ffmpegRef.current!.on('progress', ({ progress, time }: Progress) => {
+    const progressCallback = ({ progress, time }: Progress) => {
       const relativeProgress = (progress * clip.videoLength) / clip.duration
       const percent = Math.min(
         parseInt((relativeProgress * 100).toFixed(0)),
@@ -99,17 +86,18 @@ export const useClientExport = () => {
       )
       console.info(`* Processing ${id} ${percent}%`)
       setProgress(percent)
-    })
+    }
+    ffmpegRef.current!.on('progress', progressCallback)
 
     try {
-      await transcode({ source: url, target: { ...targetClip, start } })
+      await transcode({ source: url, target: targetClip })
 
       const data = (await ffmpegRef.current!.readFile(
         targetClip.path
       )) as Uint8Array
 
       const objUrl = URL.createObjectURL(
-        new Blob([data.buffer], { type: getMimeType(fileFormat) })
+        new Blob([data.buffer], { type: getMimeType(targetClip.format) })
       )
 
       const exportData: ExportData = {
@@ -122,6 +110,7 @@ export const useClientExport = () => {
     } catch (e: any) {
       setError(e)
     } finally {
+      ffmpegRef.current!.off('progress', progressCallback)
       setPending(false)
     }
   }

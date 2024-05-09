@@ -2,8 +2,8 @@
 
 import { createContext, useState } from 'react'
 
-import { usePersistentState } from '@/hooks/usePersistentState'
-import { useSessionState } from '@/hooks/useSessionState'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { useSessionStorage } from '@/hooks/useSessionStorage'
 
 export type EditorActions = {
   previewClip: (clip: Clip) => void
@@ -31,8 +31,11 @@ export const EditorContext = createContext(editor)
 export const EditorProvider = ({ children }: DefaultProps) => {
   const [actions, setActions] = useState({} as EditorActions)
   const [isDisabled, setDisabled] = useState(false)
-  const [clip, setClip, updateClip] = useSessionState<Clip>('clip', editor.clip)
-  const [data, setData] = usePersistentState<ExportData[]>('data', editor.data)
+  const [clip, setClip, updateClip] = useSessionStorage<Clip>(
+    'clip',
+    editor.clip
+  )
+  const [data, setData] = useLocalStorage<ExportData[]>('data', editor.data)
 
   const storeExport = (obj: ExportData) => {
     setData([obj, ...data])

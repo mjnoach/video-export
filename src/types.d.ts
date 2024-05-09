@@ -32,14 +32,17 @@ type RemoteClip = {
   file: Blob
 }
 
+type ExportSource = string | File | Blob
+
 type ExportTarget = {
   id: string
   path: string
   duration: number
   format: string
+  start: number
 }
 
-type ExportData = ExportTarget & {
+type ExportData = Omit<ExportTarget, 'start'> & {
   url: string
   thumbnail: string | null
 }

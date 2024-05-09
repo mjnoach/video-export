@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export function useSessionState<T>(
+export function useSessionStorage<T>(
   key: string,
   initialState: T
 ): [T, (newState: T) => void, (data: Partial<T>) => void] {

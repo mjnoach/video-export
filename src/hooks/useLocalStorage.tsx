@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export function usePersistentState<T>(
+export function useLocalStorage<T>(
   key: string,
   initialState: T
 ): [T, (newState: T) => void] {

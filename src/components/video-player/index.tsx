@@ -91,14 +91,6 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
     },
   }
 
-  function handleExportComplete() {
-    if (exportService.data) {
-      editor.storeExport(exportService.data)
-      exportService.reset()
-      editor.setDisabled(false)
-    }
-  }
-
   const hasReachedEnd = () => getSlider('Marker') >= getSlider('End')
 
   const togglePlaying = () => setIsPlaying(!isPlaying)
@@ -201,10 +193,9 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
         {exportService.isPending && (
           <Overlay type={'loading'} title="Processing...">
             {(() => {
-              const { progress } = exportService
-              if (progress === null) return 'Initializing'
-              if (progress >= 100) return 'Finalizing'
-              return `${progress}%`
+              if (exportService.progress === null) return 'Initializing'
+              if (exportService.progress === 100) return 'Finalizing'
+              return `${exportService.progress}%`
             })()}
             <Progress
               value={exportService.progress}
@@ -221,7 +212,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
               editor.setDisabled(false)
             }}
           >
-            <div className="px-10">{exportService.error?.message}</div>
+            <div className="mx-10">{exportService.error?.message}</div>
           </Overlay>
         )}
         {exportService.warning && (
@@ -233,7 +224,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
               editor.setDisabled(false)
             }}
           >
-            <div className="px-10">{exportService.warning}</div>
+            <div className="mx-10">{exportService.warning}</div>
           </Overlay>
         )}
         {exportService.data && (
@@ -242,13 +233,15 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
             title="Export complete!"
             // timeout={5000}
             onDismiss={() => {
-              handleExportComplete()
+              exportService.reset()
+              editor.setDisabled(false)
+              // editor.storeExport(exportService.data)
             }}
           >
             <Link
               href={`${exportService.data.url}`}
               // href={`${process.env.NEXT_PUBLIC_API_URL}/${exportService.data.url}`}
-              className="flex gap-2 px-10"
+              className="mx-10 flex gap-2"
               target="_blank"
             >
               <LucideLink className="w-5 text-primary-2" />
