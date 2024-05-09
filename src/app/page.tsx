@@ -14,8 +14,6 @@ import { VideoUpload } from '@/components/video-upload'
 // Feature: Show download progress on the client
 
 // Fix: Abort export when user leaves the editor
-// Fix: Handle errors
-//      When page reloaded, ERR_FILE_NOT_FOUND
 
 // Improve: Review upload and export file formats
 // Improve: Cache ffmpeg to prevent reloading on page refresh

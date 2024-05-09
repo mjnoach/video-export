@@ -29,8 +29,8 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
   const editor = useContext(EditorContext)
   const [sliderValues, setSliderValues] = useState([
     editor.clip.start ?? 0,
-    editor.clip.duration / 2 ?? 0,
-    editor.clip.duration ?? 0,
+    (editor.clip.start + editor.clip.duration) / 2 ?? 0,
+    editor.clip.start + editor.clip.duration ?? 0,
   ])
   const [isDownloading, setDownloading] = useState(!editor.clip.isLocal)
   const router = useRouter()
@@ -51,7 +51,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
   }, [])
 
   useEffect(() => {
-    if (!editor.clip.url) router.replace('/')
+    fetch(editor.clip.url).catch((e) => router.replace('/'))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
 
@@ -65,8 +65,10 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
   }, [sliderValues])
 
   useEffect(() => {
-    if (player) {
-      const duration = player.getDuration()
+    if (!player) return
+    const duration = player.getDuration()
+    const isInitialLoad = !editor.clip.duration
+    if (isInitialLoad) {
       editor.updateClip({ videoLength: duration })
       player.seekTo(duration / 2)
       setSlider('Marker', duration / 2)
