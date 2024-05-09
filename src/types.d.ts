@@ -10,7 +10,6 @@ type ExportService = {
   isError: boolean
   isPending: boolean
   warning: string | null
-  isReady: boolean
 }
 
 type Clip = {

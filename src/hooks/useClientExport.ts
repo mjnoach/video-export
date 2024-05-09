@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
-import { FFmpeg } from '@ffmpeg/ffmpeg'
+import { useFfmpeg } from './useFfmpeg'
+
 import { Progress } from '@ffmpeg/types'
 import { fetchFile } from '@ffmpeg/util'
 import { nanoid } from 'nanoid'
@@ -13,27 +14,7 @@ export const useClientExport = () => {
   const [error, setError] = useState<null | Error>(null)
   const [isPending, setPending] = useState(false)
   const [warning, setWarning] = useState<null | string>(null)
-  const [isReady, setReady] = useState(false)
-
-  const ffmpegRef = useRef<FFmpeg | null>(null)
-
-  useEffect(() => {
-    const ffmpeg = new FFmpeg()
-    ffmpegRef.current = ffmpeg
-    load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const load = async () => {
-    console.log('Loading...')
-    await ffmpegRef.current!.load({
-      coreURL: `/ffmpeg/esm/ffmpeg-core.js`,
-      wasmURL: `/ffmpeg/esm/ffmpeg-core.wasm`,
-      workerURL: `/ffmpeg/esm/ffmpeg-core.worker.js`,
-    })
-    console.log('FFmpeg loaded!')
-    setReady(true)
-  }
+  const { ffmpeg, ffmpegLoaded } = useFfmpeg()
 
   const transcode = async ({
     source,
@@ -44,8 +25,8 @@ export const useClientExport = () => {
   }) => {
     let { id, path, start, duration, format } = target
     console.info(`Transcoding ${id} started...`)
-    await ffmpegRef.current!.writeFile('input.webm', await fetchFile(source))
-    const errorCode = await ffmpegRef.current!.exec([
+    await ffmpeg.writeFile('input.webm', await fetchFile(source))
+    const errorCode = await ffmpeg.exec([
       '-i',
       'input.webm',
       '-t',
@@ -81,17 +62,15 @@ export const useClientExport = () => {
     const progressCallback = ({ progress, time }: Progress) => {
       const relativeProgress = (progress * clip.videoLength) / clip.duration
       const percent = parseInt((relativeProgress * 100).toFixed(0))
-      console.info(`* Processing ${id} ${percent}%`)
+      // console.info(`* Processing ${id} ${percent}%`)
       setProgress(percent)
     }
-    ffmpegRef.current!.on('progress', progressCallback)
+    ffmpeg.on('progress', progressCallback)
 
     try {
       await transcode({ source: url, target: targetClip })
 
-      const data = (await ffmpegRef.current!.readFile(
-        targetClip.path
-      )) as Uint8Array
+      const data = (await ffmpeg.readFile(targetClip.path)) as Uint8Array
 
       const objUrl = URL.createObjectURL(
         new Blob([data.buffer], { type: getMimeType(targetClip.format) })
@@ -107,7 +86,7 @@ export const useClientExport = () => {
     } catch (e: any) {
       setError(e)
     } finally {
-      ffmpegRef.current!.off('progress', progressCallback)
+      ffmpeg.off('progress', progressCallback)
       setProgress(null)
       setPending(false)
     }
@@ -129,7 +108,6 @@ export const useClientExport = () => {
     isError: !!error,
     isPending,
     warning,
-    isReady,
   }
 }
 
