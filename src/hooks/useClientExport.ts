@@ -11,6 +11,7 @@ export const useClientExport = () => {
   const [error, setError] = useState<null | Error>(null)
   const [isPending, setPending] = useState(false)
   const [warning, setWarning] = useState<null | string>(null)
+  const [isReady, setReady] = useState(false)
 
   const ffmpegRef = useRef<FFmpeg | null>(null)
 
@@ -32,6 +33,7 @@ export const useClientExport = () => {
     ffmpegRef.current!.on('log', ({ type, message }: Log) => {
       // console.log('log:', message)
     })
+    setReady(true)
   }
 
   const transcode = async ({
@@ -142,6 +144,7 @@ export const useClientExport = () => {
     isError: !!error,
     isPending,
     warning,
+    isReady,
   }
 }
 

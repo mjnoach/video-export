@@ -250,7 +250,9 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
             </Link>
           </Overlay>
         )}
-        {isLoadingPlayer && <Overlay type={'loading'}>Loading...</Overlay>}
+        {isLoadingPlayer && !exportService.isReady && (
+          <Overlay type={'loading'}>Loading...</Overlay>
+        )}
         {isDownloading && <Overlay type={'loading'}>Downloading...</Overlay>}
         {!isDownloading && (
           <ReactPlayer
@@ -277,7 +279,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
           />
         )}
       </div>
-      {!isLoadingPlayer && player && (
+      {!isLoadingPlayer && player && exportService.isReady && (
         <div
           className={cn(
             'flex w-full flex-col items-center gap-10 px-2',
