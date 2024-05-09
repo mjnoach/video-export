@@ -9,7 +9,7 @@ const { NEXT_PUBLIC_API_URL, NEXT_PUBLIC_MAX_CLIP_DURATION } = process.env
 
 // Set 'edge' runtime for production deployment with Vercel Functions
 // Set 'nodejs' runtime for development
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {

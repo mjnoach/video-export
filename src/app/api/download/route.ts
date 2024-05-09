@@ -4,7 +4,7 @@ import ytdl from 'ytdl-core'
 
 // Set 'edge' runtime for production deployment with Vercel Functions
 // Set 'nodejs' runtime for development
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
