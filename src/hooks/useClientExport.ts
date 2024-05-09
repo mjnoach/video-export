@@ -108,6 +108,7 @@ export const useClientExport = () => {
     isError: !!error,
     isPending,
     warning,
+    ffmpegLoaded,
   }
 }
 

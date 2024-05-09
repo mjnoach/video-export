@@ -2,27 +2,27 @@ import { useEffect, useRef, useState } from 'react'
 
 import { FFmpeg } from '@ffmpeg/ffmpeg'
 
-const ffmpeg = new FFmpeg()
-
-const loadFfmpeg = async () => {
-  console.log('Loading...')
-  await ffmpeg.load({
-    coreURL: `/ffmpeg/esm/ffmpeg-core.js`,
-    wasmURL: `/ffmpeg/esm/ffmpeg-core.wasm`,
-    workerURL: `/ffmpeg/esm/ffmpeg-core.worker.js`,
-  })
-  console.log('FFmpeg loaded!')
-}
+const baseUrl = '/ffmpeg/esm'
 
 export const useFfmpeg = () => {
-  const [isLoaded, setLoaded] = useState(ffmpeg.loaded)
-  const ffmpegRef = useRef(ffmpeg)
+  const ffmpegRef = useRef(new FFmpeg())
+  const [isLoaded, setLoaded] = useState(ffmpegRef.current.loaded)
 
   useEffect(() => {
     if (!ffmpegRef.current.loaded) {
       loadFfmpeg().then(() => setLoaded(true))
     }
   }, [])
+
+  const loadFfmpeg = async () => {
+    console.log('Loading...')
+    await ffmpegRef.current.load({
+      coreURL: `${baseUrl}/ffmpeg-core.js`,
+      wasmURL: `${baseUrl}/ffmpeg-core.wasm`,
+      workerURL: `${baseUrl}/ffmpeg-core.worker.js`,
+    })
+    console.log('FFmpeg loaded!')
+  }
 
   return { ffmpeg: ffmpegRef.current, ffmpegLoaded: isLoaded }
 }

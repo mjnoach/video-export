@@ -10,12 +10,10 @@ import { VideoPlayer } from '@/components/video-player'
 import { cn } from '@/lib/utils'
 
 import { EditorContext } from '@/context/editor'
-import { useClientExport } from '@/hooks/useClientExport'
 
 export default function Edit() {
   const router = useRouter()
   const editor = useContext(EditorContext)
-  const exportService = useClientExport()
 
   return (
     <main
@@ -27,7 +25,7 @@ export default function Edit() {
       {/* <Drawer /> */}
       <div className="center flex w-full max-w-4xl flex-col items-stretch justify-center gap-6">
         <NoSSR>
-          <VideoPlayer exportService={exportService} />
+          <VideoPlayer />
         </NoSSR>
       </div>
     </main>

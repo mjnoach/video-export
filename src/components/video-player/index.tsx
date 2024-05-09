@@ -14,16 +14,12 @@ import { Slider, Sliders } from '../ui/slider'
 import { ClipInfo } from './clip-info'
 import { PlayerControls } from './player-controls'
 
-import { useFfmpeg } from '@/hooks/useFfmpeg'
+import { useClientExport } from '@/hooks/useClientExport'
 import { LucideLink } from 'lucide-react'
 import type { OnProgressProps } from 'react-player/base'
 import ReactPlayer from 'react-player/lazy'
 
-type VideoPlayerProps = {
-  exportService: ExportService
-}
-
-export function VideoPlayer({ exportService }: VideoPlayerProps) {
+export function VideoPlayer() {
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
   const [isLoadingPlayer, setLoadingPlayer] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -35,11 +31,11 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
   ])
   const [isDownloading, setDownloading] = useState(!editor.clip.isLocal)
   const router = useRouter()
-  const { ffmpegLoaded } = useFfmpeg()
+  const exportService = useClientExport()
 
   useEffect(() => {
-    if (player && ffmpegLoaded) setLoadingPlayer(false)
-  }, [player, ffmpegLoaded])
+    if (player && exportService.ffmpegLoaded) setLoadingPlayer(false)
+  }, [player, exportService.ffmpegLoaded])
 
   useEffect(() => {
     if (!editor.clip.isLocal) {
