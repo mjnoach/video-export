@@ -240,7 +240,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
           <Overlay
             type={'success'}
             title="Export complete!"
-            timeout={5000}
+            // timeout={5000}
             onDismiss={() => {
               handleExportComplete()
             }}
