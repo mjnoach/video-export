@@ -17,7 +17,7 @@ export async function downloadRemoteStream(url: string) {
     }).on('progress', (_current, downloaded, total) => {
       const fraction = downloaded / total
       const percent = (fraction * 100).toFixed(0)
-      console.log('🚀 ~ downloadRemoteSource ~ percent:', percent)
+      // console.log('🚀 ~ downloadRemoteSource ~ percent:', percent)
     })
   } catch (e: any) {
     throw new Error(`Failed downloading stream from source ${url}`, e)

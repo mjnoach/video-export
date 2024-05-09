@@ -14,8 +14,6 @@ const loadFfmpeg = async () => {
   console.log('FFmpeg loaded!')
 }
 
-// ?? use context instead?
-
 export const useFfmpeg = () => {
   const [isLoaded, setLoaded] = useState(ffmpeg.loaded)
   const ffmpegRef = useRef(ffmpeg)
