@@ -29,7 +29,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
   const editor = useContext(EditorContext)
   const [sliderValues, setSliderValues] = useState([
     editor.clip.start ?? 0,
-    editor.clip.start ?? 0,
+    editor.clip.duration / 2 ?? 0,
     editor.clip.duration ?? 0,
   ])
   const [isDownloading, setDownloading] = useState(!editor.clip.isLocal)
@@ -65,8 +65,11 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
   }, [sliderValues])
 
   useEffect(() => {
-    if (player && editor.clip.duration === 0) {
-      setSlider('End', player.getDuration())
+    if (player) {
+      const duration = player.getDuration()
+      player.seekTo(duration / 2)
+      setSlider('Marker', duration / 2)
+      setSlider('End', duration)
     }
     editor.setActions(actions)
     // eslint-disable-next-line react-hooks/exhaustive-deps
