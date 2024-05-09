@@ -1,6 +1,8 @@
 'use client'
 
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
+
+import { usePathname } from 'next/navigation'
 
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { useSessionStorage } from '@/hooks/useSessionStorage'
@@ -36,6 +38,11 @@ export const EditorProvider = ({ children }: DefaultProps) => {
     editor.clip
   )
   const [data, setData] = useLocalStorage<ExportData[]>('data', editor.data)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    setDisabled(false)
+  }, [pathname])
 
   const storeExport = (obj: ExportData) => {
     setData([obj, ...data])

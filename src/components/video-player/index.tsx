@@ -53,7 +53,8 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
   }, [])
 
   useEffect(() => {
-    fetch(editor.clip.url).catch((e) => router.replace('/'))
+    if (editor.clip.isLocal)
+      fetch(editor.clip.url).catch((e) => router.replace('/'))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
 
