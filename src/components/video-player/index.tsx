@@ -188,8 +188,7 @@ export function VideoPlayer({ exportService }: VideoPlayerProps) {
     exportService.isPending || exportService.warning || exportService.data
 
   function handleVideoFrameClick() {
-    if (!editor.clip.isLocal || responseOverlay) return
-    togglePlaying()
+    if (!responseOverlay) togglePlaying()
   }
 
   return (

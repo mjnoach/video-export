@@ -16,7 +16,8 @@ import { VideoUpload } from '@/components/video-upload'
 // Fix: Export progress not accurate
 
 // Improve: Review upload and export file formats
-// Improve: Prevent loading ffmpeg on each page reload
+// Improve: Cache ffmpeg to prevent reloading on page refresh
+// Improve: Secure api/download action to prevent it from being accessed outside the app
 
 // Optimise: cpu, memory, bandwidth, disk
 
