@@ -12,9 +12,9 @@ import { VideoUpload } from '@/components/video-upload'
 // Feature: Add watermarks
 // Feature: Add Security remarks to the homepage:
 //          Your users' data only lives inside their browser, no need to worry about any data leakage or network latency.
+// Feature: Show download progress on the client
 
 // TO DO: Disable the Drawer component due to exported data not being persistent on the client nor the server
-// TO DO: Exclude server files & disable Render deployments
 
 // Improve: Review upload and export file formats
 

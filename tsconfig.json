@@ -26,8 +26,8 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "src/**/*.ts",
-    "src/**/*.tsx",
-    "server/**/*.d.ts"
+    "src/**/*.tsx"
+    // "server/**/*.d.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "server"]
 }

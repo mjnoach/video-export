@@ -12,3 +12,33 @@ type ExportService = {
   warning: string | null
   isReady: boolean
 }
+
+type Clip = {
+  title: string
+  start: number
+  duration: number
+  extension: string
+  url: string
+} & (ClientClip | RemoteClip)
+
+type ClientClip = {
+  isLocal: true
+  file: File
+}
+
+type RemoteClip = {
+  isLocal: false
+  file: Blob
+}
+
+type ExportTarget = {
+  id: string
+  path: string
+  duration: number
+  format: string
+}
+
+type ExportData = ExportTarget & {
+  url: string
+  thumbnail: string | null
+}
