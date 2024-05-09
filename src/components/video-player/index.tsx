@@ -241,6 +241,7 @@ export function VideoPlayer() {
             }}
           >
             <Link
+              prefetch={false}
               href={`${exportService.data.url}`}
               // href={`${process.env.NEXT_PUBLIC_API_URL}/${exportService.data.url}`}
               className="mx-10 flex gap-2"
