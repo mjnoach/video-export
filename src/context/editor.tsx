@@ -1,11 +1,12 @@
 'use client'
 
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 
 import { usePathname } from 'next/navigation'
 
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { useSessionStorage } from '@/hooks/useSessionStorage'
+import { FFmpeg } from '@ffmpeg/ffmpeg'
 
 export type EditorActions = {
   previewClip: (clip: Clip) => void
@@ -26,6 +27,8 @@ const editor = {
   } as Clip,
   setClip: (clip: Clip) => {},
   updateClip: (data: Partial<Clip>) => {},
+  ffmpeg: {} as FFmpeg | null,
+  ffmpegLoaded: false,
 }
 
 export const EditorContext = createContext(editor)
@@ -39,6 +42,27 @@ export const EditorProvider = ({ children }: DefaultProps) => {
   )
   const [data, setData] = useLocalStorage<ExportData[]>('data', editor.data)
   const pathname = usePathname()
+  const ffmpegRef = useRef<FFmpeg | null>(null)
+  const [ffmpegLoaded, setLoaded] = useState(!!ffmpegRef.current?.loaded)
+
+  useEffect(() => {
+    if (ffmpegRef.current === null) ffmpegRef.current = new FFmpeg()
+    if (!ffmpegRef.current.loaded) {
+      loadFfmpeg().then(() => setLoaded(true))
+    }
+  }, [])
+
+  const baseUrl = '/ffmpeg/esm'
+
+  const loadFfmpeg = async () => {
+    console.log('Loading...')
+    await ffmpegRef.current!.load({
+      coreURL: `${baseUrl}/ffmpeg-core.js`,
+      wasmURL: `${baseUrl}/ffmpeg-core.wasm`,
+      workerURL: `${baseUrl}/ffmpeg-core.worker.js`,
+    })
+    console.log('FFmpeg loaded!')
+  }
 
   useEffect(() => {
     setDisabled(false)
@@ -65,6 +89,8 @@ export const EditorProvider = ({ children }: DefaultProps) => {
         clip,
         setClip,
         updateClip,
+        ffmpeg: ffmpegRef.current,
+        ffmpegLoaded,
       }}
     >
       {children}

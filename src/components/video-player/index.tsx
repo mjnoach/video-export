@@ -16,8 +16,8 @@ import { PlayerControls } from './player-controls'
 
 import { useClientExport } from '@/hooks/useClientExport'
 import { LucideLink } from 'lucide-react'
+import ReactPlayer from 'react-player'
 import type { OnProgressProps } from 'react-player/base'
-import ReactPlayer from 'react-player/lazy'
 
 export function VideoPlayer() {
   const [player, setPlayer] = useState<ReactPlayer | null>(null)
@@ -34,8 +34,8 @@ export function VideoPlayer() {
   const exportService = useClientExport()
 
   useEffect(() => {
-    if (player && exportService.ffmpegLoaded) setLoadingPlayer(false)
-  }, [player, exportService.ffmpegLoaded])
+    if (player && editor.ffmpegLoaded) setLoadingPlayer(false)
+  }, [player, editor.ffmpegLoaded])
 
   useEffect(() => {
     if (!editor.clip.isLocal) {

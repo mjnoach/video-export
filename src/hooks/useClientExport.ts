@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
-import { useFfmpeg } from './useFfmpeg'
-
+import { EditorContext } from '@/context/editor'
+import { FFmpeg } from '@ffmpeg/ffmpeg'
 import { Progress } from '@ffmpeg/types'
 import { fetchFile } from '@ffmpeg/util'
 import { nanoid } from 'nanoid'
@@ -14,7 +14,7 @@ export const useClientExport = () => {
   const [error, setError] = useState<null | Error>(null)
   const [isPending, setPending] = useState(false)
   const [warning, setWarning] = useState<null | string>(null)
-  const { ffmpeg, ffmpegLoaded } = useFfmpeg()
+  let { ffmpeg } = useContext(EditorContext) as { ffmpeg: FFmpeg }
 
   const transcode = async ({
     source,
@@ -108,7 +108,6 @@ export const useClientExport = () => {
     isError: !!error,
     isPending,
     warning,
-    ffmpegLoaded,
   }
 }
 
