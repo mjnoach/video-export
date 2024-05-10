@@ -16,7 +16,7 @@ export const useClientExport = () => {
   const [warning, setWarning] = useState<null | string>(null)
   let { ffmpeg } = useContext(EditorContext) as { ffmpeg: FFmpeg }
 
-  const transcode = async ({
+  const startProcessing = async ({
     source,
     target,
   }: {
@@ -24,7 +24,7 @@ export const useClientExport = () => {
     target: ExportTarget
   }) => {
     let { id, path, start, duration, format } = target
-    console.info(`Transcoding ${id} started...`)
+    console.info(`Processing ${id} started...`)
     await ffmpeg.writeFile('input.webm', await fetchFile(source))
     const codecCopy = format === 'mp4' ? ['-c', 'copy'] : []
     const errorCode = await ffmpeg.exec([
@@ -40,11 +40,11 @@ export const useClientExport = () => {
       path,
     ])
     if (errorCode) {
-      const message = `Transcoding '${id}' failed`
+      const message = `Processing '${id}' failed`
       console.error(message)
       throw new Error(message)
     }
-    console.info(`Transcoding ${id} complete!`)
+    console.info(`Processing ${id} complete!`)
   }
 
   const exportClip = async (clip: Clip) => {
@@ -70,7 +70,7 @@ export const useClientExport = () => {
     ffmpeg.on('progress', progressCallback)
 
     try {
-      await transcode({ source: url, target: targetClip })
+      await startProcessing({ source: url, target: targetClip })
 
       const data = (await ffmpeg.readFile(targetClip.path)) as Uint8Array
 
@@ -106,8 +106,6 @@ export const useClientExport = () => {
     data,
     reset,
     error: error,
-    isSuccess: !!data,
-    isError: !!error,
     isPending,
     warning,
   }

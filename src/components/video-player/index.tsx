@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 import { EditorActions, EditorContext } from '../../context/editor'
@@ -15,6 +14,7 @@ import { ClipInfo } from './clip-info'
 import { PlayerControls } from './player-controls'
 
 import { useClientExport } from '@/hooks/useClientExport'
+import { useDownloadSource } from '@/hooks/useDownloadSource'
 import { LucideLink } from 'lucide-react'
 import ReactPlayer from 'react-player'
 import type { OnProgressProps } from 'react-player/base'
@@ -29,24 +29,13 @@ export function VideoPlayer() {
     (editor.clip.start + editor.clip.duration) / 2 ?? 0,
     editor.clip.start + editor.clip.duration ?? 0,
   ])
-  const [isDownloading, setDownloading] = useState(!editor.clip.isLocal)
   const router = useRouter()
   const exportService = useClientExport()
+  const { downloadError, isDownloading } = useDownloadSource()
 
   useEffect(() => {
-    if (player && editor.ffmpegLoaded) setLoadingPlayer(false)
-  }, [player, editor.ffmpegLoaded])
-
-  useEffect(() => {
-    if (!editor.clip.isLocal) {
-      api.downloadClip(editor.clip).then((blob) => {
-        const url = URL.createObjectURL(blob)
-        editor.updateClip({ url })
-        setDownloading(false)
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (downloadError) setLoadingPlayer(false)
+  }, [downloadError])
 
   useEffect(() => {
     if (editor.clip.isLocal)
@@ -64,18 +53,16 @@ export function VideoPlayer() {
   }, [sliderValues])
 
   useEffect(() => {
-    if (!player) return
+    if (!player || !editor.ffmpegLoaded) return
     const duration = player.getDuration()
-    const isInitialLoad = !editor.clip.duration
-    if (isInitialLoad) {
-      editor.updateClip({ videoLength: duration })
-      player.seekTo(duration / 2)
-      setSlider('Marker', duration / 2)
-      setSlider('End', duration)
-    }
+    player.seekTo(duration / 2)
+    setSlider('Marker', duration / 2)
+    setSlider('End', duration)
+    editor.updateClip({ videoLength: duration })
     editor.setActions(actions)
+    setLoadingPlayer(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player])
+  }, [player, editor.ffmpegLoaded])
 
   const actions: EditorActions = {
     previewClip: (clip: Clip) => {
@@ -179,7 +166,11 @@ export function VideoPlayer() {
   }
 
   const responseOverlay =
-    exportService.isPending || exportService.warning || exportService.data
+    isDownloading ||
+    isLoadingPlayer ||
+    exportService.isPending ||
+    exportService.warning ||
+    exportService.data
 
   function handleVideoFrameClick() {
     if (!responseOverlay) togglePlaying()
