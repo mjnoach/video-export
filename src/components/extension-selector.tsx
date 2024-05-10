@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from './ui/select'
 
-const EXTENSIONS = ['.mp4', '.gif', '.mp3']
+const FORMATS: ExportFormat[] = ['mp4', 'gif', 'mp3']
 
 type ExtensionSelectorProps = {
   disabled: boolean
@@ -18,17 +18,19 @@ type ExtensionSelectorProps = {
 
 export function ExtensionSelector({ disabled }: ExtensionSelectorProps) {
   const editor = useContext(EditorContext)
-  const defaultValue = EXTENSIONS[0]
+  const defaultValue = FORMATS[0]
 
   useEffect(() => {
-    editor.updateClip({ extension: defaultValue })
+    editor.updateClip({ format: defaultValue })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <Select
       defaultValue={defaultValue}
-      onValueChange={(value) => editor.updateClip({ extension: value })}
+      onValueChange={(value: ExportFormat) =>
+        editor.updateClip({ format: value })
+      }
       disabled={disabled}
     >
       <SelectTrigger className="action h-8 w-20">
@@ -39,9 +41,13 @@ export function ExtensionSelector({ disabled }: ExtensionSelectorProps) {
         position="item-aligned"
       >
         <SelectGroup>
-          {EXTENSIONS.map((ext) => (
-            <SelectItem key={ext} value={ext} className="focus:bg-secondary-1">
-              {ext}
+          {FORMATS.map((format) => (
+            <SelectItem
+              key={format}
+              value={format}
+              className="focus:bg-secondary-1"
+            >
+              {`.${format}`}
             </SelectItem>
           ))}
         </SelectGroup>

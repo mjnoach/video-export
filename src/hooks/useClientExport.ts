@@ -49,12 +49,12 @@ export const useClientExport = () => {
     setPending(true)
 
     const id = nanoid(OBJ_ID_LENGTH)
-    const { url, start, duration, extension } = clip
+    const { url, start, duration, format } = clip
 
     const targetClip: ExportTarget = {
       id,
-      path: `${id}${extension}`,
-      format: extension.replace('.', ''),
+      path: `${id}.${format}`,
+      format,
       duration,
       start,
     }

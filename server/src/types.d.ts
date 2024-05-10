@@ -28,12 +28,6 @@ type ExportData = ExportTarget & {
   thumbnail: string | null
 }
 
-type ExportError = string
-// {
-//   name: string
-//   message: string
-// }
-
 type ProgressData = {
   frames: number
   currentFps: number
