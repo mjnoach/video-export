@@ -26,6 +26,7 @@ export const useClientExport = () => {
     let { id, path, start, duration, format } = target
     console.info(`Transcoding ${id} started...`)
     await ffmpeg.writeFile('input.webm', await fetchFile(source))
+    const codecCopy = format === 'mp4' ? ['-c', 'copy'] : []
     const errorCode = await ffmpeg.exec([
       '-i',
       'input.webm',
@@ -35,6 +36,7 @@ export const useClientExport = () => {
       `${start}`,
       '-f',
       format,
+      ...codecCopy,
       path,
     ])
     if (errorCode) {
