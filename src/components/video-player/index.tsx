@@ -14,7 +14,6 @@ import { ClipInfo } from './clip-info'
 import { PlayerControls } from './player-controls'
 
 import { useClientExport } from '@/hooks/useClientExport'
-import { useDownloadSource } from '@/hooks/useDownloadSource'
 import { LucideLink } from 'lucide-react'
 import ReactPlayer from 'react-player'
 import type { OnProgressProps } from 'react-player/base'
@@ -31,11 +30,11 @@ export function VideoPlayer() {
   ])
   const router = useRouter()
   const exportService = useClientExport()
-  const { downloadError, isDownloading } = useDownloadSource()
+  // const { downloadError, isDownloading } = useDownloadSource()
 
-  useEffect(() => {
-    if (downloadError) setLoadingPlayer(false)
-  }, [downloadError])
+  // useEffect(() => {
+  //   if (downloadError) setLoadingPlayer(false)
+  // }, [downloadError])
 
   useEffect(() => {
     if (editor.clip.isLocal)
@@ -166,7 +165,7 @@ export function VideoPlayer() {
   }
 
   const responseOverlay =
-    isDownloading ||
+    // isDownloading ||
     isLoadingPlayer ||
     exportService.isPending ||
     exportService.warning ||
@@ -244,31 +243,30 @@ export function VideoPlayer() {
           </Overlay>
         )}
         {isLoadingPlayer && <Overlay type={'loading'}>Loading...</Overlay>}
-        {isDownloading && <Overlay type={'loading'}>Downloading...</Overlay>}
-        {!isDownloading && (
-          <ReactPlayer
-            config={{
-              youtube: {
-                playerVars: {
-                  modestbranding: 1,
-                  controls: 0,
-                  rel: 0,
-                  autoplay: Number(isPlaying),
-                },
+        {/* {isDownloading && <Overlay type={'loading'}>Downloading...</Overlay>} */}
+        {/* !isDownloading && <ReactPlayer */}
+        <ReactPlayer
+          config={{
+            youtube: {
+              playerVars: {
+                modestbranding: 1,
+                controls: 0,
+                rel: 0,
+                autoplay: Number(isPlaying),
               },
-            }}
-            progressInterval={100}
-            onError={handleError}
-            onPlay={handlePlay}
-            onPause={handlePause}
-            onProgress={handleProgress}
-            onReady={handleReady}
-            url={editor.clip.url}
-            width="100%"
-            height="100%"
-            playing={isPlaying}
-          />
-        )}
+            },
+          }}
+          progressInterval={100}
+          onError={handleError}
+          onPlay={handlePlay}
+          onPause={handlePause}
+          onProgress={handleProgress}
+          onReady={handleReady}
+          url={editor.clip.url}
+          width="100%"
+          height="100%"
+          playing={isPlaying}
+        />
       </div>
       {!isLoadingPlayer && player && (
         <div

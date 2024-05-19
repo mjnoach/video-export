@@ -1,6 +1,5 @@
 'use client'
 
-import { VideoLinkForm } from '@/components/video-link-form'
 import { VideoUpload } from '@/components/video-upload'
 
 export default function Home() {
@@ -11,7 +10,7 @@ export default function Home() {
         <h1 className={`mb-6 text-center text-5xl font-semibold`}>
           Paste & Go
         </h1>
-        <VideoLinkForm />
+        {/* <VideoLinkForm /> */}
         <VideoUpload />
       </div>
     </main>
