@@ -28,12 +28,12 @@ export const useClientExport = () => {
     await ffmpeg.writeFile('input.webm', await fetchFile(source))
     const codecCopy = format === 'mp4' ? ['-c', 'copy'] : []
     const errorCode = await ffmpeg.exec([
+      '-ss',
+      `${start}`,
       '-i',
       'input.webm',
       '-t',
       `${duration}`,
-      '-ss',
-      `${start}`,
       '-f',
       format,
       ...codecCopy,

@@ -5,7 +5,6 @@ export async function downloadRemoteStream(url: string) {
     const info = await ytdl.getInfo(url)
     // printFormatsInfo(info)
     const format = ytdl.chooseFormat(info.formats, {
-      // TODO
       // remove quality limitations after server resouces have been increased
       filter: (f) =>
         ['webm', 'mp4'].includes(f.container) &&
