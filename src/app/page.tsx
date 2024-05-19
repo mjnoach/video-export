@@ -6,7 +6,15 @@ import { EXPORT_FORMATS } from '@/lib/utils'
 
 export default function Home() {
   return (
-    <main className="mt-12 w-full">
+    <main
+      className="mt-12 w-full"
+      onDrop={(e) => {
+        e.preventDefault()
+      }}
+      onDragOver={(e) => {
+        e.preventDefault()
+      }}
+    >
       {/* <Drawer /> */}
       <div className="min-w-sm grid w-full max-w-lg gap-16">
         <div className="text-center text-lg">

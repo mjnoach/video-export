@@ -45,7 +45,7 @@ export function ExtensionSelector({ disabled }: ExtensionSelectorProps) {
               value={format}
               className="focus:bg-secondary-1"
             >
-              {`.${format}`}
+              {format.toUpperCase()}
             </SelectItem>
           ))}
         </SelectGroup>
