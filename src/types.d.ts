@@ -16,7 +16,7 @@ type Clip = {
   title: string
   start: number
   duration: number
-  format: ExportFormat
+  format: string
   url: string
   videoLength: number
 } & (ClientClip | RemoteClip)
@@ -37,11 +37,9 @@ type ExportTarget = {
   id: string
   path: string
   duration: number
-  format: ExportFormat
+  format: string
   start: number
 }
-
-type ExportFormat = 'mp4' | 'gif' | 'mp3'
 
 type ExportData = Omit<ExportTarget, 'start'> & {
   url: string

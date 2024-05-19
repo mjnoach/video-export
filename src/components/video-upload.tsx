@@ -2,13 +2,13 @@ import { useContext, useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
+import { UPLOAD_FORMATS } from '@/lib/utils'
+
 import { EditorContext } from '../context/editor'
 
 type VideoUploadProps = DefaultProps & {
   disabled?: boolean
 }
-
-const UPLOAD_FORMATS = ['MP4', 'MOV']
 
 export function VideoUpload({ disabled = false }: VideoUploadProps) {
   const [isLoading, setLoading] = useState(false)
@@ -35,17 +35,16 @@ type UploadInputProps = DefaultProps & {
 }
 
 const UploadInput = (props: UploadInputProps) => {
-  // const supportedFormats = 'SVG, PNG, JPG or GIF (MAX. 800x400px)'
   return (
     <label
       htmlFor="file"
       className="center panel aspect-video w-full rounded-lg border-dashed !border-secondary-2"
     >
       <UploadIcon />
-      <p className="mb-2 text-sm text-primary-2">
-        <span className="font-semibold">Click to upload</span> or drag and drop
+      <p className="mb-2 text-primary-2">Click or drag and drop</p>
+      <p className="text-sm text-primary-3">
+        {UPLOAD_FORMATS.join(', ').toUpperCase()}
       </p>
-      <p className="text-xs text-primary-3">{UPLOAD_FORMATS.join(', ')}</p>
       <input
         onChange={props.onChange}
         id="file"

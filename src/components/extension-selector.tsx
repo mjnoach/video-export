@@ -1,5 +1,7 @@
 import { useContext, useEffect } from 'react'
 
+import { EXPORT_FORMATS } from '@/lib/utils'
+
 import { EditorContext } from '../context/editor'
 import {
   Select,
@@ -10,15 +12,13 @@ import {
   SelectValue,
 } from './ui/select'
 
-const FORMATS: ExportFormat[] = ['mp4', 'gif', 'mp3']
-
 type ExtensionSelectorProps = {
   disabled: boolean
 }
 
 export function ExtensionSelector({ disabled }: ExtensionSelectorProps) {
   const editor = useContext(EditorContext)
-  const defaultValue = FORMATS[0]
+  const defaultValue = EXPORT_FORMATS[0]
 
   useEffect(() => {
     editor.updateClip({ format: defaultValue })
@@ -28,9 +28,7 @@ export function ExtensionSelector({ disabled }: ExtensionSelectorProps) {
   return (
     <Select
       defaultValue={defaultValue}
-      onValueChange={(value: ExportFormat) =>
-        editor.updateClip({ format: value })
-      }
+      onValueChange={(value) => editor.updateClip({ format: value })}
       disabled={disabled}
     >
       <SelectTrigger className="action h-8 w-20">
@@ -41,7 +39,7 @@ export function ExtensionSelector({ disabled }: ExtensionSelectorProps) {
         position="item-aligned"
       >
         <SelectGroup>
-          {FORMATS.map((format) => (
+          {EXPORT_FORMATS.map((format) => (
             <SelectItem
               key={format}
               value={format}
