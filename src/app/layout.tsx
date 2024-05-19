@@ -10,8 +10,8 @@ import { Providers } from './providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Video Editor',
-  description: 'Clip and export videos',
+  title: 'Video Trim & Export Tool',
+  description: 'Trim and export videos straight in the browser',
 }
 
 export default function RootLayout({
