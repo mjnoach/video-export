@@ -6,8 +6,8 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc --resolveJsonModule",
     "test": "",
-    "docker:clear": "docker rm -vf server-server-1; docker rmi -f server-server",
-    "docker:dev": "bun docker:clear; docker compose up --watch",
+    "docker:clear": "docker rm -f video-editor-server; docker rmi -f video-editor-server",
+    "docker:dev": "docker compose up --watch",
     "docker": "docker compose up"
   },
   "dependencies": {
