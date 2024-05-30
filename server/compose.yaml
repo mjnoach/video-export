@@ -1,4 +1,4 @@
-name: video-editor
+name: video-export
 
 services:
   # redis:
@@ -7,8 +7,8 @@ services:
   #   ports:
   #     - '6379:6379'
   server:
-    container_name: video-editor-server
-    image: video-editor-server
+    container_name: video-export-server
+    image: video-export-server
     build: .
     ports:
       - '3001:3001'
