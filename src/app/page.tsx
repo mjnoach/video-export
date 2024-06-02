@@ -15,7 +15,6 @@ export default function Home() {
         e.preventDefault()
       }}
     >
-      {/* <Drawer /> */}
       <div className="min-w-sm grid w-full max-w-lg gap-16">
         <div className="text-center text-lg">
           <h1 className={`mb-8 text-5xl font-semibold`}>
@@ -26,7 +25,6 @@ export default function Home() {
             {EXPORT_FORMATS.join(', ').toUpperCase()}
           </p>
         </div>
-        {/* <VideoLinkForm /> */}
         <VideoUpload />
       </div>
     </main>

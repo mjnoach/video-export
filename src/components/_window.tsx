@@ -35,7 +35,7 @@ const DotIcon = () => (
   </div>
 )
 
-const WindowControlsOSXs = ({ className }: DefaultProps) => (
+const WindowControlsOSX = ({ className }: DefaultProps) => (
   <div className="absolute flex items-center gap-3">
     <div className="h-3 w-3 rounded-full bg-red-500"></div>
     <div className="h-3 w-3 rounded-full bg-yellow-300"></div>

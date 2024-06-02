@@ -31,17 +31,6 @@ export const Drawer = () => {
           </div>
         </div>
         <ul className="my-12 mb-24 ml-6 flex w-44 flex-col items-center gap-4">
-          {/* <PendingItem
-            obj={clip}
-            // obj={{
-            //   id: 'test',
-            //   path: '',
-            //   duration: 0,
-            //   format: 'mp4',
-            //   url: '',
-            //   thumbnail: null,
-            // }}
-          /> */}
           {editor.data.map((obj, i) => (
             <Item key={i} obj={obj} />
           ))}
@@ -72,7 +61,6 @@ const PendingItem = ({ obj }: PendingItemProps) => {
         obj.thumbnail ? 'bg-contain bg-center bg-no-repeat' : 'bg-black'
       )}
     >
-      {/* <div className="absolute inset-0 z-50 rounded-lg bg-black/60"></div> */}
       <div className="grid h-full w-full grid-cols-3 content-between p-1">
         <div className="col-span-2 w-fit select-none text-primary-2">
           {getReadableDuration(obj.duration)}

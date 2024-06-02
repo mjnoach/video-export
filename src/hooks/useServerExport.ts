@@ -29,17 +29,6 @@ export const useServerExport = () => {
   })
 
   useEffect(() => {
-    // const fetchQuery = async () => {
-    //   if (!id) throw new Error('Export id is not defined')
-    //   const exportData = await api
-    //     .getExport(id, setProgress)
-    //     .catch((e: any | Error) => {
-    //       setError(e)
-    //     })
-    //   exportData && setData(exportData)
-    //   setPending(false)
-    // }
-    // id && fetchQuery()
     if (id) {
       queryClient
         .fetchQuery({

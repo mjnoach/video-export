@@ -30,11 +30,6 @@ export function VideoPlayer() {
   ])
   const router = useRouter()
   const exportService = useClientExport()
-  // const { downloadError, isDownloading } = useDownloadSource()
-
-  // useEffect(() => {
-  //   if (downloadError) setLoadingPlayer(false)
-  // }, [downloadError])
 
   useEffect(() => {
     if (editor.clip.isLocal)
@@ -165,7 +160,6 @@ export function VideoPlayer() {
   }
 
   const responseOverlay =
-    // isDownloading ||
     isLoadingPlayer ||
     exportService.isPending ||
     exportService.warning ||
@@ -223,17 +217,14 @@ export function VideoPlayer() {
           <Overlay
             type={'success'}
             title="Export complete!"
-            // timeout={5000}
             onDismiss={() => {
               exportService.reset()
               editor.setDisabled(false)
-              // editor.storeExport(exportService.data)
             }}
           >
             <Link
               prefetch={false}
               href={`${exportService.data.url}`}
-              // href={`${process.env.NEXT_PUBLIC_API_URL}/${exportService.data.url}`}
               className="mx-10 flex gap-2"
               target="_blank"
             >
@@ -243,8 +234,6 @@ export function VideoPlayer() {
           </Overlay>
         )}
         {isLoadingPlayer && <Overlay type={'loading'}>Loading...</Overlay>}
-        {/* {isDownloading && <Overlay type={'loading'}>Downloading...</Overlay>} */}
-        {/* !isDownloading && <ReactPlayer */}
         <ReactPlayer
           config={{
             youtube: {

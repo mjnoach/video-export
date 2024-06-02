@@ -64,7 +64,6 @@ export const useClientExport = () => {
     const progressCallback = ({ progress, time }: Progress) => {
       const relativeProgress = (progress * clip.videoLength) / clip.duration
       const percent = parseInt((relativeProgress * 100).toFixed(0))
-      // console.info(`* Processing ${id} ${percent}%`)
       setProgress(percent)
     }
     ffmpeg.on('progress', progressCallback)

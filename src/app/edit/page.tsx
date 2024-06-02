@@ -22,7 +22,6 @@ export default function Edit() {
         editor.data.length ? 'pl-[3.5rem]' : ''
       )}
     >
-      {/* <Drawer /> */}
       <div className="center flex w-full max-w-4xl flex-col items-stretch justify-center gap-6">
         <NoSSR>
           <VideoPlayer />

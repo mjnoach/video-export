@@ -23,9 +23,3 @@ export class ExportException extends HTTPException {
     super(424, { message: `Exporting '${id}' failed` })
   }
 }
-
-// export class UnknownException extends HTTPException {
-//   constructor(id: string, message?: string) {
-//     super(500, { message: 'Internal server error' })
-//   }
-// }
