@@ -6,7 +6,7 @@ import { Progress } from '@ffmpeg/types'
 import { fetchFile } from '@ffmpeg/util'
 import { nanoid } from 'nanoid'
 
-const OBJ_ID_LENGTH = 8
+const OBJ_ID_SIZE = 8
 
 export const useClientExport = () => {
   const [progress, setProgress] = useState<null | number>(null)
@@ -24,8 +24,10 @@ export const useClientExport = () => {
     target: ExportTarget
   }) => {
     let { id, path, start, duration, format } = target
-    console.info(`Processing ${id} started...`)
-    await ffmpeg.writeFile('input.webm', await fetchFile(source))
+    const fileData = await fetchFile(source).catch((e) => {
+      throw new Error('File data stored in the browser has expired.')
+    })
+    await ffmpeg.writeFile('input.webm', fileData)
     const codecCopy = format === 'mp4' ? ['-c', 'copy'] : []
     const errorCode = await ffmpeg.exec([
       '-ss',
@@ -40,17 +42,14 @@ export const useClientExport = () => {
       path,
     ])
     if (errorCode) {
-      const message = `Processing '${id}' failed`
-      console.error(message)
-      throw new Error(message)
+      throw new Error(`File processing has failed.`)
     }
-    console.info(`Processing ${id} complete!`)
   }
 
   const exportClip = async (clip: Clip) => {
     setProcessing(true)
 
-    const id = nanoid(OBJ_ID_LENGTH)
+    const id = nanoid(OBJ_ID_SIZE)
     const { url, start, duration, format } = clip
 
     const targetClip: ExportTarget = {
