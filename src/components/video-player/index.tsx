@@ -14,7 +14,7 @@ import { ClipInfo } from './clip-info'
 import { PlayerControls } from './player-controls'
 
 import { useClientExport } from '@/hooks/useClientExport'
-import { LucideLink } from 'lucide-react'
+import { Download, ExternalLinkIcon } from 'lucide-react'
 import ReactPlayer from 'react-player'
 import type { OnProgressProps } from 'react-player/base'
 
@@ -159,23 +159,25 @@ export function VideoPlayer() {
     console.error(error)
   }
 
-  const responseOverlay =
-    isLoadingPlayer ||
-    exportService.isPending ||
-    exportService.warning ||
-    exportService.data
-
   function handleVideoFrameClick() {
-    if (!responseOverlay) togglePlaying()
+    if (
+      isLoadingPlayer ||
+      exportService.isProcessing ||
+      exportService.warning ||
+      exportService.error ||
+      exportService.data
+    )
+      return
+    togglePlaying()
   }
 
   return (
     <div className="flex w-full flex-col items-center gap-4">
       <div
         onClick={handleVideoFrameClick}
-        className="relative aspect-video max-h-[60vh] w-full select-none rounded-md border-[5px] border-secondary-1"
+        className="relative aspect-video max-h-[60vh] w-full rounded-md border-[5px] border-secondary-1"
       >
-        {exportService.isPending && (
+        {exportService.isProcessing && (
           <Overlay type={'loading'} title="Processing...">
             {(() => {
               const progress = exportService.progress
@@ -185,7 +187,7 @@ export function VideoPlayer() {
             })()}
             <Progress
               value={exportService.progress}
-              className="absolute -bottom-8 h-1 w-[200%]"
+              className="absolute -bottom-8 h-1 w-[50%]"
             />
           </Overlay>
         )}
@@ -198,42 +200,55 @@ export function VideoPlayer() {
               editor.setDisabled(false)
             }}
           >
-            <div className="mx-10">{exportService.error?.message}</div>
+            {exportService.error?.message}
           </Overlay>
         )}
         {exportService.warning && (
           <Overlay
             type={'warning'}
-            timeout={3000}
             onDismiss={() => {
               exportService.reset()
               editor.setDisabled(false)
             }}
           >
-            <div className="mx-10">{exportService.warning}</div>
+            {exportService.warning}
           </Overlay>
         )}
         {exportService.data && (
           <Overlay
             type={'success'}
-            title="Export complete!"
+            title={`${exportService.data.id}.${exportService.data.format}`}
             onDismiss={() => {
               exportService.reset()
               editor.setDisabled(false)
             }}
           >
-            <Link
-              prefetch={false}
-              href={`${exportService.data.url}`}
-              className="mx-10 flex gap-2"
-              target="_blank"
-            >
-              <LucideLink className="w-5 text-primary-2" />
-              {`${exportService.data.id}.${exportService.data.format}`}
-            </Link>
+            <div className="flex select-none gap-8">
+              <Link
+                prefetch={false}
+                href={`${exportService.data.url}`}
+                className="flex items-center gap-2"
+                target="_blank"
+              >
+                <ExternalLinkIcon className="h-7 w-7 text-primary-2" />
+                View
+              </Link>
+              <Link
+                prefetch={false}
+                download={`${exportService.data.id}.${exportService.data.format}`}
+                href={`${exportService.data.url}`}
+                className="flex items-center gap-2"
+                target="_blank"
+              >
+                <Download className="h-7 w-7 text-primary-2" />
+                Save
+              </Link>
+            </div>
           </Overlay>
         )}
-        {isLoadingPlayer && <Overlay type={'loading'}>Loading...</Overlay>}
+        {isLoadingPlayer && (
+          <Overlay type={'loading'} title="Loading..."></Overlay>
+        )}
         <ReactPlayer
           config={{
             youtube: {

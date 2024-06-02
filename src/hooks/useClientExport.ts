@@ -12,7 +12,7 @@ export const useClientExport = () => {
   const [progress, setProgress] = useState<null | number>(null)
   const [data, setData] = useState<null | ExportData>(null)
   const [error, setError] = useState<null | Error>(null)
-  const [isPending, setPending] = useState(false)
+  const [isProcessing, setProcessing] = useState(false)
   const [warning, setWarning] = useState<null | string>(null)
   let { ffmpeg } = useContext(EditorContext) as { ffmpeg: FFmpeg }
 
@@ -48,7 +48,7 @@ export const useClientExport = () => {
   }
 
   const exportClip = async (clip: Clip) => {
-    setPending(true)
+    setProcessing(true)
 
     const id = nanoid(OBJ_ID_LENGTH)
     const { url, start, duration, format } = clip
@@ -89,7 +89,7 @@ export const useClientExport = () => {
     } finally {
       ffmpeg.off('progress', progressCallback)
       setProgress(null)
-      setPending(false)
+      setProcessing(false)
     }
   }
 
@@ -105,7 +105,7 @@ export const useClientExport = () => {
     data,
     reset,
     error: error,
-    isPending,
+    isProcessing,
     warning,
   }
 }

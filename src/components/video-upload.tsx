@@ -45,7 +45,7 @@ export function VideoUpload({ disabled = false }: VideoUploadProps) {
         }
       }}
       onDragLeave={() => setInvalidType(false)}
-      className="center panel aspect-video w-full rounded-lg border-dashed !border-secondary-2"
+      className="center panel aspect-video w-full select-none rounded-lg border-dashed !border-secondary-2"
     >
       {invalidType ? (
         <Ban className="pointer-events-none mb-4 h-8 w-8" />
