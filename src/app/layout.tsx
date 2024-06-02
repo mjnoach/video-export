@@ -4,6 +4,8 @@ import { Inter } from 'next/font/google'
 import { Background } from '@/components/background'
 import { Nav } from '@/components/nav'
 
+import { cn } from '@/lib/utils'
+
 import './globals.css'
 import { Providers } from './providers'
 
@@ -21,13 +23,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cn(inter.className)}>
         <Providers>
-          <div className="flex min-w-[770px] grow flex-col">
+          <div className="relative flex min-w-[770px] grow flex-col overflow-x-hidden">
             <Nav />
             {children}
+            <Background />
           </div>
-          <Background />
         </Providers>
       </body>
     </html>
