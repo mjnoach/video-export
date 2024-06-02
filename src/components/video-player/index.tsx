@@ -175,7 +175,7 @@ export function VideoPlayer() {
     <div className="flex w-full flex-col items-center gap-4">
       <div
         onClick={handleVideoFrameClick}
-        className="relative aspect-video max-h-[60vh] w-full rounded-md border-[5px] border-secondary-1"
+        className="relative aspect-video max-h-[60vh] w-full rounded-md border-[5px] border-secondary-1 bg-black"
       >
         {exportService.isProcessing && (
           <Overlay type={'loading'} title="Processing...">
