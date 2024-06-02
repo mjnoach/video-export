@@ -260,6 +260,7 @@ export function VideoPlayer() {
               },
             },
           }}
+          playsinline
           progressInterval={100}
           onError={handleError}
           onPlay={handlePlay}
