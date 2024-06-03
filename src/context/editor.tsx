@@ -16,64 +16,91 @@ export type EditorActions = {
 const editor = {
   actions: {} as EditorActions,
   setActions: (actions: EditorActions) => {},
-  isDisabled: false,
-  setDisabled: (state: boolean) => {},
-  data: [] as ExportData[],
-  storeExport: (obj: ExportData) => {},
-  removeExport: (id: string) => {},
+  ffmpeg: {} as FFmpeg | null,
+  loaded: false,
   clip: {
     start: 0,
     duration: 0,
   } as Clip,
   setClip: (clip: Clip) => {},
   updateClip: (data: Partial<Clip>) => {},
-  ffmpeg: {} as FFmpeg | null,
-  ffmpegLoaded: false,
+  isDisabled: false,
+  setDisabled: (state: boolean) => {},
+  isProcessing: false,
+  setProcessing: (isProcessing: boolean) => {},
+  progress: null as null | number,
+  setProgress: (progress: null | number) => {},
+  warning: null as null | string,
+  setWarning: (warning: string) => {},
+  error: null as null | Error,
+  setError: (error: Error) => {},
+  data: null as null | ExportData,
+  setData: (data: ExportData) => {},
+  clear: () => {},
+  storage: [] as ExportData[],
+  storeExport: (exportData: ExportData) => {},
+  removeExport: (exportId: string) => {},
 }
 
 export const EditorContext = createContext(editor)
 
 export const EditorProvider = ({ children }: DefaultProps) => {
+  const pathname = usePathname()
+  const ffmpegRef = useRef<FFmpeg | null>(null)
+  const [loaded, setLoaded] = useState(ffmpegRef.current?.loaded ?? false)
   const [actions, setActions] = useState({} as EditorActions)
-  const [isDisabled, setDisabled] = useState(false)
   const [clip, setClip, updateClip] = useSessionStorage<Clip>(
     'clip',
     editor.clip
   )
-  const [data, setData] = useLocalStorage<ExportData[]>('data', editor.data)
-  const pathname = usePathname()
-  const ffmpegRef = useRef<FFmpeg | null>(null)
-  const [ffmpegLoaded, setLoaded] = useState(!!ffmpegRef.current?.loaded)
+  const [isDisabled, setDisabled] = useState(false)
+  const [isProcessing, setProcessing] = useState(false)
+  const [progress, setProgress] = useState<null | number>(null)
+  const [warning, setWarning] = useState<null | string>(null)
+  const [error, setError] = useState<null | Error>(null)
+  const [data, setData] = useState<null | ExportData>(null)
+  const [storage, setStorage] = useLocalStorage<ExportData[]>(
+    'storage',
+    editor.storage
+  )
 
   useEffect(() => {
     if (ffmpegRef.current === null) ffmpegRef.current = new FFmpeg()
-    if (!ffmpegRef.current.loaded) {
-      loadFfmpeg().then(() => setLoaded(true))
+    if (!ffmpegRef.current?.loaded) {
+      load().then(setLoaded)
     }
   }, [])
 
-  const baseUrl = '/ffmpeg/esm'
+  useEffect(() => {
+    clear()
+  }, [pathname])
 
-  const loadFfmpeg = async () => {
+  async function load() {
+    const baseUrl = '/ffmpeg/esm'
     console.log('Loading...')
-    await ffmpegRef.current!.load({
+    const loaded = await ffmpegRef.current?.load({
       coreURL: `${baseUrl}/ffmpeg-core.js`,
       wasmURL: `${baseUrl}/ffmpeg-core.wasm`,
       workerURL: `${baseUrl}/ffmpeg-core.worker.js`,
     })
-    console.log('FFmpeg loaded!')
+    if (ffmpegRef.current?.loaded) console.log('FFmpeg loaded!')
+    else console.log('FFmpeg failed to load.')
+    return ffmpegRef.current?.loaded ?? false
   }
 
-  useEffect(() => {
+  function storeExport(exportData: ExportData) {
+    setStorage([exportData, ...storage])
+  }
+
+  function removeExport(exportId: string) {
+    setStorage(storage.filter((exportData) => exportData.id !== exportId))
+  }
+
+  function clear() {
+    setError(null)
+    setData(null)
+    setWarning(null)
     setDisabled(false)
-  }, [pathname])
-
-  const storeExport = (obj: ExportData) => {
-    setData([obj, ...data])
-  }
-
-  const removeExport = (id: string) => {
-    setData(data.filter((obj) => obj.id !== id))
   }
 
   return (
@@ -81,16 +108,27 @@ export const EditorProvider = ({ children }: DefaultProps) => {
       value={{
         actions,
         setActions,
-        isDisabled,
-        setDisabled,
-        data,
-        storeExport,
-        removeExport,
+        ffmpeg: ffmpegRef.current,
+        loaded,
         clip,
         setClip,
         updateClip,
-        ffmpeg: ffmpegRef.current,
-        ffmpegLoaded,
+        isDisabled,
+        setDisabled,
+        isProcessing,
+        setProcessing,
+        progress,
+        setProgress,
+        warning,
+        setWarning,
+        error,
+        setError,
+        data,
+        setData,
+        clear,
+        storage,
+        storeExport,
+        removeExport,
       }}
     >
       {children}

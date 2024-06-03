@@ -19,7 +19,7 @@ export default function Edit() {
     <main
       className={cn(
         'flex h-full w-full flex-row items-start px-8 lg:px-16',
-        editor.data.length ? 'pl-[3.5rem]' : ''
+        editor.storage.length ? 'pl-[3.5rem]' : ''
       )}
     >
       <div className="center flex w-full max-w-4xl flex-col items-stretch justify-center gap-6">

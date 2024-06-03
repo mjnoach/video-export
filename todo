@@ -7,6 +7,8 @@
 // Feature: Add Security remarks to the homepage:
 //          Your users' data only lives inside their browser, no need to worry about any data leakage or network latency.
 // Feature: Show download progress on the client
+// Feature: Add feature flag for server exports on local environment
+
 
 // Fix: Abort export when user leaves the editor
 // Fix: Reloading remote source page?

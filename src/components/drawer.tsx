@@ -18,7 +18,7 @@ export const Drawer = () => {
   return (
     <div
       className={cn(
-        !editor.data.length
+        !editor.storage.length
           ? '-translate-x-[100%]'
           : '-translate-x-[calc(100%-1.5rem)]',
         'fixed left-0 top-0 z-50 flex h-screen border-r border-secondary-1 bg-black bg-opacity-75 backdrop-blur-md transition-transform hover:-translate-x-0'
@@ -31,8 +31,8 @@ export const Drawer = () => {
           </div>
         </div>
         <ul className="my-12 mb-24 ml-6 flex w-44 flex-col items-center gap-4">
-          {editor.data.map((obj, i) => (
-            <Item key={i} obj={obj} />
+          {editor.storage.map((exportData, i) => (
+            <Item key={i} exportData={exportData} />
           ))}
           <NewItem />
         </ul>
@@ -45,25 +45,27 @@ export const Drawer = () => {
 }
 
 type PendingItemProps = {
-  obj: ExportData
+  exportData: ExportData
 }
 
-const PendingItem = ({ obj }: PendingItemProps) => {
-  const extension = `.${obj.format}`
+const PendingItem = ({ exportData }: PendingItemProps) => {
+  const extension = `.${exportData.format}`
 
   return (
     <li
       style={{
-        backgroundImage: obj.thumbnail ? `url(${obj.thumbnail})` : '',
+        backgroundImage: exportData.thumbnail
+          ? `url(${exportData.thumbnail})`
+          : '',
       }}
       className={cn(
         'drawer-item relative flex overflow-hidden',
-        obj.thumbnail ? 'bg-contain bg-center bg-no-repeat' : 'bg-black'
+        exportData.thumbnail ? 'bg-contain bg-center bg-no-repeat' : 'bg-black'
       )}
     >
       <div className="grid h-full w-full grid-cols-3 content-between p-1">
         <div className="col-span-2 w-fit select-none text-primary-2">
-          {getReadableDuration(obj.duration)}
+          {getReadableDuration(exportData.duration)}
         </div>
         <div
           className={
@@ -73,7 +75,7 @@ const PendingItem = ({ obj }: PendingItemProps) => {
           <Loader2 className={'h-6 w-6 animate-spin self-end'} />
         </div>
         <div className="col-span-2 w-fit max-w-full truncate whitespace-nowrap">
-          {obj.id}
+          {exportData.id}
         </div>
         <div className="w-fit place-self-end text-player">{extension}</div>
       </div>
@@ -86,32 +88,34 @@ const PendingItem = ({ obj }: PendingItemProps) => {
 }
 
 type ItemProps = {
-  obj: ExportData
+  exportData: ExportData
 }
 
-const Item = ({ obj }: ItemProps) => {
-  const extension = `.${obj.format}`
-  const href = `${obj.url}`
-  // const href = `${process.env.NEXT_PUBLIC_API_URL}/${obj.url}`
+const Item = ({ exportData }: ItemProps) => {
+  const extension = `.${exportData.format}`
+  const href = `${exportData.url}`
+  // const href = `${process.env.NEXT_PUBLIC_API_URL}/${exportData.url}`
 
   return (
     <li
       style={{
-        backgroundImage: obj.thumbnail ? `url(${obj.thumbnail})` : '',
+        backgroundImage: exportData.thumbnail
+          ? `url(${exportData.thumbnail})`
+          : '',
       }}
       className={cn(
         'group/item drawer-item flex cursor-pointer transition',
-        obj.thumbnail ? 'bg-contain bg-center bg-no-repeat' : 'bg-black'
+        exportData.thumbnail ? 'bg-contain bg-center bg-no-repeat' : 'bg-black'
       )}
     >
       <Link href={href} className="w-full" target="_blank">
         <div className="grid h-full grid-cols-3 content-between p-1">
           <div className="col-span-2 w-fit select-none text-primary-2">
-            {getReadableDuration(obj.duration)}
+            {getReadableDuration(exportData.duration)}
           </div>
-          <RemoveButton obj={obj} />
+          <RemoveButton exportData={exportData} />
           <div className="col-span-2 w-fit max-w-full truncate whitespace-nowrap">
-            {obj.id}
+            {exportData.id}
           </div>
           <div className="w-fit place-self-end text-player">{extension}</div>
         </div>
@@ -121,15 +125,15 @@ const Item = ({ obj }: ItemProps) => {
 }
 
 type RemoveButtonProps = {
-  obj: ExportData
+  exportData: ExportData
 }
 
-const RemoveButton = ({ obj }: RemoveButtonProps) => {
+const RemoveButton = ({ exportData }: RemoveButtonProps) => {
   const editor = useContext(EditorContext)
 
   function handleClick(e: any) {
     e.preventDefault()
-    editor.removeExport(obj.id)
+    editor.removeExport(exportData.id)
   }
   return (
     <button

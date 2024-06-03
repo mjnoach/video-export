@@ -84,8 +84,8 @@ app.get('/export/:id', (c) =>
         task.onProgress = (percent) => {
           stream.writeln(percent)
         }
-        task.onFinish = (obj) => {
-          stream.writeln(`data:${JSON.stringify(obj)}`)
+        task.onFinish = (exportData) => {
+          stream.writeln(`data:${JSON.stringify(exportData)}`)
           resolve()
         }
         task.onError = (err) => {

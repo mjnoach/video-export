@@ -19,23 +19,17 @@ import ReactPlayer from 'react-player'
 import type { OnProgressProps } from 'react-player/base'
 
 export function VideoPlayer() {
-  const [player, setPlayer] = useState<ReactPlayer | null>(null)
-  const [isLoadingPlayer, setLoadingPlayer] = useState(true)
-  const [isPlaying, setIsPlaying] = useState(false)
   const editor = useContext(EditorContext)
+  const exportService = useClientExport()
+  const [player, setPlayer] = useState<ReactPlayer | null>(null)
+  const [isLoading, setLoading] = useState(true)
+  const [isPlaying, setIsPlaying] = useState(false)
   const [sliderValues, setSliderValues] = useState([
     editor.clip.start ?? 0,
     (editor.clip.start + editor.clip.duration) / 2 ?? 0,
     editor.clip.start + editor.clip.duration ?? 0,
   ])
   const router = useRouter()
-  const exportService = useClientExport()
-
-  useEffect(() => {
-    if (editor.clip.isLocal)
-      fetch(editor.clip.url).catch((e) => router.replace('/'))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router])
 
   useEffect(() => {
     if (hasReachedEnd()) setIsPlaying(false)
@@ -47,16 +41,16 @@ export function VideoPlayer() {
   }, [sliderValues])
 
   useEffect(() => {
-    if (!player || !editor.ffmpegLoaded) return
+    if (!player || !editor.loaded) return
     const duration = player.getDuration()
     player.seekTo(duration / 2)
     setSlider('Marker', duration / 2)
     setSlider('End', duration)
     editor.updateClip({ videoLength: duration })
     editor.setActions(actions)
-    setLoadingPlayer(false)
+    setLoading(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player, editor.ffmpegLoaded])
+  }, [player, editor.loaded])
 
   const actions: EditorActions = {
     previewClip: (clip: Clip) => {
@@ -149,23 +143,22 @@ export function VideoPlayer() {
     isPlaying && togglePlaying()
   }
 
-  function handleError(
-    error: any,
-    data?: any,
-    hlsInstance?: any,
-    hlsGlobal?: any
-  ) {
-    console.error('Player Error')
-    console.error(error)
+  function handleError(e: any) {
+    if (e.target.error.code === 4) {
+      console.log('File data stored in the browser has expired.')
+      router.replace('/')
+    } else {
+      console.error('Player Error', e)
+    }
   }
 
   function handleVideoFrameClick() {
     if (
-      isLoadingPlayer ||
-      exportService.isProcessing ||
-      exportService.warning ||
-      exportService.error ||
-      exportService.data
+      isLoading ||
+      editor.isProcessing ||
+      editor.warning ||
+      editor.error ||
+      editor.data
     )
       return
     togglePlaying()
@@ -177,56 +170,44 @@ export function VideoPlayer() {
         onClick={handleVideoFrameClick}
         className="relative aspect-video max-h-[60vh] w-full rounded-md border-[5px] border-secondary-1 bg-black"
       >
-        {exportService.isProcessing && (
+        {editor.isProcessing && (
           <Overlay type={'loading'} title="Processing...">
             {(() => {
-              const progress = exportService.progress
+              const progress = editor.progress
               if (progress === null || 100 - progress < 0) return 'Initializing'
               if (progress >= 100) return 'Finalizing'
               return `${progress}%`
             })()}
             <Progress
-              value={exportService.progress}
+              value={editor.progress}
               className="absolute -bottom-8 h-1 w-[50%]"
             />
           </Overlay>
         )}
-        {exportService.error && (
+        {editor.error && (
           <Overlay
             type={'error'}
-            title={exportService.error?.name || 'Error'}
-            onDismiss={() => {
-              exportService.reset()
-              editor.setDisabled(false)
-            }}
+            title={editor.error?.name || 'Error'}
+            onDismiss={editor.clear}
           >
-            {exportService.error?.message}
+            {editor.error?.message}
           </Overlay>
         )}
-        {exportService.warning && (
-          <Overlay
-            type={'warning'}
-            onDismiss={() => {
-              exportService.reset()
-              editor.setDisabled(false)
-            }}
-          >
-            {exportService.warning}
+        {editor.warning && (
+          <Overlay type={'warning'} onDismiss={editor.clear}>
+            {editor.warning}
           </Overlay>
         )}
-        {exportService.data && (
+        {editor.data && (
           <Overlay
             type={'success'}
-            title={`${exportService.data.id}.${exportService.data.format}`}
-            onDismiss={() => {
-              exportService.reset()
-              editor.setDisabled(false)
-            }}
+            title={`${editor.data.id}.${editor.data.format}`}
+            onDismiss={editor.clear}
           >
             <div className="flex select-none gap-8">
               <Link
                 prefetch={false}
-                href={`${exportService.data.url}`}
+                href={`${editor.data.url}`}
                 className="flex items-center gap-2"
                 target="_blank"
               >
@@ -235,8 +216,8 @@ export function VideoPlayer() {
               </Link>
               <Link
                 prefetch={false}
-                download={`${exportService.data.id}.${exportService.data.format}`}
-                href={`${exportService.data.url}`}
+                download={`${editor.data.id}.${editor.data.format}`}
+                href={`${editor.data.url}`}
                 className="flex items-center gap-2"
                 target="_blank"
               >
@@ -246,9 +227,7 @@ export function VideoPlayer() {
             </div>
           </Overlay>
         )}
-        {isLoadingPlayer && (
-          <Overlay type={'loading'} title="Loading..."></Overlay>
-        )}
+        {isLoading && <Overlay type={'loading'} title="Loading..."></Overlay>}
         <ReactPlayer
           config={{
             youtube: {
@@ -273,7 +252,7 @@ export function VideoPlayer() {
           playing={isPlaying}
         />
       </div>
-      {!isLoadingPlayer && player && (
+      {!isLoading && player && (
         <div
           className={cn(
             'flex w-full flex-col items-center gap-10 px-2',
