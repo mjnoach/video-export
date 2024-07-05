@@ -14,12 +14,6 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Video Trim & Export Tool',
   description: 'Trim and export videos straight in the browser',
-  icons: {
-    icon: ['/favicon/favicon.ico?v=4'],
-    apple: ['/favicon/apple-touch-icon.png?v=4'],
-    shortcut: ['/favicon/apple-touch-icon.png'],
-  },
-  manifest: '/favicon/site.webmanifest',
 }
 
 export default function RootLayout({
